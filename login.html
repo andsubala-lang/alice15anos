@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Acesso Admin · 15 Anos da Alice</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --azul:       #5aafd6;
+      --azul-cl:    #a8d8ea;
+      --azul-bg:    #e3f4fb;
+      --azul-dk:    #2e7ea8;
+      --marsala:    #9b3a4a;
+      --marsala-cl: #c97080;
+      --marsala-bg: #f8eaec;
+      --branco:     #ffffff;
+      --texto:      #2c3e50;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      background: #c9e8f4;
+    }
+
+    /* fundo SVG */
+    .bg-svg {
+      position: fixed;
+      inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: rgba(255,255,255,.95);
+      border-radius: 28px;
+      border: 2px solid var(--azul-cl);
+      box-shadow: 0 12px 50px rgba(90,175,214,.20), 0 2px 12px rgba(155,58,74,.08);
+      width: 100%; max-width: 400px;
+      padding: 44px 36px 38px;
+      animation: subir .5s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes subir {
+      from { opacity:0; transform:translateY(28px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .card::before {
+      content:'';
+      position:absolute;
+      top:0; left:30px; right:30px; height:4px;
+      background: linear-gradient(90deg, var(--azul), var(--marsala));
+      border-radius: 0 0 6px 6px;
+    }
+
+    .icone { font-size:2.4rem; text-align:center; display:block; margin-bottom:8px; }
+
+    .titulo {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 1.1rem;
+      color: var(--marsala);
+      text-align: center;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .sub {
+      font-size: 0.75rem;
+      color: var(--azul);
+      text-align: center;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--azul-dk);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .campo { margin-bottom: 16px; }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%; padding: 12px 14px;
+      border: 2px solid var(--azul-cl); border-radius: 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.92rem; font-weight: 600; color: var(--texto);
+      background: var(--azul-bg); outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    input:focus { border-color: var(--azul); background: white; box-shadow: 0 0 0 3px rgba(90,175,214,.18); }
+    input::placeholder { color: #a8cfe0; font-weight: 500; }
+
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 42px; }
+    .olho {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      font-size: 1rem; color: var(--azul); padding: 2px;
+    }
+
+    .btn-entrar {
+      width: 100%; padding: 13px; margin-top: 6px;
+      border: none; border-radius: 50px;
+      background: linear-gradient(135deg, var(--azul-dk), var(--marsala));
+      color: white; font-family: 'Quicksand', sans-serif;
+      font-size: 0.95rem; font-weight: 700; letter-spacing: .04em;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(90,175,214,.28);
+      transition: opacity .2s, transform .15s;
+    }
+    .btn-entrar:hover:not(:disabled) { opacity:.9; transform:translateY(-1px); }
+    .btn-entrar:disabled { opacity:.6; cursor:not-allowed; }
+
+    .spin {
+      display:inline-block; width:14px; height:14px;
+      border:2.5px solid rgba(255,255,255,.35);
+      border-top-color:white; border-radius:50%;
+      animation:girar .7s linear infinite;
+      vertical-align:middle; margin-right:6px;
+    }
+    @keyframes girar { to { transform:rotate(360deg); } }
+
+    .msg {
+      margin-top:14px; padding:10px 14px; border-radius:10px;
+      font-size:0.82rem; font-weight:600; text-align:center; display:none;
+    }
+    .msg.erro { background:var(--marsala-bg); color:var(--marsala); border:1px solid var(--marsala-cl); display:block; }
+    .msg.info { background:var(--azul-bg);    color:var(--azul-dk); border:1px solid var(--azul-cl);    display:block; }
+
+    .nota {
+      margin-top:22px; text-align:center;
+      font-size:0.7rem; color:#b0cfe0; font-weight:600;
+    }
+
+    /* overlay */
+    #overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(195,232,244,.92); z-index:999;
+      align-items:center; justify-content:center; flex-direction:column; gap:14px;
+    }
+    #overlay.ativo { display:flex; }
+    #overlay .grande { width:46px;height:46px; border:4px solid var(--azul-cl);
+      border-top-color:var(--azul); border-radius:50%; animation:girar .8s linear infinite; }
+    #overlay p { font-weight:700; color:var(--azul-dk); font-size:0.95rem; }
+
+    @media (max-width:440px) {
+      .card { padding:34px 22px 30px; }
+      .titulo { font-size:0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- fundo ilustrado -->
+<svg class="bg-svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#a8d8ea"/>
+      <stop offset="60%"  stop-color="#cce8f5"/>
+      <stop offset="100%" stop-color="#f0c8ce"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+
+  <!-- estrelas -->
+  <g fill="white" opacity=".4">
+    <circle cx="50"  cy="50"  r="2"/><circle cx="150" cy="30"  r="1.5"/>
+    <circle cx="700" cy="40"  r="2"/><circle cx="760" cy="100" r="1.5"/>
+    <circle cx="30"  cy="300" r="1.5"/><circle cx="780" cy="350" r="2"/>
+    <circle cx="400" cy="20"  r="1.5"/><circle cx="600" cy="560" r="1.5"/>
+  </g>
+
+  <!-- chapéu esquerda -->
+  <g transform="translate(30,80)" opacity=".75">
+    <rect x="15" y="25" width="75" height="85" rx="6" fill="#9b3a4a"/>
+    <ellipse cx="52" cy="110" rx="52" ry="10" fill="#7a2d3a"/>
+    <ellipse cx="52" cy="25"  rx="38" ry="8"  fill="#7a2d3a"/>
+    <rect x="15" y="68" width="75" height="14" fill="#c9a84c"/>
+    <text x="52" y="79" text-anchor="middle" font-family="serif" font-size="9" fill="#9b3a4a" font-weight="bold">10/6</text>
+  </g>
+
+  <!-- carta baralho dir sup -->
+  <g transform="translate(680,50) rotate(15)" opacity=".7">
+    <rect width="42" height="60" rx="5" fill="white" stroke="#ddd" stroke-width="1"/>
+    <text x="4" y="14" font-size="12" fill="#e74c3c">♥</text>
+    <text x="4" y="26" font-size="9" fill="#e74c3c" font-weight="bold">A</text>
+  </g>
+  <g transform="translate(700,60) rotate(5)" opacity=".65">
+    <rect width="42" height="60" rx="5" fill="white" stroke="#ddd" stroke-width="1"/>
+    <text x="4" y="14" font-size="12" fill="#333">♠</text>
+    <text x="4" y="26" font-size="9" fill="#333" font-weight="bold">K</text>
+  </g>
+
+  <!-- xícara baixo-esquerda -->
+  <g transform="translate(30,450)" opacity=".65">
+    <ellipse cx="50" cy="75" rx="52" ry="10" fill="#a8d8ea"/>
+    <path d="M5,25 Q5,70 50,70 Q95,70 95,25 Z" fill="#e3f4fb" stroke="#5aafd6" stroke-width="1.5"/>
+    <path d="M12,42 Q50,55 88,42" stroke="#9b3a4a" stroke-width="2" fill="none" opacity=".5"/>
+    <path d="M95,33 Q115,33 115,50 Q115,65 95,62" stroke="#5aafd6" stroke-width="2.5" fill="none"/>
+  </g>
+
+  <!-- cogumelo baixo-direita -->
+  <g transform="translate(670,430)" opacity=".65">
+    <rect x="24" y="46" width="16" height="28" rx="4" fill="#f5deb3"/>
+    <ellipse cx="32" cy="46" rx="36" ry="14" fill="#9b3a4a"/>
+    <ellipse cx="32" cy="34" rx="28" ry="18" fill="#c97080"/>
+    <circle cx="22" cy="30" r="4" fill="white" opacity=".7"/>
+    <circle cx="38" cy="24" r="3" fill="white" opacity=".7"/>
+    <circle cx="48" cy="36" r="3.5" fill="white" opacity=".7"/>
+  </g>
+
+  <!-- rosas centro -->
+  <g transform="translate(360,520)" opacity=".5">
+    <circle cx="0"  cy="0"   r="14" fill="#9b3a4a"/>
+    <circle cx="-6" cy="-5"  r="9"  fill="#c97080"/>
+    <circle cx="6"  cy="-5"  r="9"  fill="#c97080"/>
+    <circle cx="0"  cy="-9"  r="9"  fill="#e8a0aa"/>
+    <ellipse cx="-16" cy="9" rx="10" ry="5" fill="#2e7ea8" opacity=".7" transform="rotate(-30,-16,9)"/>
+    <ellipse cx="16"  cy="9" rx="10" ry="5" fill="#2e7ea8" opacity=".7" transform="rotate(30,16,9)"/>
+  </g>
+</svg>
+
+<div id="overlay">
+  <div class="grande"></div>
+  <p>Entrando no País das Maravilhas…</p>
+</div>
+
+<div class="card">
+  <span class="icone">🎩</span>
+  <h1 class="titulo">Acesso Restrito</h1>
+  <p class="sub">Painel Admin · 15 Anos da Alice</p>
+
+  <div class="campo">
+    <label for="email">E-mail</label>
+    <input type="email" id="email" placeholder="admin@exemplo.com" autocomplete="username"/>
+  </div>
+
+  <div class="campo">
+    <label for="senha">Senha</label>
+    <div class="pw-wrap">
+      <input type="password" id="senha" placeholder="••••••••" autocomplete="current-password"/>
+      <button class="olho" id="olho" type="button" aria-label="Mostrar senha">👁️</button>
+    </div>
+  </div>
+
+  <button class="btn-entrar" id="btn" onclick="entrar()">Entrar</button>
+  <div class="msg" id="msg"></div>
+
+  <p class="nota">🔒 Senha verificada com segurança via Supabase</p>
+</div>
+
+<script>
+  const sb = window.supabase.createClient(
+    'https://abojdhxobsyrzyiacaqf.supabase.co',
+    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
+  );
+
+  // já logado? vai direto
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) ir();
+  })();
+
+  const emailEl = document.getElementById('email');
+  const senhaEl = document.getElementById('senha');
+  const btnEl   = document.getElementById('btn');
+  const msgEl   = document.getElementById('msg');
+  const olhoEl  = document.getElementById('olho');
+
+  olhoEl.addEventListener('click', () => {
+    const v = senhaEl.type === 'text';
+    senhaEl.type = v ? 'password' : 'text';
+    olhoEl.textContent = v ? '👁️' : '🙈';
+  });
+
+  [emailEl, senhaEl].forEach(el => el.addEventListener('keydown', e => { if (e.key==='Enter') entrar(); }));
+
+  function mostrar(txt, tipo='erro') { msgEl.textContent=txt; msgEl.className=`msg ${tipo}`; }
+  function limpar() { msgEl.className='msg'; }
+
+  function carregando(on) {
+    btnEl.disabled = on;
+    btnEl.innerHTML = on ? '<span class="spin"></span> Verificando…' : 'Entrar';
+  }
+
+  function ir() {
+    document.getElementById('overlay').classList.add('ativo');
+    setTimeout(() => { window.location.href = 'admin.html'; }, 900);
+  }
+
+  async function entrar() {
+    limpar();
+    const email = emailEl.value.trim();
+    const senha = senhaEl.value;
+    if (!email) { mostrar('Informe seu e-mail.'); emailEl.focus(); return; }
+    if (!senha)  { mostrar('Informe sua senha.');  senhaEl.focus(); return; }
+
+    carregando(true);
+    const { error } = await sb.auth.signInWithPassword({ email, password: senha });
+    carregando(false);
+
+    if (error) {
+      const erros = {
+        'Invalid login credentials': 'E-mail ou senha incorretos.',
+        'Email not confirmed':        'Confirme seu e-mail antes de entrar.',
+        'Too many requests':          'Muitas tentativas. Aguarde um momento.',
+      };
+      mostrar(erros[error.message] ?? 'Algo deu errado. Tente novamente.');
+      senhaEl.value = ''; senhaEl.focus();
+      return;
+    }
+    ir();
+  }
+</script>
+</body>
+</html>

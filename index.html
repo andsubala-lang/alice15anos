@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>15 Anos da Alice 🎀</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --azul:       #5aafd6;
+            --azul-cl:    #a8d8ea;
+            --azul-bg:    #e3f4fb;
+            --azul-dk:    #2e7ea8;
+            --marsala:    #9b3a4a;
+            --marsala-cl: #c97080;
+            --marsala-bg: #f8eaec;
+            --ouro:       #c9a84c;
+            --branco:     #ffffff;
+            --texto:      #2c3e50;
+        }
+
+        /* ── fundo SVG gerado inline ── */
+        body {
+            font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
+            color: var(--texto);
+            text-align: center;
+            position: relative;
+            overflow-x: hidden;
+            background-color: #d6eef8;
+        }
+
+        /* Hero banner ilustrado */
+        .hero {
+            width: 100%;
+            min-height: 420px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .hero-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .hero-titulo {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: clamp(1.4rem, 5vw, 2.4rem);
+            color: var(--marsala);
+            text-shadow: 0 2px 12px rgba(155,58,74,.18), 0 0 40px rgba(255,255,255,.8);
+            line-height: 1.2;
+            letter-spacing: .04em;
+        }
+
+        .hero-sub {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--azul-dk);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            background: rgba(255,255,255,.7);
+            padding: 4px 18px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .timer-box {
+            background: rgba(255,255,255,.85);
+            border: 2px solid var(--azul-cl);
+            border-radius: 50px;
+            padding: 10px 26px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--azul-dk);
+            box-shadow: 0 4px 20px rgba(90,175,214,.18);
+            backdrop-filter: blur(6px);
+        }
+        .timer-box span { color: var(--marsala); }
+
+        /* ── seção de cards ── */
+        .secao {
+            padding: 36px 16px 60px;
+            max-width: 1140px;
+            margin: 0 auto;
+        }
+
+        .secao-titulo {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 1.1rem;
+            color: var(--marsala);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .secao-titulo::before,
+        .secao-titulo::after {
+            content: '';
+            flex: 1;
+            max-width: 120px;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, var(--marsala-cl));
+        }
+        .secao-titulo::after { background: linear-gradient(90deg, var(--marsala-cl), transparent); }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        /* ── card ── */
+        .card {
+            background: var(--branco);
+            border-radius: 22px;
+            border: 2px solid var(--azul-cl);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(90,175,214,.12);
+            transition: transform .22s, box-shadow .22s;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 32px rgba(90,175,214,.22); }
+
+        .card-stripe {
+            height: 5px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--marsala) 0px, var(--marsala) 10px,
+                var(--azul) 10px, var(--azul) 20px
+            );
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 14px 10px;
+            flex: 1;
+        }
+
+        .card-body img {
+            width: 120px; height: 120px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .card-body h3 {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--azul-dk);
+            line-height: 1.3;
+        }
+
+        /* lojas */
+        .lojas-wrap { padding: 0 12px 4px; }
+
+        .lojas-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: #aaa;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .lojas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+
+        .btn-loja {
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+            padding: 6px 4px; border-radius: 8px; font-size: 0.7rem; font-weight: 700;
+            font-family: 'Quicksand', sans-serif; text-decoration: none;
+            cursor: pointer; border: none; color: white;
+            transition: opacity .18s, transform .15s;
+        }
+        .btn-loja:hover { opacity: .86; transform: translateY(-1px); }
+        .btn-loja.amazon       { background: #FF9900; color: #111; }
+        .btn-loja.mercadolivre { background: #ffe600; color: #333; }
+        .btn-loja.americanas   { background: #e60014; }
+        .btn-loja.magalu       { background: #0086d3; }
+
+        /* ── botões de ação ── */
+        .card-footer { padding: 0 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+
+        .btn-reservar {
+            width: 100%; padding: 10px;
+            border: none; border-radius: 50px;
+            background: linear-gradient(135deg, var(--marsala), var(--marsala-cl));
+            color: white; font-family: 'Quicksand', sans-serif;
+            font-size: 0.85rem; font-weight: 700; cursor: pointer;
+            box-shadow: 0 3px 12px rgba(155,58,74,.25);
+            transition: opacity .18s, transform .15s;
+        }
+        .btn-reservar:hover { opacity: .9; transform: translateY(-1px); }
+
+        .btn-cancelar {
+            width: 100%; padding: 8px; border: 2px solid var(--azul-cl);
+            border-radius: 50px; background: transparent;
+            color: var(--azul-dk); font-family: 'Quicksand', sans-serif;
+            font-size: 0.82rem; font-weight: 700; cursor: pointer;
+            transition: background .15s;
+        }
+        .btn-cancelar:hover { background: var(--azul-bg); }
+
+        .form-area { display: flex; flex-direction: column; gap: 6px; }
+
+        .form-area input {
+            width: 100%; padding: 9px 12px;
+            border: 2px solid var(--azul-cl); border-radius: 10px;
+            font-family: 'Quicksand', sans-serif; font-size: 0.85rem; font-weight: 600;
+            color: var(--texto); background: var(--azul-bg); outline: none;
+            transition: border-color .2s;
+        }
+        .form-area input:focus { border-color: var(--azul); background: white; box-shadow: 0 0 0 3px rgba(90,175,214,.15); }
+        .form-area input::placeholder { color: #a8cfe0; }
+        .form-area input.erro { border-color: var(--marsala); }
+
+        .tag-reservado {
+            display: inline-block;
+            background: var(--marsala-bg); color: var(--marsala);
+            border: 1.5px solid var(--marsala-cl); border-radius: 20px;
+            padding: 8px 16px; font-size: 0.82rem; font-weight: 700;
+        }
+
+        /* ── rodapé ── */
+        footer {
+            padding: 20px;
+            font-size: 0.8rem;
+            color: var(--azul-dk);
+            font-weight: 600;
+            opacity: .7;
+        }
+
+        /* ── mobile ── */
+        @media (max-width: 520px) {
+            .hero { min-height: 340px; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .card-body img { width: 90px; height: 90px; }
+            .card-body h3 { font-size: 0.78rem; }
+            .btn-loja { font-size: 0.64rem; padding: 5px 3px; }
+            .lojas-grid { gap: 4px; }
+        }
+        @media (max-width: 340px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── HERO ILUSTRADO ── -->
+<div class="hero">
+    <svg class="hero-svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"   stop-color="#a8d8ea"/>
+                <stop offset="50%"  stop-color="#c9e8f4"/>
+                <stop offset="100%" stop-color="#f0c8ce"/>
+            </linearGradient>
+            <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity=".35"/>
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+        </defs>
+
+        <!-- fundo -->
+        <rect width="1200" height="420" fill="url(#bgGrad)"/>
+        <ellipse cx="600" cy="210" rx="480" ry="200" fill="url(#glow1)"/>
+
+        <!-- estrelinhas -->
+        <g fill="#fff" opacity=".5">
+            <circle cx="80"  cy="40"  r="2.5"/>
+            <circle cx="200" cy="90"  r="1.8"/>
+            <circle cx="350" cy="25"  r="2"/>
+            <circle cx="500" cy="60"  r="1.5"/>
+            <circle cx="700" cy="30"  r="2.2"/>
+            <circle cx="900" cy="70"  r="1.8"/>
+            <circle cx="1050" cy="35" r="2.5"/>
+            <circle cx="1140" cy="80" r="1.5"/>
+            <circle cx="150" cy="200" r="1.8"/>
+            <circle cx="1050" cy="200" r="2"/>
+        </g>
+
+        <!-- ── CHAPÉU DO CHAPELEIRO (esquerda) ── -->
+        <g transform="translate(80,60)">
+            <!-- corpo do chapéu -->
+            <rect x="20" y="30" width="100" height="110" rx="8" fill="#9b3a4a"/>
+            <!-- aba -->
+            <ellipse cx="70" cy="140" rx="70" ry="14" fill="#7a2d3a"/>
+            <!-- topo do chapéu -->
+            <ellipse cx="70" cy="30" rx="50" ry="10" fill="#7a2d3a"/>
+            <!-- faixa -->
+            <rect x="20" y="90" width="100" height="18" fill="#c9a84c"/>
+            <!-- texto 10/6 na faixa -->
+            <text x="70" y="104" text-anchor="middle" font-family="serif" font-size="11" fill="#9b3a4a" font-weight="bold">10/6</text>
+        </g>
+
+        <!-- ── COELHO BRANCO (direita) ── -->
+        <g transform="translate(1000,50)">
+            <!-- corpo -->
+            <ellipse cx="60" cy="130" rx="38" ry="50" fill="white" opacity=".9"/>
+            <!-- cabeça -->
+            <circle cx="60" cy="75" r="30" fill="white" opacity=".9"/>
+            <!-- orelhas -->
+            <ellipse cx="45" cy="38" rx="10" ry="28" fill="white" opacity=".9"/>
+            <ellipse cx="75" cy="38" rx="10" ry="28" fill="white" opacity=".9"/>
+            <ellipse cx="45" cy="38" rx="5"  ry="18" fill="#f0c8ce" opacity=".9"/>
+            <ellipse cx="75" cy="38" rx="5"  ry="18" fill="#f0c8ce" opacity=".9"/>
+            <!-- olhos -->
+            <circle cx="52" cy="72" r="4" fill="#e74c3c"/>
+            <circle cx="68" cy="72" r="4" fill="#e74c3c"/>
+            <!-- nariz -->
+            <circle cx="60" cy="80" r="3" fill="#e74c3c" opacity=".7"/>
+            <!-- gravata borboleta -->
+            <polygon points="52,100 58,106 52,112" fill="#9b3a4a" opacity=".8"/>
+            <polygon points="68,100 62,106 68,112" fill="#9b3a4a" opacity=".8"/>
+            <circle cx="60" cy="106" r="3" fill="#c9a84c"/>
+            <!-- relógio de bolso -->
+            <circle cx="75" cy="145" r="16" fill="#c9a84c" opacity=".9"/>
+            <circle cx="75" cy="145" r="12" fill="white" opacity=".9"/>
+            <circle cx="75" cy="145" r="2"  fill="#333"/>
+            <line x1="75" y1="145" x2="75" y2="136" stroke="#333" stroke-width="1.5"/>
+            <line x1="75" y1="145" x2="81" y2="148" stroke="#333" stroke-width="1.5"/>
+        </g>
+
+        <!-- ── CARTAS DE BARALHO (centro-esquerda) ── -->
+        <g transform="translate(260,180) rotate(-15)">
+            <rect width="52" height="75" rx="6" fill="white" opacity=".9" stroke="#ddd" stroke-width="1"/>
+            <text x="5"  y="16" font-size="14" fill="#e74c3c">♥</text>
+            <text x="5"  y="30" font-size="10" fill="#e74c3c" font-weight="bold">A</text>
+            <text x="47" y="75" font-size="14" fill="#e74c3c" transform="rotate(180,26,60)">♥</text>
+        </g>
+        <g transform="translate(290,175) rotate(-5)">
+            <rect width="52" height="75" rx="6" fill="white" opacity=".9" stroke="#ddd" stroke-width="1"/>
+            <text x="5"  y="16" font-size="14" fill="#333">♠</text>
+            <text x="5"  y="30" font-size="10" fill="#333" font-weight="bold">K</text>
+        </g>
+        <g transform="translate(320,178) rotate(8)">
+            <rect width="52" height="75" rx="6" fill="white" opacity=".9" stroke="#ddd" stroke-width="1"/>
+            <text x="5"  y="16" font-size="14" fill="#e74c3c">♦</text>
+            <text x="5"  y="30" font-size="10" fill="#e74c3c" font-weight="bold">Q</text>
+        </g>
+
+        <!-- ── ROSAS VERMELHAS (direita-centro) ── -->
+        <g transform="translate(820,140)">
+            <!-- rosa 1 -->
+            <circle cx="0"  cy="0"   r="18" fill="#9b3a4a" opacity=".85"/>
+            <circle cx="-8" cy="-6"  r="12" fill="#c97080" opacity=".8"/>
+            <circle cx="8"  cy="-6"  r="12" fill="#c97080" opacity=".8"/>
+            <circle cx="0"  cy="-12" r="12" fill="#e8a0aa" opacity=".75"/>
+            <circle cx="0"  cy="0"   r="7"  fill="#7a2d3a" opacity=".9"/>
+            <!-- folhas -->
+            <ellipse cx="-20" cy="12" rx="14" ry="7" fill="#2e7ea8" opacity=".6" transform="rotate(-30,-20,12)"/>
+            <ellipse cx="20"  cy="12" rx="14" ry="7" fill="#2e7ea8" opacity=".6" transform="rotate(30,20,12)"/>
+            <!-- rosa 2 -->
+            <g transform="translate(55,20)">
+                <circle cx="0"  cy="0"   r="15" fill="#9b3a4a" opacity=".85"/>
+                <circle cx="-7" cy="-5"  r="10" fill="#c97080" opacity=".8"/>
+                <circle cx="7"  cy="-5"  r="10" fill="#c97080" opacity=".8"/>
+                <circle cx="0"  cy="-10" r="10" fill="#e8a0aa" opacity=".75"/>
+                <circle cx="0"  cy="0"   r="6"  fill="#7a2d3a" opacity=".9"/>
+                <ellipse cx="-16" cy="10" rx="12" ry="6" fill="#2e7ea8" opacity=".6" transform="rotate(-30,-16,10)"/>
+                <ellipse cx="16"  cy="10" rx="12" ry="6" fill="#2e7ea8" opacity=".6" transform="rotate(30,16,10)"/>
+            </g>
+        </g>
+
+        <!-- ── XÍCARA DE CHÁ (baixo-esquerda) ── -->
+        <g transform="translate(500,260)">
+            <!-- pires -->
+            <ellipse cx="60" cy="90" rx="65" ry="12" fill="#a8d8ea" opacity=".7"/>
+            <!-- xícara corpo -->
+            <path d="M15,30 Q15,85 60,85 Q105,85 105,30 Z" fill="#e3f4fb" stroke="#5aafd6" stroke-width="2"/>
+            <!-- decoração marsala na xícara -->
+            <path d="M25,50 Q60,65 95,50" stroke="#9b3a4a" stroke-width="2.5" fill="none" opacity=".6"/>
+            <path d="M28,62 Q60,75 92,62" stroke="#c9a84c" stroke-width="1.5" fill="none" opacity=".5"/>
+            <!-- alça -->
+            <path d="M105,40 Q130,40 130,60 Q130,80 105,75" stroke="#5aafd6" stroke-width="3" fill="none"/>
+            <!-- vapor -->
+            <path d="M35,22 Q40,10 35,0"  stroke="#9b3a4a" stroke-width="2" fill="none" opacity=".4" stroke-linecap="round"/>
+            <path d="M60,18 Q65,5  60,-8" stroke="#9b3a4a" stroke-width="2" fill="none" opacity=".4" stroke-linecap="round"/>
+            <path d="M85,22 Q90,10 85,0"  stroke="#9b3a4a" stroke-width="2" fill="none" opacity=".4" stroke-linecap="round"/>
+        </g>
+
+        <!-- ── COGUMELO (baixo-direita) ── -->
+        <g transform="translate(720,260)">
+            <!-- talo -->
+            <rect x="30" y="55" width="20" height="35" rx="5" fill="#f5deb3" opacity=".8"/>
+            <!-- chapéu do cogumelo -->
+            <ellipse cx="40" cy="55" rx="45" ry="18" fill="#9b3a4a" opacity=".85"/>
+            <ellipse cx="40" cy="42" rx="35" ry="22" fill="#c97080" opacity=".85"/>
+            <!-- bolinhas -->
+            <circle cx="30" cy="38" r="5" fill="white" opacity=".7"/>
+            <circle cx="50" cy="32" r="4" fill="white" opacity=".7"/>
+            <circle cx="42" cy="48" r="3" fill="white" opacity=".7"/>
+            <circle cx="20" cy="46" r="3.5" fill="white" opacity=".7"/>
+            <circle cx="60" cy="44" r="4" fill="white" opacity=".7"/>
+        </g>
+
+        <!-- ── borda decorativa inferior ── -->
+        <path d="M0,400 Q100,380 200,400 Q300,420 400,400 Q500,380 600,400 Q700,420 800,400 Q900,380 1000,400 Q1100,420 1200,400 L1200,420 L0,420 Z" fill="white" opacity=".6"/>
+        <path d="M0,410 Q150,390 300,410 Q450,430 600,410 Q750,390 900,410 Q1050,430 1200,410 L1200,420 L0,420 Z" fill="white" opacity=".5"/>
+    </svg>
+
+    <div class="hero-content">
+        <h1 class="hero-titulo">✨ 15 Anos da Alice ✨</h1>
+        <p class="hero-sub">Uma aventura no País das Maravilhas</p>
+        <div class="timer-box">🎀 Faltam: <span id="timer">…</span></div>
+    </div>
+</div>
+
+<!-- ── LISTA DE PRESENTES ── -->
+<div class="secao">
+    <h2 class="secao-titulo">🎁 Lista de Presentes</h2>
+    <div id="root" class="grid">
+        <p style="grid-column:1/-1;color:#aaa;padding:40px;">Carregando lista…</p>
+    </div>
+</div>
+
+<footer>Feito com 💙 e ♥️ para os 15 anos da Alice · 2026</footer>
+
+<script>
+    // ── timer ──
+    const alvo = new Date("Aug 1, 2026 21:00:00").getTime();
+    function tick() {
+        const d = alvo - Date.now();
+        if (d <= 0) { document.getElementById('timer').textContent = '🎉 Chegou!'; return; }
+        const dd = Math.floor(d/86400000);
+        const hh = Math.floor((d%86400000)/3600000);
+        const mm = Math.floor((d%3600000)/60000);
+        const ss = Math.floor((d%60000)/1000);
+        document.getElementById('timer').textContent = `${dd}d ${hh}h ${mm}m ${ss}s`;
+    }
+    tick(); setInterval(tick, 1000);
+
+    // ── supabase ──
+    const sb = window.supabase.createClient(
+        'https://abojdhxobsyrzyiacaqf.supabase.co',
+        'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
+    );
+
+    function lojas(titulo) {
+        const q = encodeURIComponent(titulo);
+        return `
+            <div class="lojas-wrap">
+                <p class="lojas-label">🛒 Onde comprar:</p>
+                <div class="lojas-grid">
+                    <a class="btn-loja amazon"       href="https://www.amazon.com.br/s?k=${q}"             target="_blank" rel="noopener">📦 Amazon</a>
+                    <a class="btn-loja mercadolivre" href="https://lista.mercadolivre.com.br/${q}"         target="_blank" rel="noopener">🛍️ Mercado Livre</a>
+                    <a class="btn-loja americanas"   href="https://www.americanas.com.br/busca/${q}"       target="_blank" rel="noopener">🏪 Americanas</a>
+                    <a class="btn-loja magalu"       href="https://www.magazineluiza.com.br/busca/${q}/"   target="_blank" rel="noopener">🔵 Magalu</a>
+                </div>
+            </div>`;
+    }
+
+    async function carregar() {
+        const { data, error } = await sb.from('presentes').select('*').order('id', { ascending: true });
+        if (error || !data) {
+            document.getElementById('root').innerHTML = '<p style="grid-column:1/-1;color:#c97080;padding:40px;">Erro ao carregar. Tente novamente.</p>';
+            return;
+        }
+        document.getElementById('root').innerHTML = data.map(g => {
+            const meu = sessionStorage.getItem(`res_${g.id}`);
+            if (g.reservado) return `
+                <div class="card">
+                    <div class="card-stripe"></div>
+                    <div class="card-body">
+                        ${g.imagem_url ? `<img src="${g.imagem_url}" alt="${g.titulo}" loading="lazy">` : ''}
+                        <h3>${g.titulo}</h3>
+                    </div>
+                    <div class="card-footer">
+                        <span class="tag-reservado">${meu ? '✅ Obrigada! ❤️' : '🎀 Já reservado'}</span>
+                    </div>
+                </div>`;
+            return `
+                <div class="card" id="card-${g.id}">
+                    <div class="card-stripe"></div>
+                    <div class="card-body">
+                        ${g.imagem_url ? `<img src="${g.imagem_url}" alt="${g.titulo}" loading="lazy">` : ''}
+                        <h3>${g.titulo}</h3>
+                    </div>
+                    ${lojas(g.titulo)}
+                    <div class="card-footer">
+                        <button class="btn-reservar" id="btn-${g.id}" onclick="abrirForm(${g.id})">🎁 Reservar este presente</button>
+                        <div class="form-area" id="form-${g.id}" style="display:none;">
+                            <input type="text" id="nome-${g.id}" placeholder="Seu nome" maxlength="60">
+                            <input type="text" id="msg-${g.id}"  placeholder="Mensagem para a Alice (opcional)" maxlength="120">
+                            <button class="btn-reservar" onclick="reservar(${g.id})">✔️ Confirmar</button>
+                            <button class="btn-cancelar" onclick="fecharForm(${g.id})">Cancelar</button>
+                        </div>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    function abrirForm(id) {
+        document.getElementById(`form-${id}`).style.display = 'flex';
+        document.getElementById(`btn-${id}`).style.display  = 'none';
+        document.getElementById(`nome-${id}`).focus();
+    }
+    function fecharForm(id) {
+        document.getElementById(`form-${id}`).style.display = 'none';
+        document.getElementById(`btn-${id}`).style.display  = 'block';
+    }
+    async function reservar(id) {
+        const nomeEl = document.getElementById(`nome-${id}`);
+        const nome   = nomeEl.value.trim();
+        if (!nome) { nomeEl.classList.add('erro'); nomeEl.focus(); return; }
+        nomeEl.classList.remove('erro');
+        const msg = document.getElementById(`msg-${id}`).value.trim();
+        sessionStorage.setItem(`res_${id}`, '1');
+        const { error } = await sb.from('presentes')
+            .update({ reservado: true, nome_reservante: nome, mensagem: msg })
+            .eq('id', id);
+        if (!error) carregar();
+    }
+
+    carregar();
+</script>
+</body>
+</html>

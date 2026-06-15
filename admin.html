@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel Admin · 15 Anos da Alice</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --azul:       #5aafd6;
+      --azul-cl:    #a8d8ea;
+      --azul-bg:    #e3f4fb;
+      --azul-dk:    #2e7ea8;
+      --marsala:    #9b3a4a;
+      --marsala-cl: #c97080;
+      --marsala-bg: #f8eaec;
+      --branco:     #ffffff;
+      --texto:      #2c3e50;
+      --borda:      #d4edf7;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(160deg, #e3f4fb 0%, #f8eaec 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--texto);
+    }
+
+    /* ── header ── */
+    header {
+      background: linear-gradient(135deg, var(--azul-dk) 0%, var(--marsala) 100%);
+      color: white;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: 0 4px 20px rgba(46,126,168,.25);
+    }
+
+    .h-titulo {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: clamp(0.9rem, 3vw, 1.2rem);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .h-titulo small {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.72rem; opacity: .75;
+      letter-spacing: .07em; text-transform: uppercase;
+      display: block; margin-top: 2px; font-weight: 600;
+    }
+
+    .btn-sair {
+      background: rgba(255,255,255,.18);
+      border: 1.5px solid rgba(255,255,255,.4);
+      color: white; padding: 8px 18px; border-radius: 50px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.82rem; font-weight: 700; cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-sair:hover { background: rgba(255,255,255,.28); }
+
+    /* ── main ── */
+    main { padding: 28px 16px 60px; max-width: 1100px; margin: 0 auto; }
+
+    /* ── stats ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat {
+      background: var(--branco);
+      border-radius: 18px;
+      border: 2px solid var(--borda);
+      padding: 20px 16px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(90,175,214,.08);
+    }
+    .stat .n { font-size: 2rem; font-weight: 700; color: var(--azul); line-height: 1; margin-bottom: 4px; }
+    .stat.m  .n { color: var(--marsala); }
+    .stat .r { font-size: 0.74rem; color: #999; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+
+    /* ── título de seção ── */
+    .sec-titulo {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 1rem;
+      color: var(--marsala);
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sec-titulo::after { content:''; flex:1; height:1.5px; background:linear-gradient(90deg,var(--marsala-cl),transparent); }
+
+    /* ── tabela ── */
+    .tabela-wrap {
+      background: var(--branco);
+      border-radius: 20px;
+      border: 2px solid var(--borda);
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(90,175,214,.08);
+      overflow-x: auto;
+    }
+
+    table { width: 100%; border-collapse: collapse; min-width: 420px; }
+
+    thead th {
+      background: linear-gradient(135deg, var(--azul-dk), var(--marsala));
+      color: white; padding: 13px 18px; text-align: left;
+      font-size: 0.76rem; text-transform: uppercase;
+      letter-spacing: .06em; font-weight: 700; white-space: nowrap;
+    }
+
+    tbody tr { border-bottom: 1px solid var(--borda); transition: background .15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--azul-bg); }
+    tbody td { padding: 13px 18px; font-size: 0.88rem; vertical-align: top; }
+
+    .tag { background:var(--azul-bg); color:var(--azul-dk); border:1px solid var(--azul-cl);
+      border-radius:20px; padding:4px 12px; font-size:0.76rem; font-weight:700; display:inline-block; }
+    .nome { font-weight:700; color:var(--marsala); }
+    .msgcol { color:#aaa; font-style:italic; font-size:0.82rem; }
+
+    /* ── estados ── */
+    .estado { text-align:center; padding:52px 20px; color:#bbb; }
+    .estado span { font-size:2.6rem; display:block; margin-bottom:10px; }
+
+    /* ── loading overlay ── */
+    #load {
+      display:flex; position:fixed; inset:0;
+      background:rgba(227,244,251,.92); z-index:999;
+      align-items:center; justify-content:center; flex-direction:column; gap:14px;
+    }
+    #load .s { width:46px;height:46px; border:4px solid var(--azul-cl);
+      border-top-color:var(--azul); border-radius:50%; animation:girar .8s linear infinite; }
+    #load p { font-weight:700; color:var(--azul-dk); }
+    @keyframes girar { to { transform:rotate(360deg); } }
+
+    @media (max-width:560px) {
+      header { padding:14px 16px; }
+      .stats { grid-template-columns: repeat(2,1fr); gap:10px; }
+      .stat .n { font-size:1.6rem; }
+      main { padding:18px 10px 50px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="load">
+  <div class="s"></div>
+  <p>Verificando acesso…</p>
+</div>
+
+<header>
+  <div class="h-titulo">
+    🎀 Painel da Alice
+    <small>Gerenciamento de presentes</small>
+  </div>
+  <button class="btn-sair" onclick="sair()">Sair →</button>
+</header>
+
+<main id="conteudo" style="display:none;">
+  <div class="stats">
+    <div class="stat">
+      <div class="n" id="s-total">–</div>
+      <div class="r">Total</div>
+    </div>
+    <div class="stat m">
+      <div class="n" id="s-res">–</div>
+      <div class="r">Reservados</div>
+    </div>
+    <div class="stat">
+      <div class="n" id="s-disp">–</div>
+      <div class="r">Disponíveis</div>
+    </div>
+  </div>
+
+  <h2 class="sec-titulo">🎁 Presentes Reservados</h2>
+
+  <div class="tabela-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Presente</th>
+          <th>Reservado por</th>
+          <th>Mensagem</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="3"><div class="estado"><span>⏳</span>Carregando…</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+  const sb = window.supabase.createClient(
+    'https://abojdhxobsyrzyiacaqf.supabase.co',
+    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
+  );
+
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+    document.getElementById('load').style.display    = 'none';
+    document.getElementById('conteudo').style.display = 'block';
+    carregar();
+  })();
+
+  async function sair() {
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
+  }
+
+  async function carregar() {
+    const { data, error } = await sb.from('presentes').select('*').order('id', { ascending: true });
+    if (error || !data) {
+      document.getElementById('tbody').innerHTML =
+        '<tr><td colspan="3"><div class="estado"><span>❌</span>Erro ao carregar dados.</div></td></tr>';
+      return;
+    }
+    const res  = data.filter(g => g.reservado);
+    const disp = data.filter(g => !g.reservado);
+    document.getElementById('s-total').textContent = data.length;
+    document.getElementById('s-res').textContent   = res.length;
+    document.getElementById('s-disp').textContent  = disp.length;
+
+    if (!res.length) {
+      document.getElementById('tbody').innerHTML =
+        '<tr><td colspan="3"><div class="estado"><span>🎈</span>Nenhum presente reservado ainda.</div></td></tr>';
+      return;
+    }
+    document.getElementById('tbody').innerHTML = res.map(g => `
+      <tr>
+        <td><span class="tag">${g.titulo}</span></td>
+        <td><span class="nome">${g.nome_reservante || 'Anônimo'}</span></td>
+        <td><span class="msgcol">${g.mensagem || '—'}</span></td>
+      </tr>`).join('');
+  }
+</script>
+</body>
+</html>
