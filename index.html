@@ -434,18 +434,9 @@
         'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
     );
 
-    function lojas(titulo) {
-        const q = encodeURIComponent(titulo);
-        return `
-            <div class="lojas-wrap">
-                <p class="lojas-label">🛒 Onde comprar:</p>
-                <div class="lojas-grid">
-                    <a class="btn-loja amazon"       href="https://www.amazon.com.br/s?k=${q}"             target="_blank" rel="noopener">📦 Amazon</a>
-                    <a class="btn-loja mercadolivre" href="https://lista.mercadolivre.com.br/${q}"         target="_blank" rel="noopener">🛍️ Mercado Livre</a>
-                    <a class="btn-loja americanas"   href="https://www.americanas.com.br/busca/${q}"       target="_blank" rel="noopener">🏪 Americanas</a>
-                    <a class="btn-loja magalu"       href="https://www.magazineluiza.com.br/busca/${q}/"   target="_blank" rel="noopener">🔵 Magalu</a>
-                </div>
-            </div>`;
+    function btnVerProduto(link) {
+        if (!link) return '';
+        return `<a class="btn-ver-produto" href="${link}" target="_blank" rel="noopener">🛒 Ver Produto</a>`;
     }
 
     async function carregar() {
