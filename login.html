@@ -274,17 +274,12 @@
 <script>
   const sb = window.supabase.createClient(
     'https://abojdhxobsyrzyiacaqf.supabase.co',
-    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t',
-    {
-      auth: {
-        storage: sessionStorage,
-        persistSession: true,
-      }
-    }
+    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
   );
 
-  // Sempre faz logout ao chegar na tela de login
+  // Sempre limpa a sessão ao chegar na tela de login
   (async () => {
+    sessionStorage.removeItem('admin_autorizado');
     await sb.auth.signOut();
   })();
 
@@ -311,6 +306,8 @@
   }
 
   function ir() {
+    // Marca que o login foi feito nesta aba
+    sessionStorage.setItem('admin_autorizado', '1');
     document.getElementById('overlay').classList.add('ativo');
     setTimeout(() => { window.location.href = 'admin.html'; }, 900);
   }
