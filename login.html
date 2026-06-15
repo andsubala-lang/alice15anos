@@ -6,168 +6,108 @@
   <title>Acesso Admin · 15 Anos da Alice</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
 
     :root {
       --marsala:    #7a2535;
       --marsala-md: #9b3a4a;
-      --marsala-cl: #c97080;
       --creme:      #faf3e8;
       --creme-dk:   #e8d8c0;
       --texto:      #3a1a20;
-      --azul:       #5aafd6;
     }
 
     body {
       font-family: 'Quicksand', sans-serif;
       min-height: 100vh;
+      background: url('fundo.jpg') center top / cover no-repeat fixed;
       display: flex;
-      align-items: flex-end;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      background: url('fundo.jpg') center center / cover fixed;
-      padding: 20px 20px 60px;
+      padding: 0 20px;
+      position: relative;
     }
 
-    /* card pergaminho central */
+    /* espaço para mostrar o topo da imagem (título "Lista de Presentes da Alice") */
+    .espacador { height: 220px; width: 100%; flex-shrink: 0; }
+
     .card {
       position: relative;
       width: 100%;
-      max-width: 380px;
+      max-width: 370px;
       background: linear-gradient(160deg, #fdf8f0 0%, #f5e8d0 100%);
       border-radius: 6px;
-      padding: 42px 38px 34px;
+      padding: 36px 34px 30px;
       box-shadow:
         0 0 0 2px var(--marsala),
         0 0 0 7px #f5e8d0,
         0 0 0 9px var(--marsala),
-        0 12px 60px rgba(0,0,0,.40);
-      animation: surgir .5s cubic-bezier(.22,1,.36,1) both;
-    }
-
-    @keyframes surgir {
-      from { opacity:0; transform:translateY(20px) scale(.97); }
-      to   { opacity:1; transform:translateY(0) scale(1); }
+        0 12px 50px rgba(0,0,0,.38);
+      margin-bottom: 40px;
     }
 
     /* cantos decorativos */
-    .card::before, .card::after {
-      content: '✦';
-      position: absolute;
-      font-size: 1rem;
-      color: var(--marsala);
-      opacity: .5;
-    }
-    .card::before { top: 14px; left: 18px; }
-    .card::after  { bottom: 14px; right: 18px; }
+    .card::before { content:'✦'; position:absolute; top:12px; left:16px; font-size:.9rem; color:var(--marsala); opacity:.4; }
+    .card::after  { content:'✦'; position:absolute; bottom:12px; right:16px; font-size:.9rem; color:var(--marsala); opacity:.4; }
 
-    /* logo no topo */
-    .logo-wrap {
-      text-align: center;
-      margin-bottom: 4px;
-    }
-
+    .logo-wrap { text-align:center; margin-bottom:4px; }
     .logo-moldura {
-      display: inline-block;
-      border: 2px solid var(--marsala);
-      border-radius: 50%;
-      padding: 8px 14px;
-      font-size: 1.4rem;
-      color: var(--marsala);
-      line-height: 1;
-      opacity: .8;
+      display:inline-block; border:2px solid var(--marsala);
+      border-radius:50%; padding:6px 12px;
+      font-size:1.3rem; color:var(--marsala); opacity:.8;
     }
 
     .titulo {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.55rem;
-      color: var(--marsala);
-      text-align: center;
-      line-height: 1.25;
-      margin: 10px 0 4px;
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:1.5rem; color:var(--marsala);
+      text-align:center; margin:10px 0 4px; line-height:1.2;
     }
 
     .divisor {
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-      margin: 8px 0 18px;
-      color: var(--marsala);
-      opacity: .45;
-      font-size: 0.8rem;
+      display:flex; align-items:center; gap:8px;
+      margin:8px 0 16px; color:var(--marsala); opacity:.4; font-size:.78rem;
     }
-    .divisor::before, .divisor::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--marsala);
-    }
+    .divisor::before,.divisor::after { content:''; flex:1; height:1px; background:var(--marsala); }
 
-    .subtitulo {
-      font-size: 0.8rem;
-      color: #8a6a50;
-      text-align: center;
-      margin-bottom: 24px;
-      line-height: 1.5;
-    }
+    .subtitulo { font-size:.78rem; color:#8a6a50; text-align:center; margin-bottom:22px; line-height:1.5; }
 
-    /* campos */
-    .campo { position: relative; margin-bottom: 12px; }
-
+    .campo { position:relative; margin-bottom:10px; }
     .icone-campo {
-      position: absolute;
-      left: 13px; top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.85rem;
-      opacity: .5;
-      pointer-events: none;
+      position:absolute; left:12px; top:50%;
+      transform:translateY(-50%); font-size:.82rem; opacity:.45; pointer-events:none;
     }
-
     .campo input {
-      width: 100%;
-      padding: 12px 40px;
-      border: 1.5px solid var(--creme-dk);
-      border-radius: 8px;
-      background: rgba(255,255,255,.7);
-      font-family: 'Quicksand', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--texto);
-      outline: none;
-      transition: border-color .2s, box-shadow .2s, background .2s;
+      width:100%; padding:11px 38px;
+      border:1.5px solid var(--creme-dk); border-radius:8px;
+      background:rgba(255,255,255,.75);
+      font-family:'Quicksand',sans-serif; font-size:.88rem; font-weight:600;
+      color:var(--texto); outline:none;
+      transition:border-color .2s, box-shadow .2s, background .2s;
     }
     .campo input:focus {
-      border-color: var(--marsala);
-      background: rgba(255,255,255,.95);
-      box-shadow: 0 0 0 3px rgba(122,37,53,.10);
+      border-color:var(--marsala); background:rgba(255,255,255,.95);
+      box-shadow:0 0 0 3px rgba(122,37,53,.10);
     }
-    .campo input::placeholder { color: #b09878; font-weight: 500; }
+    .campo input::placeholder { color:#b09878; font-weight:500; }
 
     .olho {
-      position: absolute; right: 12px; top: 50%;
-      transform: translateY(-50%);
-      background: none; border: none; cursor: pointer;
-      font-size: 0.9rem; opacity: .45;
-      transition: opacity .2s;
+      position:absolute; right:11px; top:50%;
+      transform:translateY(-50%);
+      background:none; border:none; cursor:pointer;
+      font-size:.88rem; opacity:.4; transition:opacity .2s;
     }
-    .olho:hover { opacity: .75; }
+    .olho:hover { opacity:.7; }
 
-    /* botão */
     .btn-entrar {
-      width: 100%; padding: 13px;
-      margin-top: 10px;
-      border: none; border-radius: 8px;
-      background: linear-gradient(135deg, var(--marsala-md), var(--marsala));
-      color: white;
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1rem;
-      letter-spacing: .05em;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(122,37,53,.28);
-      transition: opacity .2s, transform .15s;
+      width:100%; padding:12px; margin-top:10px;
+      border:none; border-radius:8px;
+      background:linear-gradient(135deg, var(--marsala-md), var(--marsala));
+      color:white; font-family:'Playfair Display',serif;
+      font-style:italic; font-size:1rem; letter-spacing:.05em;
+      cursor:pointer; box-shadow:0 4px 16px rgba(122,37,53,.28);
+      transition:opacity .2s, transform .15s;
     }
     .btn-entrar:hover:not(:disabled) { opacity:.9; transform:translateY(-1px); }
     .btn-entrar:disabled { opacity:.6; cursor:not-allowed; }
@@ -181,47 +121,48 @@
     }
     @keyframes girar { to { transform:rotate(360deg); } }
 
+    /* esqueci senha — agora é clicável */
     .esqueci {
-      display:block; text-align:center;
-      margin-top:12px; font-size:0.76rem;
-      color:var(--marsala); opacity:.55;
-      cursor:default;
+      display:block; text-align:center; margin-top:12px;
+      font-size:.76rem; color:var(--marsala);
+      cursor:pointer; opacity:.65;
+      text-decoration:underline; background:none; border:none;
+      font-family:'Quicksand',sans-serif; font-weight:600;
+      width:100%;
+      transition:opacity .2s;
     }
+    .esqueci:hover { opacity:1; }
 
     .msg {
-      margin-top:12px; padding:9px 12px; border-radius:7px;
-      font-size:0.8rem; font-weight:600; text-align:center; display:none;
-      background:rgba(122,37,53,.07);
-      color:var(--marsala);
+      margin-top:10px; padding:9px 12px; border-radius:7px;
+      font-size:.8rem; font-weight:600; text-align:center; display:none;
+      background:rgba(122,37,53,.07); color:var(--marsala);
       border:1px solid rgba(122,37,53,.18);
     }
     .msg.ativo { display:block; }
+    .msg.ok { background:rgba(46,126,168,.07); color:#2e7ea8; border-color:rgba(46,126,168,.2); }
+
+    /* tela de recuperação */
+    #tela-recuperar { display:none; }
 
     #overlay {
       display:none; position:fixed; inset:0;
-      background:rgba(250,243,232,.88);
-      backdrop-filter:blur(4px);
-      z-index:999;
-      align-items:center; justify-content:center;
+      background:rgba(250,243,232,.88); backdrop-filter:blur(4px);
+      z-index:999; align-items:center; justify-content:center;
       flex-direction:column; gap:14px;
     }
     #overlay.ativo { display:flex; }
     #overlay .grande {
-      width:44px; height:44px;
-      border:4px solid var(--creme-dk);
-      border-top-color:var(--marsala);
-      border-radius:50%;
+      width:44px; height:44px; border:4px solid var(--creme-dk);
+      border-top-color:var(--marsala); border-radius:50%;
       animation:girar .8s linear infinite;
     }
-    #overlay p {
-      font-family:'Playfair Display',serif;
-      font-style:italic; font-size:.95rem;
-      color:var(--marsala);
-    }
+    #overlay p { font-family:'Playfair Display',serif; font-style:italic; font-size:.95rem; color:var(--marsala); }
 
     @media (max-width:440px) {
-      .card { padding:32px 20px 28px; }
-      .titulo { font-size:1.3rem; }
+      .espacador { height:160px; }
+      .card { padding:28px 18px 24px; }
+      .titulo { font-size:1.25rem; }
     }
   </style>
 </head>
@@ -232,28 +173,41 @@
   <p>Entrando no País das Maravilhas…</p>
 </div>
 
-<div class="card">
-  <div class="logo-wrap">
-    <span class="logo-moldura">🎀</span>
-  </div>
+<!-- espaço para mostrar o topo da imagem -->
+<div class="espacador"></div>
 
+<div class="card">
+  <div class="logo-wrap"><span class="logo-moldura">🎀</span></div>
   <h1 class="titulo">Bem-vinda de volta!</h1>
   <div class="divisor">❧ ♥ ❧</div>
   <p class="subtitulo">Faça login para acessar o painel da Alice.</p>
 
-  <div class="campo">
-    <span class="icone-campo">👤</span>
-    <input type="email" id="email" placeholder="E-mail" autocomplete="username"/>
+  <!-- tela de login -->
+  <div id="tela-login">
+    <div class="campo">
+      <span class="icone-campo">👤</span>
+      <input type="email" id="email" placeholder="E-mail" autocomplete="username"/>
+    </div>
+    <div class="campo">
+      <span class="icone-campo">🔒</span>
+      <input type="password" id="senha" placeholder="Senha" autocomplete="current-password"/>
+      <button class="olho" id="olho" type="button">👁</button>
+    </div>
+    <button class="btn-entrar" id="btn-login" onclick="entrar()">Entrar</button>
+    <button class="esqueci" onclick="mostrarRecuperar()">Esqueci minha senha</button>
   </div>
 
-  <div class="campo">
-    <span class="icone-campo">🔒</span>
-    <input type="password" id="senha" placeholder="Senha" autocomplete="current-password"/>
-    <button class="olho" id="olho" type="button">👁</button>
+  <!-- tela de recuperação de senha -->
+  <div id="tela-recuperar">
+    <p class="subtitulo" style="margin-bottom:14px;">Digite seu e-mail e enviaremos um link para redefinir sua senha.</p>
+    <div class="campo">
+      <span class="icone-campo">👤</span>
+      <input type="email" id="email-recuperar" placeholder="Seu e-mail"/>
+    </div>
+    <button class="btn-entrar" id="btn-recuperar" onclick="enviarRecuperacao()">Enviar link de recuperação</button>
+    <button class="esqueci" onclick="mostrarLogin()">← Voltar para o login</button>
   </div>
 
-  <button class="btn-entrar" id="btn" onclick="entrar()">Entrar</button>
-  <span class="esqueci">Esqueci minha senha</span>
   <div class="msg" id="msg"></div>
 </div>
 
@@ -268,11 +222,11 @@
     await sb.auth.signOut();
   })();
 
-  const emailEl = document.getElementById('email');
-  const senhaEl = document.getElementById('senha');
-  const btnEl   = document.getElementById('btn');
-  const msgEl   = document.getElementById('msg');
-  const olhoEl  = document.getElementById('olho');
+  const emailEl  = document.getElementById('email');
+  const senhaEl  = document.getElementById('senha');
+  const btnEl    = document.getElementById('btn-login');
+  const msgEl    = document.getElementById('msg');
+  const olhoEl   = document.getElementById('olho');
 
   olhoEl.addEventListener('click', () => {
     const v = senhaEl.type === 'text';
@@ -284,11 +238,21 @@
     el.addEventListener('keydown', e => { if (e.key === 'Enter') entrar(); })
   );
 
-  function mostrarMsg(txt) { msgEl.textContent=txt; msgEl.classList.add('ativo'); }
+  function mostrarMsg(txt, tipo='erro') {
+    msgEl.textContent = txt;
+    msgEl.className = 'msg ativo' + (tipo === 'ok' ? ' ok' : '');
+  }
 
-  function setCarregando(on) {
-    btnEl.disabled = on;
-    btnEl.innerHTML = on ? '<span class="spin"></span> Verificando…' : 'Entrar';
+  function mostrarRecuperar() {
+    document.getElementById('tela-login').style.display = 'none';
+    document.getElementById('tela-recuperar').style.display = 'block';
+    msgEl.className = 'msg';
+  }
+
+  function mostrarLogin() {
+    document.getElementById('tela-recuperar').style.display = 'none';
+    document.getElementById('tela-login').style.display = 'block';
+    msgEl.className = 'msg';
   }
 
   function ir() {
@@ -298,14 +262,20 @@
   }
 
   async function entrar() {
-    msgEl.classList.remove('ativo');
+    msgEl.className = 'msg';
     const email = emailEl.value.trim();
     const senha = senhaEl.value;
     if (!email) { mostrarMsg('Informe seu e-mail.'); emailEl.focus(); return; }
     if (!senha)  { mostrarMsg('Informe sua senha.');  senhaEl.focus(); return; }
-    setCarregando(true);
+
+    btnEl.disabled = true;
+    btnEl.innerHTML = '<span class="spin"></span> Verificando…';
+
     const { error } = await sb.auth.signInWithPassword({ email, password: senha });
-    setCarregando(false);
+
+    btnEl.disabled = false;
+    btnEl.innerHTML = 'Entrar';
+
     if (error) {
       const erros = {
         'Invalid login credentials': 'E-mail ou senha incorretos.',
@@ -313,10 +283,32 @@
         'Too many requests':          'Muitas tentativas. Aguarde um momento.',
       };
       mostrarMsg(erros[error.message] ?? 'Algo deu errado. Tente novamente.');
-      senhaEl.value=''; senhaEl.focus();
+      senhaEl.value = ''; senhaEl.focus();
       return;
     }
     ir();
+  }
+
+  async function enviarRecuperacao() {
+    const email = document.getElementById('email-recuperar').value.trim();
+    if (!email) { mostrarMsg('Informe seu e-mail.'); return; }
+
+    const btn = document.getElementById('btn-recuperar');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span> Enviando…';
+
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/login.html'
+    });
+
+    btn.disabled = false;
+    btn.innerHTML = 'Enviar link de recuperação';
+
+    if (error) {
+      mostrarMsg('Erro ao enviar. Verifique o e-mail informado.');
+    } else {
+      mostrarMsg('✅ Link enviado! Verifique sua caixa de entrada.', 'ok');
+    }
   }
 </script>
 </body>
