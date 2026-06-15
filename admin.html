@@ -9,391 +9,273 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-
     :root {
       --marsala:    #7a2535;
       --marsala-md: #9b3a4a;
       --marsala-cl: #c97080;
-      --marsala-bg: #f8eaec;
       --azul:       #5aafd6;
       --azul-cl:    #a8d8ea;
-      --azul-bg:    #e3f4fb;
       --azul-dk:    #2e7ea8;
       --creme:      #faf3e8;
       --creme-dk:   #e8d8c0;
-      --branco:     #ffffff;
       --texto:      #3a2820;
-      --sidebar-w:  240px;
+      --sidebar-w:  220px;
     }
 
     body {
-      font-family: 'Quicksand', sans-serif;
-      min-height: 100vh;
-      background: url('fundo.jpg') center center / cover fixed;
-      color: var(--texto);
-      display: flex;
+      font-family:'Quicksand',sans-serif;
+      min-height:100vh;
+      background: url('fundo.jpg') center top / cover fixed;
+      color:var(--texto);
+      display:flex;
     }
 
     body::before {
-      content:'';
-      position:fixed; inset:0;
-      background: rgba(240,228,210,.55);
-      backdrop-filter: blur(2px);
+      content:''; position:fixed; inset:0;
+      background:rgba(240,228,210,.50);
+      backdrop-filter:blur(2px);
       pointer-events:none; z-index:0;
     }
 
     /* ── SIDEBAR ── */
     .sidebar {
-      position: fixed;
-      top:0; left:0; bottom:0;
-      width: var(--sidebar-w);
-      background: linear-gradient(180deg, var(--marsala) 0%, #5a1a26 100%);
-      display: flex;
-      flex-direction: column;
-      z-index: 10;
-      box-shadow: 4px 0 24px rgba(0,0,0,.25);
+      position:fixed; top:0; left:0; bottom:0;
+      width:var(--sidebar-w);
+      background:linear-gradient(180deg, var(--marsala) 0%, #5a1a26 100%);
+      display:flex; flex-direction:column;
+      z-index:10;
+      box-shadow:4px 0 24px rgba(0,0,0,.22);
     }
 
     .sidebar-logo {
-      padding: 24px 20px 20px;
-      border-bottom: 1px solid rgba(255,255,255,.12);
-      text-align: center;
+      padding:22px 18px 18px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      text-align:center;
     }
-
     .sidebar-logo .moldura {
-      display: inline-block;
-      border: 2px solid rgba(255,255,255,.4);
-      border-radius: 50%;
-      padding: 6px 12px;
-      font-size: 1.1rem;
-      margin-bottom: 8px;
+      display:inline-block; border:2px solid rgba(255,255,255,.35);
+      border-radius:50%; padding:5px 11px; font-size:1.1rem; margin-bottom:8px;
     }
-
     .sidebar-logo .nome {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 0.95rem;
-      color: rgba(255,255,255,.9);
-      line-height: 1.3;
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:.88rem; color:rgba(255,255,255,.85); line-height:1.3;
     }
-
     .sidebar-logo .nome span {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.3rem;
-      display: block;
-      color: white;
+      font-size:1.15rem; display:block; color:white;
     }
 
-    /* nav */
-    nav { flex: 1; padding: 16px 0; }
+    nav { flex:1; padding:14px 0; }
 
     .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 13px 22px;
-      color: rgba(255,255,255,.75);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .15s, color .15s;
-      border-left: 3px solid transparent;
-      position: relative;
+      display:flex; align-items:center; gap:11px;
+      padding:12px 20px;
+      color:rgba(255,255,255,.72); font-size:.86rem; font-weight:600;
+      cursor:pointer; border-left:3px solid transparent;
+      transition:background .15s, color .15s;
     }
-    .nav-item:hover { background: rgba(255,255,255,.08); color: white; }
-    .nav-item.ativo {
-      background: rgba(255,255,255,.14);
-      color: white;
-      border-left-color: var(--creme);
-    }
-    .nav-item .nav-icone { font-size: 1rem; width: 20px; text-align: center; }
-
-    .badge {
-      position: absolute; right: 18px;
-      background: var(--azul);
-      color: white; font-size: 0.68rem; font-weight: 700;
-      border-radius: 50px; padding: 1px 7px;
-    }
+    .nav-item:hover { background:rgba(255,255,255,.08); color:white; }
+    .nav-item.ativo { background:rgba(255,255,255,.13); color:white; border-left-color:var(--creme); }
+    .nav-item .ni { font-size:.95rem; width:18px; text-align:center; }
 
     .sidebar-sair {
-      padding: 16px 20px;
-      border-top: 1px solid rgba(255,255,255,.12);
+      padding:14px 18px;
+      border-top:1px solid rgba(255,255,255,.12);
     }
-
     .btn-sair {
-      width: 100%; padding: 10px;
-      background: rgba(255,255,255,.1);
-      border: 1.5px solid rgba(255,255,255,.25);
-      border-radius: 8px;
-      color: rgba(255,255,255,.8);
-      font-family: 'Quicksand', sans-serif;
-      font-size: 0.85rem; font-weight: 700;
-      cursor: pointer;
-      transition: background .2s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width:100%; padding:9px;
+      background:rgba(255,255,255,.1);
+      border:1.5px solid rgba(255,255,255,.22);
+      border-radius:8px; color:rgba(255,255,255,.78);
+      font-family:'Quicksand',sans-serif; font-size:.82rem; font-weight:700;
+      cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;
+      transition:background .2s;
     }
-    .btn-sair:hover { background: rgba(255,255,255,.18); color: white; }
+    .btn-sair:hover { background:rgba(255,255,255,.18); color:white; }
 
-    /* ── CONTEÚDO PRINCIPAL ── */
+    /* ── MAIN ── */
     .main {
-      margin-left: var(--sidebar-w);
-      flex: 1;
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      margin-left:var(--sidebar-w);
+      flex:1; position:relative; z-index:1;
+      min-height:100vh; display:flex; flex-direction:column;
     }
 
     /* topbar */
     .topbar {
-      background: rgba(250,243,232,.92);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--creme-dk);
-      padding: 14px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      background:rgba(250,243,232,.92);
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--creme-dk);
+      padding:13px 26px;
+      display:flex; align-items:center; justify-content:flex-end; gap:14px;
+      box-shadow:0 2px 10px rgba(0,0,0,.05);
     }
-
-    .topbar-sino {
-      position: relative;
-      font-size: 1.3rem;
-      cursor: pointer;
-    }
-    .topbar-sino .badge-sino {
-      position: absolute; top: -4px; right: -6px;
-      background: var(--marsala);
-      color: white; font-size: 0.6rem; font-weight: 700;
-      border-radius: 50%; width: 16px; height: 16px;
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    .topbar-user {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 0.85rem;
-    }
-    .topbar-user strong { color: var(--marsala); font-weight: 700; }
-    .topbar-user small { color: #888; font-size: 0.75rem; display: block; }
+    .topbar-user { display:flex; align-items:center; gap:10px; font-size:.82rem; }
+    .topbar-user strong { color:var(--marsala); font-weight:700; display:block; }
+    .topbar-user small { color:#999; font-size:.72rem; }
     .topbar-avatar {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--marsala-md), var(--marsala));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem;
-      border: 2px solid var(--creme-dk);
+      width:38px; height:38px; border-radius:50%;
+      background:linear-gradient(135deg,var(--marsala-md),var(--marsala));
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; border:2px solid var(--creme-dk);
     }
 
     /* conteúdo */
-    .conteudo { padding: 28px; flex: 1; }
+    .conteudo { padding:26px; flex:1; }
 
-    /* banner de boas vindas */
+    /* ── ABAS ── */
+    .abas {
+      display:flex; gap:6px; margin-bottom:22px;
+      border-bottom:2px solid var(--creme-dk);
+    }
+    .aba {
+      padding:9px 20px; font-size:.84rem; font-weight:700;
+      color:#9a7a60; cursor:pointer; border-radius:8px 8px 0 0;
+      border:none; background:none; font-family:'Quicksand',sans-serif;
+      border-bottom:2px solid transparent; margin-bottom:-2px;
+      transition:color .15s, background .15s;
+    }
+    .aba:hover { color:var(--marsala); background:rgba(122,37,53,.05); }
+    .aba.ativa { color:var(--marsala); border-bottom-color:var(--marsala); background:rgba(250,243,232,.8); }
+
+    .tela { display:none; }
+    .tela.ativa { display:block; }
+
+    /* ── DASHBOARD ── */
     .banner {
-      background: linear-gradient(135deg, rgba(250,243,232,.95), rgba(240,225,200,.95));
-      border: 1.5px solid var(--creme-dk);
-      border-radius: 16px;
-      padding: 24px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 20px rgba(0,0,0,.06);
-      overflow: hidden;
-      position: relative;
+      background:linear-gradient(135deg, rgba(253,248,240,.95), rgba(240,225,200,.95));
+      border:1.5px solid var(--creme-dk); border-radius:14px;
+      padding:22px 26px; margin-bottom:22px;
+      box-shadow:0 3px 16px rgba(0,0,0,.06);
     }
-    .banner-texto h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.4rem;
-      color: var(--marsala);
-      margin-bottom: 6px;
+    .banner h2 {
+      font-family:'Playfair Display',serif; font-size:1.3rem;
+      color:var(--marsala); margin-bottom:5px;
     }
-    .banner-texto p { font-size: 0.85rem; color: #8a6a50; line-height: 1.5; }
+    .banner p { font-size:.83rem; color:#8a6a50; line-height:1.5; }
     .banner-divisor {
-      margin-top: 10px;
-      display: flex; align-items: center; gap: 8px;
-      color: var(--marsala); opacity: .4; font-size: 0.8rem;
+      margin-top:10px; display:flex; align-items:center; gap:8px;
+      color:var(--marsala); opacity:.35; font-size:.76rem;
     }
-    .banner-divisor::before, .banner-divisor::after {
-      content:''; flex:1; max-width:60px; height:1px; background:var(--marsala);
-    }
-    .banner-deco { font-size: 3.5rem; opacity: .25; position: absolute; right: 28px; }
+    .banner-divisor::before,.banner-divisor::after { content:''; flex:1; max-width:50px; height:1px; background:var(--marsala); }
 
-    /* stats */
     .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px; margin-bottom:22px;
     }
-
     .stat {
-      background: rgba(250,243,232,.92);
-      border: 1.5px solid var(--creme-dk);
-      border-radius: 14px;
-      padding: 20px 18px;
-      text-align: center;
-      box-shadow: 0 3px 14px rgba(0,0,0,.06);
-      backdrop-filter: blur(4px);
-      transition: transform .18s, box-shadow .18s;
+      background:rgba(250,243,232,.92);
+      border:1.5px solid var(--creme-dk); border-radius:13px;
+      padding:18px 14px; text-align:center;
+      box-shadow:0 3px 12px rgba(0,0,0,.05);
     }
-    .stat:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.10); }
+    .stat-icone { font-size:1.5rem; margin-bottom:7px; display:block; }
+    .stat-label { font-size:.7rem; color:#9a7a60; text-transform:uppercase; letter-spacing:.06em; font-weight:700; margin-bottom:3px; }
+    .stat-num { font-size:1.9rem; font-weight:700; color:var(--marsala); line-height:1; }
 
-    .stat-icone { font-size: 1.6rem; margin-bottom: 8px; display: block; }
-    .stat-label { font-size: 0.74rem; color: #9a7a60; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; margin-bottom: 4px; }
-    .stat-num { font-size: 2rem; font-weight: 700; color: var(--marsala); line-height: 1; margin-bottom: 4px; }
-    .stat-link { font-size: 0.72rem; color: var(--azul-dk); text-decoration: underline; cursor: pointer; }
-
-    /* seção título */
-    .sec-titulo {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.1rem;
-      color: var(--marsala);
-      margin-bottom: 14px;
-      display: flex; align-items: center; gap: 10px;
+    /* último reservado */
+    .ultimo {
+      background:rgba(250,243,232,.92);
+      border:1.5px solid var(--creme-dk); border-radius:13px;
+      padding:18px 22px;
+      box-shadow:0 3px 12px rgba(0,0,0,.05);
     }
-    .sec-titulo::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--marsala-cl), transparent); }
-
-    /* grid de seções */
-    .grid-secoes {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+    .ultimo-titulo {
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:.95rem; color:var(--marsala); margin-bottom:12px;
+      display:flex; align-items:center; gap:8px;
     }
+    .ultimo-titulo::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--marsala-cl),transparent); }
+    .ultimo-info { display:flex; gap:20px; flex-wrap:wrap; }
+    .ultimo-campo label { font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:#9a7a60; font-weight:700; display:block; margin-bottom:3px; }
+    .ultimo-campo strong { font-size:.92rem; color:var(--texto); font-weight:700; }
+    .ultimo-vazio { color:#ccc; font-size:.85rem; font-style:italic; }
 
-    @media (max-width: 900px) { .grid-secoes { grid-template-columns: 1fr; } }
-
+    /* ── TABELA ── */
     .painel {
-      background: rgba(250,243,232,.92);
-      border: 1.5px solid var(--creme-dk);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 3px 14px rgba(0,0,0,.06);
-      backdrop-filter: blur(4px);
+      background:rgba(250,243,232,.92);
+      border:1.5px solid var(--creme-dk); border-radius:14px;
+      overflow:hidden; box-shadow:0 3px 14px rgba(0,0,0,.05);
     }
-
     .painel-header {
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--creme-dk);
-      font-weight: 700;
-      font-size: 0.88rem;
-      color: var(--marsala);
-      display: flex; align-items: center; gap: 8px;
+      padding:13px 18px; border-bottom:1px solid var(--creme-dk);
+      font-weight:700; font-size:.85rem; color:var(--marsala);
+      display:flex; align-items:center; gap:7px;
     }
 
-    /* tabela de presentes */
-    table { width: 100%; border-collapse: collapse; }
+    table { width:100%; border-collapse:collapse; }
     thead th {
-      background: linear-gradient(135deg, rgba(122,37,53,.85), rgba(90,30,40,.85));
-      color: white; padding: 10px 16px; text-align: left;
-      font-size: 0.74rem; text-transform: uppercase; letter-spacing: .06em;
+      background:linear-gradient(135deg,rgba(122,37,53,.88),rgba(90,30,40,.88));
+      color:white; padding:10px 16px; text-align:left;
+      font-size:.72rem; text-transform:uppercase; letter-spacing:.06em;
     }
-    tbody tr { border-bottom: 1px solid var(--creme-dk); transition: background .12s; }
-    tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: rgba(232,216,192,.35); }
-    tbody td { padding: 11px 16px; font-size: 0.84rem; vertical-align: middle; }
+    tbody tr { border-bottom:1px solid var(--creme-dk); transition:background .12s; }
+    tbody tr:last-child { border-bottom:none; }
+    tbody tr:hover { background:rgba(232,216,192,.3); }
+    tbody td { padding:11px 16px; font-size:.83rem; vertical-align:middle; }
 
-    .presente-info { display: flex; align-items: center; gap: 10px; }
-    .presente-avatar {
-      width: 32px; height: 32px; border-radius: 8px;
-      background: var(--azul-bg);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem; flex-shrink: 0;
-      border: 1px solid var(--azul-cl);
+    .tag-presente {
+      background:var(--azul-cl); color:var(--azul-dk);
+      border-radius:20px; padding:3px 11px;
+      font-size:.74rem; font-weight:700; display:inline-block;
     }
-    .presente-nome { font-weight: 700; color: var(--texto); font-size: 0.82rem; line-height: 1.2; }
+    .nome-res { color:var(--marsala); font-weight:700; }
+    .msg-col { color:#aaa; font-style:italic; font-size:.8rem; }
 
-    .convidado-nome { color: var(--marsala); font-weight: 700; }
-    .data-col { color: #aaa; font-size: 0.76rem; }
-
-    /* mensagens */
+    /* ── MENSAGENS ── */
     .msg-item {
-      display: flex; gap: 12px; padding: 13px 18px;
-      border-bottom: 1px solid var(--creme-dk);
-      transition: background .12s;
+      display:flex; gap:12px; padding:14px 18px;
+      border-bottom:1px solid var(--creme-dk);
+      transition:background .12s;
     }
-    .msg-item:last-child { border-bottom: none; }
-    .msg-item:hover { background: rgba(232,216,192,.35); }
+    .msg-item:last-child { border-bottom:none; }
+    .msg-item:hover { background:rgba(232,216,192,.3); }
     .msg-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: var(--creme-dk);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem; flex-shrink: 0;
+      width:38px; height:38px; border-radius:50%;
+      background:linear-gradient(135deg,var(--marsala-md),var(--marsala));
+      display:flex; align-items:center; justify-content:center;
+      font-size:1rem; flex-shrink:0; color:white;
     }
-    .msg-corpo { flex: 1; }
-    .msg-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
-    .msg-nome { font-weight: 700; font-size: 0.84rem; color: var(--texto); }
-    .msg-data { font-size: 0.72rem; color: #bbb; }
-    .msg-texto { font-size: 0.8rem; color: #8a6a50; line-height: 1.4; }
-
-    /* botão ver todos */
-    .btn-ver {
-      display: block; width: calc(100% - 36px); margin: 12px 18px;
-      padding: 10px;
-      background: linear-gradient(135deg, var(--marsala-md), var(--marsala));
-      color: white; border: none; border-radius: 8px;
-      font-family: 'Quicksand', sans-serif; font-size: 0.82rem; font-weight: 700;
-      cursor: pointer; text-align: center;
-      transition: opacity .18s;
-    }
-    .btn-ver:hover { opacity: .88; }
-
-    .btn-ver-az {
-      display: block; width: calc(100% - 36px); margin: 12px 18px;
-      padding: 10px;
-      background: rgba(90,175,214,.15);
-      color: var(--azul-dk); border: 1.5px solid var(--azul-cl); border-radius: 8px;
-      font-family: 'Quicksand', sans-serif; font-size: 0.82rem; font-weight: 700;
-      cursor: pointer; text-align: center;
-      transition: background .18s;
-    }
-    .btn-ver-az:hover { background: rgba(90,175,214,.25); }
+    .msg-corpo { flex:1; }
+    .msg-nome { font-weight:700; font-size:.85rem; color:var(--marsala); margin-bottom:2px; }
+    .msg-presente { font-size:.72rem; color:#9a7a60; margin-bottom:4px; }
+    .msg-texto { font-size:.82rem; color:var(--texto); line-height:1.4; }
 
     /* estado vazio */
-    .estado { text-align:center; padding:36px 20px; color:#ccc; }
-    .estado span { font-size:2.2rem; display:block; margin-bottom:8px; }
+    .estado { text-align:center; padding:40px 20px; color:#ccc; }
+    .estado span { font-size:2.4rem; display:block; margin-bottom:8px; }
 
     /* loading */
     #load {
       display:flex; position:fixed; inset:0;
-      background:rgba(250,243,232,.88);
-      backdrop-filter:blur(6px);
-      z-index:999;
-      align-items:center; justify-content:center; flex-direction:column; gap:14px;
+      background:rgba(250,243,232,.88); backdrop-filter:blur(6px);
+      z-index:999; align-items:center; justify-content:center;
+      flex-direction:column; gap:14px;
     }
     #load .s {
-      width:46px; height:46px;
-      border:4px solid var(--creme-dk);
-      border-top-color:var(--marsala);
-      border-radius:50%;
+      width:44px; height:44px; border:4px solid var(--creme-dk);
+      border-top-color:var(--marsala); border-radius:50%;
       animation:girar .8s linear infinite;
     }
     #load p { font-family:'Playfair Display',serif; font-style:italic; color:var(--marsala); }
     @keyframes girar { to { transform:rotate(360deg); } }
 
-    /* mobile */
-    @media (max-width:700px) {
-      .sidebar { width:200px; }
-      .main { margin-left:200px; }
+    @media (max-width:680px) {
+      .sidebar { width:180px; }
+      .main { margin-left:180px; }
+      .stats { grid-template-columns:repeat(3,1fr); gap:10px; }
       .conteudo { padding:16px; }
-      .banner-deco { display:none; }
-      .stats { grid-template-columns:repeat(2,1fr); }
     }
-    @media (max-width:540px) {
+    @media (max-width:500px) {
       .sidebar { display:none; }
       .main { margin-left:0; }
+      .stats { grid-template-columns:repeat(3,1fr); gap:8px; }
+      .stat-num { font-size:1.5rem; }
     }
   </style>
 </head>
 <body>
 
-<div id="load">
-  <div class="s"></div>
-  <p>Verificando acesso…</p>
-</div>
+<div id="load"><div class="s"></div><p>Verificando acesso…</p></div>
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
@@ -401,14 +283,11 @@
     <div class="moldura">🎀</div>
     <div class="nome">Lista de Presentes<span>da Alice</span></div>
   </div>
-
   <nav>
-    <div class="nav-item ativo"><span class="nav-icone">🏠</span> Dashboard</div>
-    <div class="nav-item"><span class="nav-icone">🎁</span> Presentes</div>
-    <div class="nav-item"><span class="nav-icone">👥</span> Convidados</div>
-    <div class="nav-item"><span class="nav-icone">✉️</span> Mensagens <span class="badge" id="badge-msg">0</span></div>
+    <div class="nav-item ativo" onclick="mudarAba('dashboard', this)"><span class="ni">🏠</span> Dashboard</div>
+    <div class="nav-item" onclick="mudarAba('presentes', this)"><span class="ni">🎁</span> Presentes</div>
+    <div class="nav-item" onclick="mudarAba('mensagens', this)"><span class="ni">✉️</span> Mensagens</div>
   </nav>
-
   <div class="sidebar-sair">
     <button class="btn-sair" onclick="sair()">↩ Sair</button>
   </div>
@@ -416,100 +295,77 @@
 
 <!-- MAIN -->
 <div class="main" id="conteudo" style="display:none;">
-
-  <!-- topbar -->
   <div class="topbar">
-    <div class="topbar-sino">
-      🔔
-      <div class="badge-sino" id="badge-sino">0</div>
-    </div>
     <div class="topbar-user">
-      <div>
-        <strong>Olá, Administrador!</strong>
-        <small>Bem-vindo(a) de volta</small>
-      </div>
+      <div><strong>Olá, Administrador!</strong><small>Bem-vindo(a) de volta</small></div>
       <div class="topbar-avatar">👸</div>
     </div>
   </div>
 
-  <!-- conteúdo -->
   <div class="conteudo">
+    <div class="abas">
+      <button class="aba ativa" id="aba-dashboard"  onclick="mudarAba('dashboard', this)">🏠 Dashboard</button>
+      <button class="aba"       id="aba-presentes"  onclick="mudarAba('presentes', this)">🎁 Presentes</button>
+      <button class="aba"       id="aba-mensagens"  onclick="mudarAba('mensagens', this)">✉️ Mensagens</button>
+    </div>
 
-    <!-- banner -->
-    <div class="banner">
-      <div class="banner-texto">
+    <!-- DASHBOARD -->
+    <div class="tela ativa" id="tela-dashboard">
+      <div class="banner">
         <h2>Bem-vindo ao painel administrativo!</h2>
-        <p>Gerencie sua lista de presentes<br>da melhor forma.</p>
+        <p>Gerencie sua lista de presentes da melhor forma.</p>
         <div class="banner-divisor">❧ ♥ ❧</div>
       </div>
-      <div class="banner-deco">🎀</div>
-    </div>
 
-    <!-- stats -->
-    <div class="stats">
-      <div class="stat">
-        <span class="stat-icone">🎁</span>
-        <div class="stat-label">Total de Presentes</div>
-        <div class="stat-num" id="s-total">–</div>
-        <span class="stat-link">Ver todos</span>
-      </div>
-      <div class="stat">
-        <span class="stat-icone">👥</span>
-        <div class="stat-label">Reservados</div>
-        <div class="stat-num" id="s-res">–</div>
-        <span class="stat-link">Ver todos</span>
-      </div>
-      <div class="stat">
-        <span class="stat-icone">♥</span>
-        <div class="stat-label">Disponíveis</div>
-        <div class="stat-num" id="s-disp">–</div>
-        <span class="stat-link">Ver todos</span>
-      </div>
-      <div class="stat">
-        <span class="stat-icone">✉️</span>
-        <div class="stat-label">Mensagens</div>
-        <div class="stat-num" id="s-msg">–</div>
-        <span class="stat-link">Ver todos</span>
-      </div>
-    </div>
-
-    <!-- grid presentes + mensagens -->
-    <div class="grid-secoes">
-
-      <!-- presentes recentes -->
-      <div>
-        <h2 class="sec-titulo">🎁 Presentes Reservados</h2>
-        <div class="painel">
-          <div class="painel-header">🎁 Reservas recentes</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Presente</th>
-                <th>Convidado</th>
-                <th>Mensagem</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-presentes">
-              <tr><td colspan="3"><div class="estado"><span>⏳</span>Carregando…</div></td></tr>
-            </tbody>
-          </table>
-          <button class="btn-ver" id="btn-ver-mais" style="display:none;" onclick="toggleTodos()">Ver todos os presentes</button>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-icone">🎁</span>
+          <div class="stat-label">Total de Presentes</div>
+          <div class="stat-num" id="s-total">–</div>
+        </div>
+        <div class="stat">
+          <span class="stat-icone">♥</span>
+          <div class="stat-label">Reservados</div>
+          <div class="stat-num" id="s-res">–</div>
+        </div>
+        <div class="stat">
+          <span class="stat-icone">✨</span>
+          <div class="stat-label">Disponíveis</div>
+          <div class="stat-num" id="s-disp">–</div>
         </div>
       </div>
 
-      <!-- mensagens recentes -->
-      <div>
-        <h2 class="sec-titulo">✉️ Mensagens Recentes</h2>
-        <div class="painel">
-          <div class="painel-header">✉️ Últimas mensagens</div>
-          <div id="lista-msgs">
-            <div class="estado"><span>⏳</span>Carregando…</div>
-          </div>
-          <button class="btn-ver-az">Ver todas as mensagens</button>
+      <div class="ultimo">
+        <div class="ultimo-titulo">🎁 Último presente reservado</div>
+        <div id="ultimo-conteudo"><span class="ultimo-vazio">Nenhum presente reservado ainda.</span></div>
+      </div>
+    </div>
+
+    <!-- PRESENTES -->
+    <div class="tela" id="tela-presentes">
+      <div class="painel">
+        <div class="painel-header">🎁 Todos os presentes reservados</div>
+        <table>
+          <thead>
+            <tr><th>Presente</th><th>Reservado por</th><th>Mensagem</th></tr>
+          </thead>
+          <tbody id="tbody-presentes">
+            <tr><td colspan="3"><div class="estado"><span>⏳</span>Carregando…</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MENSAGENS -->
+    <div class="tela" id="tela-mensagens">
+      <div class="painel">
+        <div class="painel-header">✉️ Mensagens deixadas pelos convidados</div>
+        <div id="lista-msgs">
+          <div class="estado"><span>⏳</span>Carregando…</div>
         </div>
       </div>
-
     </div>
+
   </div>
 </div>
 
@@ -519,105 +375,88 @@
     'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
   );
 
-  let todosPresentes = [];
-  let mostrando = false;
-
   (async () => {
     const autorizado = sessionStorage.getItem('admin_autorizado');
-    if (!autorizado) { await sb.auth.signOut(); window.location.href = 'login.html'; return; }
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) { window.location.href = 'login.html'; return; }
-    document.getElementById('load').style.display = 'none';
-    document.getElementById('conteudo').style.display = 'flex';
+    if (!autorizado) { await sb.auth.signOut(); window.location.href='login.html'; return; }
+    const { data:{ session } } = await sb.auth.getSession();
+    if (!session) { window.location.href='login.html'; return; }
+    document.getElementById('load').style.display='none';
+    document.getElementById('conteudo').style.display='flex';
     carregar();
   })();
 
   async function sair() {
     sessionStorage.removeItem('admin_autorizado');
     await sb.auth.signOut();
-    window.location.href = 'login.html';
+    window.location.href='login.html';
   }
 
-  function emojisPresente(titulo) {
-    if (/perfume|colônia|fragrância/i.test(titulo)) return '🌸';
-    if (/relógio/i.test(titulo)) return '⌚';
-    if (/tênis|sapato/i.test(titulo)) return '👟';
-    if (/câmera|foto/i.test(titulo)) return '📷';
-    if (/livro/i.test(titulo)) return '📚';
-    if (/garrafa|térmica/i.test(titulo)) return '🧴';
-    if (/pijama/i.test(titulo)) return '👚';
-    if (/vale/i.test(titulo)) return '🎟️';
-    return '🎁';
-  }
-
-  function renderPresentes(lista) {
-    const tbody = document.getElementById('tbody-presentes');
-    if (!lista.length) {
-      tbody.innerHTML = '<tr><td colspan="3"><div class="estado"><span>🎈</span>Nenhum presente reservado ainda.</div></td></tr>';
-      document.getElementById('btn-ver-mais').style.display = 'none';
-      return;
-    }
-    tbody.innerHTML = lista.map(g => `
-      <tr>
-        <td>
-          <div class="presente-info">
-            <div class="presente-avatar">${emojisPresente(g.titulo)}</div>
-            <div class="presente-nome">${g.titulo}</div>
-          </div>
-        </td>
-        <td><span class="convidado-nome">${g.nome_reservante || 'Anônimo'}</span></td>
-        <td><span style="color:#aaa;font-style:italic;font-size:.8rem;">${g.mensagem || '—'}</span></td>
-      </tr>`).join('');
-  }
-
-  function toggleTodos() {
-    const btn = document.getElementById('btn-ver-mais');
-    if (mostrando) {
-      renderPresentes(todosPresentes.slice(0, 5));
-      btn.textContent = 'Ver todos os presentes';
-      mostrando = false;
-    } else {
-      renderPresentes(todosPresentes);
-      btn.textContent = 'Mostrar menos';
-      mostrando = true;
+  function mudarAba(nome, el) {
+    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+    document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('ativo'));
+    document.getElementById('tela-'+nome).classList.add('ativa');
+    if (el) {
+      el.classList.add('ativa');
+      el.classList.add('ativo');
     }
   }
 
   async function carregar() {
-    const { data, error } = await sb.from('presentes').select('*').order('id', { ascending: true });
-    if (error || !data) return;
+    const { data, error } = await sb.from('presentes').select('*').order('id',{ascending:true});
+    if (error||!data) return;
 
     const reservados  = data.filter(g => g.reservado);
     const disponiveis = data.filter(g => !g.reservado);
-    const comMensagem = reservados.filter(g => g.mensagem);
+    const comMensagem = reservados.filter(g => g.mensagem && g.mensagem.trim());
 
+    // stats
     document.getElementById('s-total').textContent = data.length;
     document.getElementById('s-res').textContent   = reservados.length;
     document.getElementById('s-disp').textContent  = disponiveis.length;
-    document.getElementById('s-msg').textContent   = comMensagem.length;
-    document.getElementById('badge-msg').textContent  = comMensagem.length;
-    document.getElementById('badge-sino').textContent = reservados.length;
 
-    todosPresentes = reservados;
+    // último reservado
+    if (reservados.length) {
+      const ult = reservados[reservados.length - 1];
+      document.getElementById('ultimo-conteudo').innerHTML = `
+        <div class="ultimo-info">
+          <div class="ultimo-campo">
+            <label>Presente</label>
+            <strong>${ult.titulo}</strong>
+          </div>
+          <div class="ultimo-campo">
+            <label>Reservado por</label>
+            <strong>${ult.nome_reservante || 'Anônimo'}</strong>
+          </div>
+          ${ult.mensagem ? `<div class="ultimo-campo"><label>Mensagem</label><strong>${ult.mensagem}</strong></div>` : ''}
+        </div>`;
+    }
 
-    const btn = document.getElementById('btn-ver-mais');
-    if (reservados.length > 5) btn.style.display = 'block';
-
-    renderPresentes(reservados.slice(0, 5));
+    // tabela presentes
+    const tbody = document.getElementById('tbody-presentes');
+    if (!reservados.length) {
+      tbody.innerHTML = '<tr><td colspan="3"><div class="estado"><span>🎈</span>Nenhum presente reservado ainda.</div></td></tr>';
+    } else {
+      tbody.innerHTML = reservados.map(g => `
+        <tr>
+          <td><span class="tag-presente">${g.titulo}</span></td>
+          <td><span class="nome-res">${g.nome_reservante||'Anônimo'}</span></td>
+          <td><span class="msg-col">${g.mensagem||'—'}</span></td>
+        </tr>`).join('');
+    }
 
     // mensagens
     const listaMsgs = document.getElementById('lista-msgs');
     if (!comMensagem.length) {
-      listaMsgs.innerHTML = '<div class="estado"><span>💬</span>Nenhuma mensagem ainda.</div>';
+      listaMsgs.innerHTML = '<div class="estado"><span>💬</span>Nenhuma mensagem ainda.<br><small style="font-size:.8rem;color:#bbb">As mensagens aparecem quando os convidados preenchem o campo ao reservar um presente.</small></div>';
     } else {
-      listaMsgs.innerHTML = comMensagem.slice(0,5).map(g => `
+      listaMsgs.innerHTML = comMensagem.map(g => `
         <div class="msg-item">
           <div class="msg-avatar">👤</div>
           <div class="msg-corpo">
-            <div class="msg-topo">
-              <span class="msg-nome">${g.nome_reservante || 'Anônimo'}</span>
-            </div>
-            <div class="msg-texto">${g.mensagem}</div>
+            <div class="msg-nome">${g.nome_reservante||'Anônimo'}</div>
+            <div class="msg-presente">🎁 ${g.titulo}</div>
+            <div class="msg-texto">"${g.mensagem}"</div>
           </div>
         </div>`).join('');
     }
