@@ -162,37 +162,19 @@
             line-height: 1.3;
         }
 
-        /* lojas */
-        .lojas-wrap { padding: 0 12px 4px; }
-
-        .lojas-label {
-            font-size: 0.68rem;
-            text-transform: uppercase;
-            letter-spacing: .07em;
-            color: #aaa;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .lojas-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-bottom: 8px;
-        }
-
-        .btn-loja {
-            display: flex; align-items: center; justify-content: center; gap: 4px;
-            padding: 6px 4px; border-radius: 8px; font-size: 0.7rem; font-weight: 700;
+        /* botão ver produto */
+        .btn-ver-produto {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 8px 12px; border-radius: 10px;
+            font-size: 0.82rem; font-weight: 700;
             font-family: 'Quicksand', sans-serif; text-decoration: none;
-            cursor: pointer; border: none; color: white;
+            color: white; border: none; cursor: pointer;
+            background: linear-gradient(135deg, var(--azul), var(--azul-dk));
+            box-shadow: 0 3px 10px rgba(90,175,214,.25);
             transition: opacity .18s, transform .15s;
+            margin: 0 12px 8px;
         }
-        .btn-loja:hover { opacity: .86; transform: translateY(-1px); }
-        .btn-loja.amazon       { background: #FF9900; color: #111; }
-        .btn-loja.mercadolivre { background: #ffe600; color: #333; }
-        .btn-loja.americanas   { background: #e60014; }
-        .btn-loja.magalu       { background: #0086d3; }
+        .btn-ver-produto:hover { opacity: .88; transform: translateY(-1px); }
 
         /* ── botões de ação ── */
         .card-footer { padding: 0 12px 14px; display: flex; flex-direction: column; gap: 6px; }
@@ -492,7 +474,7 @@
                         ${g.imagem_url ? `<img src="${g.imagem_url}" alt="${g.titulo}" loading="lazy">` : ''}
                         <h3>${g.titulo}</h3>
                     </div>
-                    ${lojas(g.titulo)}
+                    ${btnVerProduto(g.link_compra)}
                     <div class="card-footer">
                         <button class="btn-reservar" id="btn-${g.id}" onclick="abrirForm(${g.id})">🎁 Reservar este presente</button>
                         <div class="form-area" id="form-${g.id}" style="display:none;">
