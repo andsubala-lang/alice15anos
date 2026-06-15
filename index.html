@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -31,13 +32,13 @@
             text-align: center;
             position: relative;
             overflow-x: hidden;
-            background-color: #d6eef8;
+            background: url('fundo.jpg') center top / cover fixed;
         }
 
         /* Hero banner ilustrado */
         .hero {
             width: 100%;
-            min-height: 420px;
+            min-height: 500px;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -45,13 +46,11 @@
             justify-content: flex-end;
             padding-bottom: 32px;
             overflow: hidden;
+            background: transparent;
         }
 
         .hero-svg {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
+            display: none;
         }
 
         .hero-content {
@@ -61,27 +60,15 @@
             flex-direction: column;
             align-items: center;
             gap: 14px;
+            margin-top: auto;
         }
 
         .hero-titulo {
-            font-family: 'Cinzel Decorative', cursive;
-            font-size: clamp(1.4rem, 5vw, 2.4rem);
-            color: var(--marsala);
-            text-shadow: 0 2px 12px rgba(155,58,74,.18), 0 0 40px rgba(255,255,255,.8);
-            line-height: 1.2;
-            letter-spacing: .04em;
+            display: none;
         }
 
         .hero-sub {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--azul-dk);
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            background: rgba(255,255,255,.7);
-            padding: 4px 18px;
-            border-radius: 20px;
-            backdrop-filter: blur(4px);
+            display: none;
         }
 
         .timer-box {
@@ -260,7 +247,7 @@
 
         /* ── mobile ── */
         @media (max-width: 520px) {
-            .hero { min-height: 340px; }
+            .hero { min-height: 420px; }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .card-body img { width: 90px; height: 90px; }
             .card-body h3 { font-size: 0.78rem; }
