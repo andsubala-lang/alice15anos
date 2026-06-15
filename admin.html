@@ -6,178 +6,385 @@
   <title>Painel Admin · 15 Anos da Alice</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
     :root {
+      --marsala:    #7a2535;
+      --marsala-md: #9b3a4a;
+      --marsala-cl: #c97080;
+      --marsala-bg: #f8eaec;
       --azul:       #5aafd6;
       --azul-cl:    #a8d8ea;
       --azul-bg:    #e3f4fb;
       --azul-dk:    #2e7ea8;
-      --marsala:    #9b3a4a;
-      --marsala-cl: #c97080;
-      --marsala-bg: #f8eaec;
+      --creme:      #faf3e8;
+      --creme-dk:   #e8d8c0;
       --branco:     #ffffff;
-      --texto:      #2c3e50;
-      --borda:      #d4edf7;
+      --texto:      #3a2820;
+      --sidebar-w:  240px;
     }
 
     body {
       font-family: 'Quicksand', sans-serif;
       min-height: 100vh;
+      background: url('login-bg.jpg') center center / cover fixed;
       color: var(--texto);
-      background: url('fundo.jpg') center top / cover fixed;
-      position: relative;
+      display: flex;
     }
 
-    /* overlay suave para legibilidade */
     body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: rgba(255,255,255,.55);
+      content:'';
+      position:fixed; inset:0;
+      background: rgba(240,228,210,.55);
       backdrop-filter: blur(2px);
-      pointer-events: none;
-      z-index: 0;
+      pointer-events:none; z-index:0;
     }
 
-    header, main, #load { position: relative; z-index: 1; }
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: fixed;
+      top:0; left:0; bottom:0;
+      width: var(--sidebar-w);
+      background: linear-gradient(180deg, var(--marsala) 0%, #5a1a26 100%);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      box-shadow: 4px 0 24px rgba(0,0,0,.25);
+    }
 
-    /* ── header ── */
-    header {
-      background: linear-gradient(135deg, rgba(46,126,168,.92) 0%, rgba(155,58,74,.92) 100%);
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      text-align: center;
+    }
+
+    .sidebar-logo .moldura {
+      display: inline-block;
+      border: 2px solid rgba(255,255,255,.4);
+      border-radius: 50%;
+      padding: 6px 12px;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-logo .nome {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,.9);
+      line-height: 1.3;
+    }
+
+    .sidebar-logo .nome span {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      display: block;
       color: white;
-      padding: 18px 24px;
+    }
+
+    /* nav */
+    nav { flex: 1; padding: 16px 0; }
+
+    .nav-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      box-shadow: 0 4px 20px rgba(46,126,168,.25);
-      backdrop-filter: blur(8px);
+      gap: 12px;
+      padding: 13px 22px;
+      color: rgba(255,255,255,.75);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+      border-left: 3px solid transparent;
+      position: relative;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.08); color: white; }
+    .nav-item.ativo {
+      background: rgba(255,255,255,.14);
+      color: white;
+      border-left-color: var(--creme);
+    }
+    .nav-item .nav-icone { font-size: 1rem; width: 20px; text-align: center; }
+
+    .badge {
+      position: absolute; right: 18px;
+      background: var(--azul);
+      color: white; font-size: 0.68rem; font-weight: 700;
+      border-radius: 50px; padding: 1px 7px;
     }
 
-    .h-titulo {
-      font-family: 'Cinzel Decorative', cursive;
-      font-size: clamp(0.85rem, 3vw, 1.15rem);
-      display: flex; align-items: center; gap: 10px;
-    }
-    .h-titulo small {
-      font-family: 'Quicksand', sans-serif;
-      font-size: 0.7rem; opacity: .8;
-      letter-spacing: .07em; text-transform: uppercase;
-      display: block; margin-top: 2px; font-weight: 600;
+    .sidebar-sair {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,.12);
     }
 
     .btn-sair {
-      background: rgba(255,255,255,.2);
-      border: 1.5px solid rgba(255,255,255,.5);
-      color: white; padding: 8px 20px; border-radius: 50px;
+      width: 100%; padding: 10px;
+      background: rgba(255,255,255,.1);
+      border: 1.5px solid rgba(255,255,255,.25);
+      border-radius: 8px;
+      color: rgba(255,255,255,.8);
       font-family: 'Quicksand', sans-serif;
-      font-size: 0.82rem; font-weight: 700; cursor: pointer;
+      font-size: 0.85rem; font-weight: 700;
+      cursor: pointer;
       transition: background .2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .btn-sair:hover { background: rgba(255,255,255,.32); }
+    .btn-sair:hover { background: rgba(255,255,255,.18); color: white; }
 
-    /* ── main ── */
-    main { padding: 32px 20px 60px; max-width: 1000px; margin: 0 auto; }
+    /* ── CONTEÚDO PRINCIPAL ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-    /* ── stats ── */
+    /* topbar */
+    .topbar {
+      background: rgba(250,243,232,.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--creme-dk);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .topbar-sino {
+      position: relative;
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+    .topbar-sino .badge-sino {
+      position: absolute; top: -4px; right: -6px;
+      background: var(--marsala);
+      color: white; font-size: 0.6rem; font-weight: 700;
+      border-radius: 50%; width: 16px; height: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .topbar-user {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.85rem;
+    }
+    .topbar-user strong { color: var(--marsala); font-weight: 700; }
+    .topbar-user small { color: #888; font-size: 0.75rem; display: block; }
+    .topbar-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--marsala-md), var(--marsala));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      border: 2px solid var(--creme-dk);
+    }
+
+    /* conteúdo */
+    .conteudo { padding: 28px; flex: 1; }
+
+    /* banner de boas vindas */
+    .banner {
+      background: linear-gradient(135deg, rgba(250,243,232,.95), rgba(240,225,200,.95));
+      border: 1.5px solid var(--creme-dk);
+      border-radius: 16px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.06);
+      overflow: hidden;
+      position: relative;
+    }
+    .banner-texto h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--marsala);
+      margin-bottom: 6px;
+    }
+    .banner-texto p { font-size: 0.85rem; color: #8a6a50; line-height: 1.5; }
+    .banner-divisor {
+      margin-top: 10px;
+      display: flex; align-items: center; gap: 8px;
+      color: var(--marsala); opacity: .4; font-size: 0.8rem;
+    }
+    .banner-divisor::before, .banner-divisor::after {
+      content:''; flex:1; max-width:60px; height:1px; background:var(--marsala);
+    }
+    .banner-deco { font-size: 3.5rem; opacity: .25; position: absolute; right: 28px; }
+
+    /* stats */
     .stats {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
       margin-bottom: 28px;
     }
 
     .stat {
-      background: rgba(255,255,255,.88);
-      border-radius: 20px;
-      border: 2px solid var(--borda);
-      padding: 22px 16px;
+      background: rgba(250,243,232,.92);
+      border: 1.5px solid var(--creme-dk);
+      border-radius: 14px;
+      padding: 20px 18px;
       text-align: center;
-      box-shadow: 0 4px 20px rgba(90,175,214,.12);
+      box-shadow: 0 3px 14px rgba(0,0,0,.06);
       backdrop-filter: blur(4px);
+      transition: transform .18s, box-shadow .18s;
     }
-    .stat .n { font-size: 2.2rem; font-weight: 700; color: var(--azul); line-height: 1; margin-bottom: 5px; }
-    .stat.m  .n { color: var(--marsala); }
-    .stat .r { font-size: 0.72rem; color: #999; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .stat:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.10); }
 
-    /* ── título de seção ── */
+    .stat-icone { font-size: 1.6rem; margin-bottom: 8px; display: block; }
+    .stat-label { font-size: 0.74rem; color: #9a7a60; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; margin-bottom: 4px; }
+    .stat-num { font-size: 2rem; font-weight: 700; color: var(--marsala); line-height: 1; margin-bottom: 4px; }
+    .stat-link { font-size: 0.72rem; color: var(--azul-dk); text-decoration: underline; cursor: pointer; }
+
+    /* seção título */
     .sec-titulo {
-      font-family: 'Cinzel Decorative', cursive;
-      font-size: 0.95rem;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.1rem;
       color: var(--marsala);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: flex; align-items: center; gap: 10px;
     }
-    .sec-titulo::after {
-      content:''; flex:1; height:1.5px;
-      background: linear-gradient(90deg, var(--marsala-cl), transparent);
+    .sec-titulo::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--marsala-cl), transparent); }
+
+    /* grid de seções */
+    .grid-secoes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
-    /* ── tabela ── */
-    .tabela-wrap {
-      background: rgba(255,255,255,.90);
-      border-radius: 20px;
-      border: 2px solid var(--borda);
+    @media (max-width: 900px) { .grid-secoes { grid-template-columns: 1fr; } }
+
+    .painel {
+      background: rgba(250,243,232,.92);
+      border: 1.5px solid var(--creme-dk);
+      border-radius: 14px;
       overflow: hidden;
-      box-shadow: 0 6px 30px rgba(90,175,214,.12);
-      overflow-x: auto;
+      box-shadow: 0 3px 14px rgba(0,0,0,.06);
       backdrop-filter: blur(4px);
     }
 
-    table { width: 100%; border-collapse: collapse; min-width: 400px; }
+    .painel-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--creme-dk);
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--marsala);
+      display: flex; align-items: center; gap: 8px;
+    }
 
+    /* tabela de presentes */
+    table { width: 100%; border-collapse: collapse; }
     thead th {
-      background: linear-gradient(135deg, rgba(46,126,168,.9), rgba(155,58,74,.9));
-      color: white; padding: 14px 20px; text-align: left;
-      font-size: 0.76rem; text-transform: uppercase;
-      letter-spacing: .07em; font-weight: 700; white-space: nowrap;
+      background: linear-gradient(135deg, rgba(122,37,53,.85), rgba(90,30,40,.85));
+      color: white; padding: 10px 16px; text-align: left;
+      font-size: 0.74rem; text-transform: uppercase; letter-spacing: .06em;
     }
-
-    tbody tr { border-bottom: 1px solid var(--borda); transition: background .15s; }
+    tbody tr { border-bottom: 1px solid var(--creme-dk); transition: background .12s; }
     tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: rgba(227,244,251,.6); }
-    tbody td { padding: 14px 20px; font-size: 0.88rem; vertical-align: top; }
+    tbody tr:hover { background: rgba(232,216,192,.35); }
+    tbody td { padding: 11px 16px; font-size: 0.84rem; vertical-align: middle; }
 
-    .tag {
-      background: var(--azul-bg); color: var(--azul-dk);
-      border: 1px solid var(--azul-cl); border-radius: 20px;
-      padding: 4px 14px; font-size: 0.76rem; font-weight: 700; display: inline-block;
+    .presente-info { display: flex; align-items: center; gap: 10px; }
+    .presente-avatar {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--azul-bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+      border: 1px solid var(--azul-cl);
     }
-    .nome { font-weight: 700; color: var(--marsala); }
-    .msgcol { color: #aaa; font-style: italic; font-size: 0.82rem; }
+    .presente-nome { font-weight: 700; color: var(--texto); font-size: 0.82rem; line-height: 1.2; }
 
-    /* ── estados ── */
-    .estado { text-align:center; padding:52px 20px; color:#aaa; }
-    .estado span { font-size:2.8rem; display:block; margin-bottom:10px; }
+    .convidado-nome { color: var(--marsala); font-weight: 700; }
+    .data-col { color: #aaa; font-size: 0.76rem; }
 
-    /* ── loading overlay ── */
+    /* mensagens */
+    .msg-item {
+      display: flex; gap: 12px; padding: 13px 18px;
+      border-bottom: 1px solid var(--creme-dk);
+      transition: background .12s;
+    }
+    .msg-item:last-child { border-bottom: none; }
+    .msg-item:hover { background: rgba(232,216,192,.35); }
+    .msg-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--creme-dk);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .msg-corpo { flex: 1; }
+    .msg-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+    .msg-nome { font-weight: 700; font-size: 0.84rem; color: var(--texto); }
+    .msg-data { font-size: 0.72rem; color: #bbb; }
+    .msg-texto { font-size: 0.8rem; color: #8a6a50; line-height: 1.4; }
+
+    /* botão ver todos */
+    .btn-ver {
+      display: block; width: calc(100% - 36px); margin: 12px 18px;
+      padding: 10px;
+      background: linear-gradient(135deg, var(--marsala-md), var(--marsala));
+      color: white; border: none; border-radius: 8px;
+      font-family: 'Quicksand', sans-serif; font-size: 0.82rem; font-weight: 700;
+      cursor: pointer; text-align: center;
+      transition: opacity .18s;
+    }
+    .btn-ver:hover { opacity: .88; }
+
+    .btn-ver-az {
+      display: block; width: calc(100% - 36px); margin: 12px 18px;
+      padding: 10px;
+      background: rgba(90,175,214,.15);
+      color: var(--azul-dk); border: 1.5px solid var(--azul-cl); border-radius: 8px;
+      font-family: 'Quicksand', sans-serif; font-size: 0.82rem; font-weight: 700;
+      cursor: pointer; text-align: center;
+      transition: background .18s;
+    }
+    .btn-ver-az:hover { background: rgba(90,175,214,.25); }
+
+    /* estado vazio */
+    .estado { text-align:center; padding:36px 20px; color:#ccc; }
+    .estado span { font-size:2.2rem; display:block; margin-bottom:8px; }
+
+    /* loading */
     #load {
       display:flex; position:fixed; inset:0;
-      background: rgba(255,255,255,.6);
-      backdrop-filter: blur(6px);
+      background:rgba(250,243,232,.88);
+      backdrop-filter:blur(6px);
       z-index:999;
       align-items:center; justify-content:center; flex-direction:column; gap:14px;
     }
     #load .s {
-      width:48px; height:48px;
-      border:4px solid var(--azul-cl);
-      border-top-color:var(--azul);
+      width:46px; height:46px;
+      border:4px solid var(--creme-dk);
+      border-top-color:var(--marsala);
       border-radius:50%;
       animation:girar .8s linear infinite;
     }
-    #load p { font-weight:700; color:var(--marsala); font-family:'Cinzel Decorative',cursive; font-size:0.85rem; }
+    #load p { font-family:'Playfair Display',serif; font-style:italic; color:var(--marsala); }
     @keyframes girar { to { transform:rotate(360deg); } }
 
-    @media (max-width:560px) {
-      header { padding:14px 16px; }
-      .stats { grid-template-columns: repeat(3,1fr); gap:10px; }
-      .stat { padding:14px 8px; }
-      .stat .n { font-size:1.6rem; }
-      .stat .r { font-size:0.62rem; }
-      main { padding:20px 12px 50px; }
+    /* mobile */
+    @media (max-width:700px) {
+      .sidebar { width:200px; }
+      .main { margin-left:200px; }
+      .conteudo { padding:16px; }
+      .banner-deco { display:none; }
+      .stats { grid-template-columns:repeat(2,1fr); }
+    }
+    @media (max-width:540px) {
+      .sidebar { display:none; }
+      .main { margin-left:0; }
     }
   </style>
 </head>
@@ -188,47 +395,123 @@
   <p>Verificando acesso…</p>
 </div>
 
-<header>
-  <div class="h-titulo">
-    🎀 Painel da Alice
-    <small>Gerenciamento de presentes</small>
-  </div>
-  <button class="btn-sair" onclick="sair()">Sair →</button>
-</header>
-
-<main id="conteudo" style="display:none;">
-  <div class="stats">
-    <div class="stat">
-      <div class="n" id="s-total">–</div>
-      <div class="r">Total</div>
-    </div>
-    <div class="stat m">
-      <div class="n" id="s-res">–</div>
-      <div class="r">Reservados</div>
-    </div>
-    <div class="stat">
-      <div class="n" id="s-disp">–</div>
-      <div class="r">Disponíveis</div>
-    </div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="moldura">🎀</div>
+    <div class="nome">Lista de Presentes<span>da Alice</span></div>
   </div>
 
-  <h2 class="sec-titulo">🎁 Presentes Reservados</h2>
+  <nav>
+    <div class="nav-item ativo"><span class="nav-icone">🏠</span> Dashboard</div>
+    <div class="nav-item"><span class="nav-icone">🎁</span> Presentes</div>
+    <div class="nav-item"><span class="nav-icone">👥</span> Convidados</div>
+    <div class="nav-item"><span class="nav-icone">✉️</span> Mensagens <span class="badge" id="badge-msg">0</span></div>
+  </nav>
 
-  <div class="tabela-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Presente</th>
-          <th>Reservado por</th>
-          <th>Mensagem</th>
-        </tr>
-      </thead>
-      <tbody id="tbody">
-        <tr><td colspan="3"><div class="estado"><span>⏳</span>Carregando…</div></td></tr>
-      </tbody>
-    </table>
+  <div class="sidebar-sair">
+    <button class="btn-sair" onclick="sair()">↩ Sair</button>
   </div>
-</main>
+</aside>
+
+<!-- MAIN -->
+<div class="main" id="conteudo" style="display:none;">
+
+  <!-- topbar -->
+  <div class="topbar">
+    <div class="topbar-sino">
+      🔔
+      <div class="badge-sino" id="badge-sino">0</div>
+    </div>
+    <div class="topbar-user">
+      <div>
+        <strong>Olá, Administrador!</strong>
+        <small>Bem-vindo(a) de volta</small>
+      </div>
+      <div class="topbar-avatar">👸</div>
+    </div>
+  </div>
+
+  <!-- conteúdo -->
+  <div class="conteudo">
+
+    <!-- banner -->
+    <div class="banner">
+      <div class="banner-texto">
+        <h2>Bem-vindo ao painel administrativo!</h2>
+        <p>Gerencie sua lista de presentes<br>da melhor forma.</p>
+        <div class="banner-divisor">❧ ♥ ❧</div>
+      </div>
+      <div class="banner-deco">🎀</div>
+    </div>
+
+    <!-- stats -->
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-icone">🎁</span>
+        <div class="stat-label">Total de Presentes</div>
+        <div class="stat-num" id="s-total">–</div>
+        <span class="stat-link">Ver todos</span>
+      </div>
+      <div class="stat">
+        <span class="stat-icone">👥</span>
+        <div class="stat-label">Reservados</div>
+        <div class="stat-num" id="s-res">–</div>
+        <span class="stat-link">Ver todos</span>
+      </div>
+      <div class="stat">
+        <span class="stat-icone">♥</span>
+        <div class="stat-label">Disponíveis</div>
+        <div class="stat-num" id="s-disp">–</div>
+        <span class="stat-link">Ver todos</span>
+      </div>
+      <div class="stat">
+        <span class="stat-icone">✉️</span>
+        <div class="stat-label">Mensagens</div>
+        <div class="stat-num" id="s-msg">–</div>
+        <span class="stat-link">Ver todos</span>
+      </div>
+    </div>
+
+    <!-- grid presentes + mensagens -->
+    <div class="grid-secoes">
+
+      <!-- presentes recentes -->
+      <div>
+        <h2 class="sec-titulo">🎁 Presentes Reservados</h2>
+        <div class="painel">
+          <div class="painel-header">🎁 Reservas recentes</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Presente</th>
+                <th>Convidado</th>
+                <th>Mensagem</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-presentes">
+              <tr><td colspan="3"><div class="estado"><span>⏳</span>Carregando…</div></td></tr>
+            </tbody>
+          </table>
+          <button class="btn-ver" id="btn-ver-mais" style="display:none;" onclick="toggleTodos()">Ver todos os presentes</button>
+        </div>
+      </div>
+
+      <!-- mensagens recentes -->
+      <div>
+        <h2 class="sec-titulo">✉️ Mensagens Recentes</h2>
+        <div class="painel">
+          <div class="painel-header">✉️ Últimas mensagens</div>
+          <div id="lista-msgs">
+            <div class="estado"><span>⏳</span>Carregando…</div>
+          </div>
+          <button class="btn-ver-az">Ver todas as mensagens</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <script>
   const sb = window.supabase.createClient(
@@ -236,19 +519,16 @@
     'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
   );
 
+  let todosPresentes = [];
+  let mostrando = false;
+
   (async () => {
-    // Verifica se veio do login nesta sessão de aba
-    const autorizadoNestaAba = sessionStorage.getItem('admin_autorizado');
-    if (!autorizadoNestaAba) {
-      // Não veio pelo login.html nesta aba — desloga e manda pro login
-      await sb.auth.signOut();
-      window.location.href = 'login.html';
-      return;
-    }
+    const autorizado = sessionStorage.getItem('admin_autorizado');
+    if (!autorizado) { await sb.auth.signOut(); window.location.href = 'login.html'; return; }
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { window.location.href = 'login.html'; return; }
-    document.getElementById('load').style.display    = 'none';
-    document.getElementById('conteudo').style.display = 'block';
+    document.getElementById('load').style.display = 'none';
+    document.getElementById('conteudo').style.display = 'flex';
     carregar();
   })();
 
@@ -258,30 +538,89 @@
     window.location.href = 'login.html';
   }
 
+  function emojisPresente(titulo) {
+    if (/perfume|colônia|fragrância/i.test(titulo)) return '🌸';
+    if (/relógio/i.test(titulo)) return '⌚';
+    if (/tênis|sapato/i.test(titulo)) return '👟';
+    if (/câmera|foto/i.test(titulo)) return '📷';
+    if (/livro/i.test(titulo)) return '📚';
+    if (/garrafa|térmica/i.test(titulo)) return '🧴';
+    if (/pijama/i.test(titulo)) return '👚';
+    if (/vale/i.test(titulo)) return '🎟️';
+    return '🎁';
+  }
+
+  function renderPresentes(lista) {
+    const tbody = document.getElementById('tbody-presentes');
+    if (!lista.length) {
+      tbody.innerHTML = '<tr><td colspan="3"><div class="estado"><span>🎈</span>Nenhum presente reservado ainda.</div></td></tr>';
+      document.getElementById('btn-ver-mais').style.display = 'none';
+      return;
+    }
+    tbody.innerHTML = lista.map(g => `
+      <tr>
+        <td>
+          <div class="presente-info">
+            <div class="presente-avatar">${emojisPresente(g.titulo)}</div>
+            <div class="presente-nome">${g.titulo}</div>
+          </div>
+        </td>
+        <td><span class="convidado-nome">${g.nome_reservante || 'Anônimo'}</span></td>
+        <td><span style="color:#aaa;font-style:italic;font-size:.8rem;">${g.mensagem || '—'}</span></td>
+      </tr>`).join('');
+  }
+
+  function toggleTodos() {
+    const btn = document.getElementById('btn-ver-mais');
+    if (mostrando) {
+      renderPresentes(todosPresentes.slice(0, 5));
+      btn.textContent = 'Ver todos os presentes';
+      mostrando = false;
+    } else {
+      renderPresentes(todosPresentes);
+      btn.textContent = 'Mostrar menos';
+      mostrando = true;
+    }
+  }
+
   async function carregar() {
     const { data, error } = await sb.from('presentes').select('*').order('id', { ascending: true });
-    if (error || !data) {
-      document.getElementById('tbody').innerHTML =
-        '<tr><td colspan="3"><div class="estado"><span>❌</span>Erro ao carregar dados.</div></td></tr>';
-      return;
-    }
-    const res  = data.filter(g => g.reservado);
-    const disp = data.filter(g => !g.reservado);
-    document.getElementById('s-total').textContent = data.length;
-    document.getElementById('s-res').textContent   = res.length;
-    document.getElementById('s-disp').textContent  = disp.length;
+    if (error || !data) return;
 
-    if (!res.length) {
-      document.getElementById('tbody').innerHTML =
-        '<tr><td colspan="3"><div class="estado"><span>🎈</span>Nenhum presente reservado ainda.</div></td></tr>';
-      return;
+    const reservados  = data.filter(g => g.reservado);
+    const disponiveis = data.filter(g => !g.reservado);
+    const comMensagem = reservados.filter(g => g.mensagem);
+
+    document.getElementById('s-total').textContent = data.length;
+    document.getElementById('s-res').textContent   = reservados.length;
+    document.getElementById('s-disp').textContent  = disponiveis.length;
+    document.getElementById('s-msg').textContent   = comMensagem.length;
+    document.getElementById('badge-msg').textContent  = comMensagem.length;
+    document.getElementById('badge-sino').textContent = reservados.length;
+
+    todosPresentes = reservados;
+
+    const btn = document.getElementById('btn-ver-mais');
+    if (reservados.length > 5) btn.style.display = 'block';
+
+    renderPresentes(reservados.slice(0, 5));
+
+    // mensagens
+    const listaMsgs = document.getElementById('lista-msgs');
+    if (!comMensagem.length) {
+      listaMsgs.innerHTML = '<div class="estado"><span>💬</span>Nenhuma mensagem ainda.</div>';
+    } else {
+      listaMsgs.innerHTML = comMensagem.slice(0,5).map(g => `
+        <div class="msg-item">
+          <div class="msg-avatar">👤</div>
+          <div class="msg-corpo">
+            <div class="msg-topo">
+              <span class="msg-nome">${g.nome_reservante || 'Anônimo'}</span>
+            </div>
+            <div class="msg-texto">${g.mensagem}</div>
+          </div>
+        </div>`).join('');
     }
-    document.getElementById('tbody').innerHTML = res.map(g => `
-      <tr>
-        <td><span class="tag">${g.titulo}</span></td>
-        <td><span class="nome">${g.nome_reservante || 'Anônimo'}</span></td>
-        <td><span class="msgcol">${g.mensagem || '—'}</span></td>
-      </tr>`).join('');
   }
 </script>
 </body>
