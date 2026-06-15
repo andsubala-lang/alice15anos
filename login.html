@@ -277,10 +277,9 @@
     'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
   );
 
-  // já logado? vai direto
+  // Sempre faz logout ao chegar na tela de login
   (async () => {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session) ir();
+    await sb.auth.signOut();
   })();
 
   const emailEl = document.getElementById('email');
