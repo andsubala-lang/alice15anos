@@ -274,7 +274,13 @@
 <script>
   const sb = window.supabase.createClient(
     'https://abojdhxobsyrzyiacaqf.supabase.co',
-    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
+    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t',
+    {
+      auth: {
+        storage: sessionStorage,
+        persistSession: true,
+      }
+    }
   );
 
   // Sempre faz logout ao chegar na tela de login
