@@ -233,16 +233,18 @@
 <script>
   const sb = window.supabase.createClient(
     'https://abojdhxobsyrzyiacaqf.supabase.co',
-    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t',
-    {
-      auth: {
-        storage: sessionStorage,
-        persistSession: true,
-      }
-    }
+    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
   );
 
   (async () => {
+    // Verifica se veio do login nesta sessão de aba
+    const autorizadoNestaAba = sessionStorage.getItem('admin_autorizado');
+    if (!autorizadoNestaAba) {
+      // Não veio pelo login.html nesta aba — desloga e manda pro login
+      await sb.auth.signOut();
+      window.location.href = 'login.html';
+      return;
+    }
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { window.location.href = 'login.html'; return; }
     document.getElementById('load').style.display    = 'none';
@@ -251,6 +253,7 @@
   })();
 
   async function sair() {
+    sessionStorage.removeItem('admin_autorizado');
     await sb.auth.signOut();
     window.location.href = 'login.html';
   }
