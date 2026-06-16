@@ -616,15 +616,16 @@
 
     function fecharObrigada() {
         document.getElementById('overlay-obrigada').style.display = 'none';
-        // Anima o contador ao voltar para a lista
-        const disponiveis = todosPresentes.filter(g => !g.reservado).length;
-        const numEl = document.getElementById('num-disp');
-        if (numEl) {
-            numEl.classList.remove('animando');
-            void numEl.offsetWidth;
-            numEl.classList.add('animando');
-            setTimeout(() => numEl.classList.remove('animando'), 500);
-        }
+        // Aguarda 1.2s para a pessoa ver a lista antes de animar o contador
+        setTimeout(() => {
+            const numEl = document.getElementById('num-disp');
+            if (numEl) {
+                numEl.classList.remove('animando');
+                void numEl.offsetWidth;
+                numEl.classList.add('animando');
+                setTimeout(() => numEl.classList.remove('animando'), 500);
+            }
+        }, 1200);
     }
 
     carregar();
