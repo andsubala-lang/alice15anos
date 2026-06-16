@@ -7,438 +7,911 @@
   <title>Painel Admin · 15 Anos da Alice</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@500;600;700&family=IM+Fell+English:ital@1&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
     :root {
-      --marsala:    #7a2535;
-      --marsala-md: #9b3a4a;
-      --creme:      #faf3e8;
-      --creme-dk:   #e8d8c0;
-      --texto:      #3a1a20;
-      --azul:       #2e7ea8;
-    }
-    body {
-      font-family: 'Quicksand', sans-serif;
-      min-height: 100vh;
-      background: #f5ede0;
-      color: var(--texto);
+      --marsala:     #7a2535;
+      --marsala-md:  #9b3a4a;
+      --marsala-cl:  #c97080;
+      --ouro:        #b8922a;
+      --ouro-cl:     #d4aa50;
+      --ouro-pale:   #f0dda0;
+      --creme:       #fdf6e8;
+      --creme-md:    #f5e8cc;
+      --creme-dk:    #e2cda0;
+      --texto:       #2e1a10;
+      --texto-cl:    #6a4a30;
+      --azul:        #2e7ea8;
+      --sidebar-w:   220px;
     }
 
-    /* ── HEADER ── */
-    .header {
-      background: linear-gradient(135deg, var(--marsala), #5a1a26);
-      color: white;
-      padding: 16px 24px;
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: #1a0a0e;
+      color: var(--texto);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ═══════════════════════════════════════
+       SIDEBAR
+    ═══════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #2a0d15 0%, #1a0a0e 60%, #2a0d15 100%);
+      border-right: 1px solid rgba(184,146,42,.25);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 200;
+      overflow: hidden;
+    }
+
+    /* ornamento lateral */
+    .sidebar::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 2px; height: 100%;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        var(--ouro-cl) 20%,
+        var(--ouro) 50%,
+        var(--ouro-cl) 80%,
+        transparent 100%);
+      opacity: .35;
+    }
+
+    .sidebar-brand {
+      padding: 28px 20px 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(184,146,42,.15);
+      position: relative;
+    }
+    .sidebar-brand::after {
+      content: '✦ ❧ ✦';
+      display: block;
+      font-size: .65rem;
+      color: var(--ouro-cl);
+      opacity: .5;
+      margin-top: 10px;
+      letter-spacing: .2em;
+    }
+    .brand-icon {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 12px rgba(184,146,42,.4));
+    }
+    .brand-titulo {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: .95rem;
+      color: var(--ouro-cl);
+      line-height: 1.3;
+      letter-spacing: .03em;
+    }
+    .brand-sub {
+      font-size: .65rem;
+      color: rgba(212,170,80,.45);
+      text-transform: uppercase;
+      letter-spacing: .15em;
+      margin-top: 3px;
+      font-weight: 700;
+    }
+
+    /* ornamentos verticais na sidebar */
+    .sidebar-ornamento {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 14px 0;
+    }
+    .sidebar-ornamento span {
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--ouro-cl), transparent);
+      opacity: .3;
+    }
+
+    .nav { flex: 1; padding: 8px 0; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 22px;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+      color: rgba(212,170,80,.55);
+      font-weight: 700;
+      font-size: .85rem;
+      letter-spacing: .03em;
+      position: relative;
+      border-left: 3px solid transparent;
+    }
+    .nav-item:hover {
+      background: rgba(184,146,42,.06);
+      color: var(--ouro-cl);
+    }
+    .nav-item.ativa {
+      color: var(--ouro-cl);
+      background: rgba(184,146,42,.1);
+      border-left-color: var(--ouro);
+    }
+    .nav-item.ativa::after {
+      content: '›';
+      position: absolute;
+      right: 18px;
+      font-size: 1.1rem;
+      color: var(--ouro-cl);
+      opacity: .6;
+    }
+    .nav-icone { font-size: 1rem; flex-shrink: 0; }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(184,146,42,.12);
+    }
+    .btn-sair {
+      width: 100%;
+      padding: 9px;
+      background: transparent;
+      border: 1px solid rgba(184,146,42,.25);
+      border-radius: 6px;
+      color: rgba(212,170,80,.5);
+      font-family: 'Quicksand', sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .btn-sair:hover {
+      border-color: var(--ouro-cl);
+      color: var(--ouro-cl);
+      background: rgba(184,146,42,.08);
+    }
+    .refresh-badge {
+      text-align: center;
+      font-size: .68rem;
+      color: rgba(212,170,80,.35);
+      margin-bottom: 10px;
+      font-weight: 600;
+      letter-spacing: .04em;
+    }
+
+    /* ═══════════════════════════════════════
+       MAIN
+    ═══════════════════════════════════════ */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      background: var(--creme);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      background: linear-gradient(160deg, var(--creme) 0%, var(--creme-md) 100%);
+      border-bottom: 1px solid var(--creme-dk);
+      padding: 18px 32px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 4px 18px rgba(122,37,53,.3);
       position: sticky;
       top: 0;
       z-index: 100;
+      box-shadow: 0 2px 12px rgba(122,37,53,.06);
     }
-    .header-titulo {
+    .topbar-titulo {
       font-family: 'Playfair Display', serif;
       font-style: italic;
-      font-size: 1.3rem;
-      letter-spacing: .03em;
-    }
-    .header-acoes { display: flex; gap: 10px; align-items: center; }
-    .btn-sair {
-      background: rgba(255,255,255,.15);
-      border: 1px solid rgba(255,255,255,.3);
-      color: white;
-      border-radius: 6px;
-      padding: 7px 14px;
-      font-family: 'Quicksand', sans-serif;
-      font-size: .82rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background .2s;
-    }
-    .btn-sair:hover { background: rgba(255,255,255,.25); }
-    .refresh-info {
-      font-size: .75rem;
-      opacity: .7;
-      font-weight: 600;
-    }
-
-    /* ── ABAS ── */
-    .abas {
-      display: flex;
-      gap: 0;
-      background: linear-gradient(160deg, #fdf8f0, #f0e2cc);
-      border-bottom: 2px solid #c9a86c;
-      padding: 0 24px;
-    }
-    .aba {
-      padding: 14px 22px;
-      font-weight: 700;
-      font-size: .9rem;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -2px;
-      color: #9a7a50;
-      transition: color .2s, border-color .2s;
-    }
-    .aba.ativa {
+      font-size: 1.4rem;
       color: var(--marsala);
-      border-bottom-color: var(--marsala);
+      letter-spacing: .02em;
+    }
+    .topbar-titulo span {
+      font-size: .78rem;
+      font-style: normal;
+      font-family: 'Quicksand', sans-serif;
+      color: var(--texto-cl);
+      opacity: .6;
+      display: block;
+      margin-top: 1px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .topbar-ornamento {
+      font-size: .75rem;
+      color: var(--ouro);
+      opacity: .5;
+      letter-spacing: .15em;
     }
 
-    /* ── CONTEÚDO ── */
-    .conteudo { padding: 24px; max-width: 1100px; margin: 0 auto; }
+    .pagina { padding: 28px 32px 48px; flex: 1; }
 
-    /* ── DASHBOARD ── */
+    /* ═══════════════════════════════════════
+       SEÇÃO TITULO DECORADO
+    ═══════════════════════════════════════ */
+    .sec-titulo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .sec-titulo h2 {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--marsala);
+      white-space: nowrap;
+    }
+    .sec-linha {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--creme-dk), transparent);
+    }
+    .sec-ornamento {
+      font-size: .7rem;
+      color: var(--ouro);
+      opacity: .5;
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════
+       CARDS DASHBOARD
+    ═══════════════════════════════════════ */
     .cards-dash {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
     }
     .card-dash {
-      background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
-      border: 1.5px solid #c9a86c;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 14px rgba(122,37,53,.08);
+      background: linear-gradient(160deg, #fdf8f0, var(--creme-md));
+      border: 1px solid var(--creme-dk);
+      border-radius: 3px;
+      padding: 20px 16px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(122,37,53,.06);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .card-dash:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(122,37,53,.1);
+    }
+    /* faixa superior colorida por tipo */
+    .card-dash::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .card-dash.tipo-total::before  { background: linear-gradient(90deg, var(--marsala), var(--ouro)); }
+    .card-dash.tipo-res::before    { background: linear-gradient(90deg, #2e7ea8, #5aafd6); }
+    .card-dash.tipo-disp::before   { background: linear-gradient(90deg, #4a9a5a, #7ac87a); }
+    .card-dash.tipo-msg::before    { background: linear-gradient(90deg, var(--ouro), var(--marsala-cl)); }
+
+    /* cantos decorativos */
+    .card-dash::after {
+      content: '✦';
+      position: absolute;
+      bottom: 8px; right: 10px;
+      font-size: .55rem;
+      color: var(--ouro);
+      opacity: .3;
     }
     .card-dash .num {
       font-family: 'Playfair Display', serif;
-      font-size: 2.4rem;
+      font-size: 2.8rem;
       color: var(--marsala);
       font-weight: 700;
       line-height: 1;
+      margin-bottom: 6px;
     }
     .card-dash .label {
-      font-size: .78rem;
-      color: #9a7a50;
+      font-size: .68rem;
+      color: var(--texto-cl);
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: .07em;
-      margin-top: 6px;
+      letter-spacing: .1em;
     }
 
-    .barra-wrap {
-      background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
-      border: 1.5px solid #c9a86c;
-      border-radius: 10px;
-      padding: 20px 24px;
-      box-shadow: 0 4px 14px rgba(122,37,53,.08);
-      margin-bottom: 24px;
+    /* barra de progresso */
+    .barra-card {
+      background: linear-gradient(160deg, #fdf8f0, var(--creme-md));
+      border: 1px solid var(--creme-dk);
+      border-radius: 3px;
+      padding: 20px 22px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 10px rgba(122,37,53,.06);
     }
-    .barra-titulo {
-      font-weight: 700;
-      color: var(--marsala);
+    .barra-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 10px;
-      font-size: .9rem;
+    }
+    .barra-label {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: .95rem;
+      color: var(--marsala);
+    }
+    .barra-pct {
+      font-size: .78rem;
+      color: var(--ouro);
+      font-weight: 700;
+      letter-spacing: .05em;
     }
     .barra-bg {
       background: var(--creme-dk);
-      border-radius: 50px;
-      height: 18px;
+      border-radius: 2px;
+      height: 12px;
       overflow: hidden;
       position: relative;
     }
     .barra-fill {
       height: 100%;
-      border-radius: 50px;
-      background: linear-gradient(90deg, var(--marsala), #c9a86c);
-      transition: width .6s ease;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--marsala), var(--ouro), var(--marsala-cl));
+      background-size: 200% 100%;
+      transition: width .8s cubic-bezier(.4,0,.2,1);
+      animation: shimmer 3s ease infinite;
     }
-    .barra-pct {
-      font-size: .82rem;
-      color: #9a7a50;
-      font-weight: 700;
-      margin-top: 6px;
-      text-align: right;
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
-    /* ── TABELA ── */
+    /* ═══════════════════════════════════════
+       GRID ATIVIDADE RECENTE (2 colunas)
+    ═══════════════════════════════════════ */
+    .grid-atividade {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-bottom: 28px;
+    }
+
+    .painel-card {
+      background: linear-gradient(160deg, #fdf8f0, var(--creme-md));
+      border: 1px solid var(--creme-dk);
+      border-radius: 3px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(122,37,53,.06);
+    }
+    .painel-card-header {
+      background: linear-gradient(135deg, var(--marsala), #5a1a26);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .painel-card-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: .95rem;
+      color: var(--ouro-pale);
+      letter-spacing: .03em;
+    }
+    .painel-card-header .badge-cont {
+      font-size: .68rem;
+      background: rgba(255,255,255,.15);
+      color: var(--ouro-pale);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 50px;
+      padding: 2px 9px;
+      font-weight: 700;
+    }
+    .painel-card-body { padding: 0; }
+
+    /* item de atividade */
+    .ativ-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 13px 18px;
+      border-bottom: 1px solid rgba(201,168,108,.12);
+      transition: background .15s;
+    }
+    .ativ-item:last-child { border-bottom: none; }
+    .ativ-item:hover { background: rgba(201,168,108,.06); }
+    .ativ-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--marsala-cl), var(--marsala));
+      display: flex; align-items: center; justify-content: center;
+      font-size: .88rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(122,37,53,.2);
+    }
+    .ativ-info { flex: 1; min-width: 0; }
+    .ativ-nome {
+      font-weight: 700;
+      font-size: .84rem;
+      color: var(--marsala);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ativ-presente {
+      font-size: .75rem;
+      color: var(--texto-cl);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ativ-msg {
+      font-size: .75rem;
+      color: var(--texto-cl);
+      margin-top: 4px;
+      font-style: italic;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .ativ-data {
+      font-size: .68rem;
+      color: var(--ouro);
+      font-weight: 700;
+      white-space: nowrap;
+      margin-top: 2px;
+      letter-spacing: .03em;
+    }
+    .ativ-vazio {
+      padding: 28px;
+      text-align: center;
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+      color: var(--creme-dk);
+      font-size: .9rem;
+    }
+
+    /* ═══════════════════════════════════════
+       TABELA PRESENTES
+    ═══════════════════════════════════════ */
     .topo-tabela {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
       gap: 10px;
     }
-    .topo-tabela h2 {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.1rem;
-      color: var(--marsala);
-    }
     .btn-csv {
-      background: linear-gradient(135deg, #2e7ea8, #1a5c80);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--azul), #1a5c80);
       color: white;
       border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
+      border-radius: 4px;
+      padding: 8px 18px;
       font-family: 'Quicksand', sans-serif;
-      font-size: .82rem;
+      font-size: .8rem;
       font-weight: 700;
       cursor: pointer;
-      transition: opacity .2s;
+      transition: opacity .2s, transform .15s;
+      letter-spacing: .04em;
     }
-    .btn-csv:hover { opacity: .88; }
+    .btn-csv:hover { opacity: .88; transform: translateY(-1px); }
 
     .tabela-wrap {
-      overflow-x: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 14px rgba(122,37,53,.08);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 3px 14px rgba(122,37,53,.08);
+      border: 1px solid var(--creme-dk);
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
-      font-size: .85rem;
+      background: var(--creme);
+      font-size: .84rem;
     }
     thead tr {
-      background: linear-gradient(135deg, var(--marsala), #5a1a26);
-      color: white;
+      background: linear-gradient(135deg, #2a0d15, #3e1220);
     }
     thead th {
-      padding: 12px 14px;
+      padding: 13px 16px;
       text-align: left;
       font-weight: 700;
-      font-size: .78rem;
+      font-size: .7rem;
       text-transform: uppercase;
-      letter-spacing: .06em;
+      letter-spacing: .1em;
+      color: var(--ouro-pale);
       white-space: nowrap;
     }
     tbody tr {
-      border-bottom: 1px solid rgba(201,168,108,.2);
-      transition: background .15s;
+      border-bottom: 1px solid rgba(201,168,108,.15);
+      transition: background .12s;
     }
-    tbody tr:hover { background: rgba(201,168,108,.08); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(201,168,108,.06); }
     tbody td {
-      padding: 11px 14px;
+      padding: 12px 16px;
       vertical-align: middle;
+      color: var(--texto);
     }
-    .badge-reservado {
-      display: inline-block;
-      background: rgba(122,37,53,.1);
-      color: var(--marsala);
-      border: 1px solid rgba(122,37,53,.2);
+    td.id-col { color: var(--creme-dk); font-weight: 700; font-size: .78rem; }
+    td.data-col { color: var(--texto-cl); font-size: .78rem; white-space: nowrap; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       border-radius: 50px;
       padding: 3px 10px;
-      font-size: .75rem;
+      font-size: .72rem;
       font-weight: 700;
-    }
-    .badge-livre {
-      display: inline-block;
-      background: rgba(46,126,168,.1);
-      color: var(--azul);
-      border: 1px solid rgba(46,126,168,.2);
-      border-radius: 50px;
-      padding: 3px 10px;
-      font-size: .75rem;
-      font-weight: 700;
-    }
-    .btn-cancelar-res {
-      background: transparent;
-      border: 1.5px solid #c9a86c;
-      color: #9a7a50;
-      border-radius: 6px;
-      padding: 5px 12px;
-      font-family: 'Quicksand', sans-serif;
-      font-size: .78rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background .15s;
+      letter-spacing: .04em;
       white-space: nowrap;
     }
-    .btn-cancelar-res:hover { background: rgba(201,168,108,.15); }
+    .badge-reservado { background: rgba(122,37,53,.08); color: var(--marsala); border: 1px solid rgba(122,37,53,.2); }
+    .badge-livre     { background: rgba(46,126,168,.08); color: var(--azul);   border: 1px solid rgba(46,126,168,.2); }
 
-    /* ── MENSAGENS ── */
+    .btn-cancelar-res {
+      background: transparent;
+      border: 1px solid rgba(201,168,108,.4);
+      color: var(--texto-cl);
+      border-radius: 4px;
+      padding: 5px 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .btn-cancelar-res:hover {
+      border-color: var(--marsala);
+      color: var(--marsala);
+      background: rgba(122,37,53,.05);
+    }
+
+    /* ═══════════════════════════════════════
+       MENSAGENS
+    ═══════════════════════════════════════ */
     .msg-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 16px;
     }
     .msg-card {
-      background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
-      border: 1.5px solid #c9a86c;
-      border-radius: 10px;
-      padding: 16px 18px;
-      box-shadow: 0 3px 10px rgba(122,37,53,.07);
+      background: linear-gradient(160deg, #fdf8f0, var(--creme-md));
+      border: 1px solid var(--creme-dk);
+      border-radius: 3px;
+      padding: 18px 20px;
+      box-shadow: 0 2px 8px rgba(122,37,53,.06);
+      position: relative;
+      transition: transform .2s, box-shadow .2s;
     }
-    .msg-card .msg-nome {
+    .msg-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(122,37,53,.1);
+    }
+    /* detalhe canto superior */
+    .msg-card::before {
+      content: '"';
+      position: absolute;
+      top: 10px; left: 14px;
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: var(--ouro);
+      opacity: .12;
+      line-height: 1;
+    }
+    .msg-card::after {
+      content: '✦';
+      position: absolute;
+      bottom: 10px; right: 12px;
+      font-size: .55rem;
+      color: var(--ouro);
+      opacity: .3;
+    }
+    .msg-nome {
       font-weight: 700;
       color: var(--marsala);
-      font-size: .9rem;
-      margin-bottom: 4px;
+      font-size: .88rem;
+      margin-bottom: 2px;
     }
-    .msg-card .msg-presente {
-      font-size: .75rem;
-      color: #9a7a50;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .msg-card .msg-texto {
-      font-size: .85rem;
-      color: var(--texto);
-      line-height: 1.5;
-      font-style: italic;
-    }
-    .msg-card .msg-data {
+    .msg-presente {
       font-size: .72rem;
-      color: #b09878;
-      margin-top: 8px;
-      font-weight: 600;
+      color: var(--ouro);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 10px;
     }
-
-    .vazio {
-      text-align: center;
-      color: #b09878;
-      padding: 40px;
-      font-style: italic;
+    .msg-texto {
       font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: .9rem;
+      color: var(--texto);
+      line-height: 1.6;
+    }
+    .msg-data {
+      font-size: .7rem;
+      color: var(--texto-cl);
+      margin-top: 10px;
+      font-weight: 600;
+      opacity: .6;
     }
 
+    /* ═══════════════════════════════════════
+       UTILITÁRIOS
+    ═══════════════════════════════════════ */
     .spin {
-      display: inline-block; width: 18px; height: 18px;
-      border: 3px solid rgba(122,37,53,.2);
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid rgba(122,37,53,.15);
       border-top-color: var(--marsala); border-radius: 50%;
       animation: girar .7s linear infinite;
       vertical-align: middle;
     }
     @keyframes girar { to { transform: rotate(360deg); } }
 
-    /* painel oculto (proteção) */
-    #painel { display: none; }
+    .vazio {
+      text-align: center;
+      color: var(--creme-dk);
+      padding: 36px;
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+      font-size: .9rem;
+    }
 
-    @media (max-width: 600px) {
-      .conteudo { padding: 14px; }
-      .header { padding: 12px 14px; }
-      .header-titulo { font-size: 1rem; }
-      .aba { padding: 11px 14px; font-size: .82rem; }
+    #painel { display: none; width: 100%; }
+
+    /* ═══════════════════════════════════════
+       ACESSO NEGADO
+    ═══════════════════════════════════════ */
+    #acesso-negado {
+      display: none;
+      min-height: 100vh; width: 100%;
+      align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px; text-align: center;
+      padding: 20px;
+      background: #1a0a0e;
+    }
+    .neg-icone { font-size: 3rem; filter: grayscale(.3); }
+    .neg-titulo {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--ouro-cl);
+    }
+    .neg-sub { color: rgba(212,170,80,.45); font-weight: 600; font-size: .88rem; }
+    .neg-btn {
+      margin-top: 8px;
+      background: linear-gradient(135deg, var(--marsala-md), var(--marsala));
+      color: var(--ouro-pale);
+      border-radius: 4px;
+      padding: 12px 28px;
+      text-decoration: none;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: .88rem;
+      letter-spacing: .06em;
+      transition: opacity .2s;
+    }
+    .neg-btn:hover { opacity: .88; }
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .cards-dash { grid-template-columns: repeat(2, 1fr); }
+      .grid-atividade { grid-template-columns: 1fr; }
+      .pagina { padding: 16px; }
+      .topbar { padding: 14px 16px; }
+    }
+    @media (max-width: 520px) {
       .cards-dash { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
 
+<!-- ACESSO NEGADO -->
+<div id="acesso-negado">
+  <div class="neg-icone">🔒</div>
+  <h2 class="neg-titulo">Acesso restrito</h2>
+  <p class="neg-sub">Você precisa fazer login para continuar.</p>
+  <a href="login.html" class="neg-btn">Ir para o Login</a>
+</div>
+
+<!-- PAINEL PRINCIPAL -->
 <div id="painel">
-  <!-- HEADER -->
-  <div class="header">
-    <span class="header-titulo">🎀 Painel Admin · Alice 15 Anos</span>
-    <div class="header-acoes">
-      <span class="refresh-info" id="refresh-info">Atualiza em 30s</span>
-      <button class="btn-sair" onclick="sair()">Sair</button>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">🎀</span>
+      <div class="brand-titulo">Alice 15 Anos</div>
+      <div class="brand-sub">Painel Administrativo</div>
     </div>
-  </div>
-
-  <!-- ABAS -->
-  <div class="abas">
-    <div class="aba ativa" id="aba-dash"       onclick="trocarAba('dash')">📊 Dashboard</div>
-    <div class="aba"       id="aba-presentes"  onclick="trocarAba('presentes')">🎁 Presentes</div>
-    <div class="aba"       id="aba-mensagens"  onclick="trocarAba('mensagens')">💌 Mensagens</div>
-  </div>
-
-  <!-- CONTEÚDO -->
-  <div class="conteudo">
-
-    <!-- ABA DASHBOARD -->
-    <div id="tab-dash">
-      <div class="cards-dash">
-        <div class="card-dash">
-          <div class="num" id="d-total">–</div>
-          <div class="label">Total de presentes</div>
-        </div>
-        <div class="card-dash">
-          <div class="num" id="d-reservados">–</div>
-          <div class="label">Reservados</div>
-        </div>
-        <div class="card-dash">
-          <div class="num" id="d-disponiveis">–</div>
-          <div class="label">Disponíveis</div>
-        </div>
-        <div class="card-dash">
-          <div class="num" id="d-mensagens">–</div>
-          <div class="label">Com mensagem</div>
-        </div>
+    <nav class="nav">
+      <div class="nav-item ativa" id="nav-dash"      onclick="trocarAba('dash')">
+        <span class="nav-icone">📊</span> Dashboard
       </div>
-      <div class="barra-wrap">
-        <div class="barra-titulo">🎁 Progresso das reservas</div>
-        <div class="barra-bg">
-          <div class="barra-fill" id="barra-fill" style="width:0%"></div>
-        </div>
-        <div class="barra-pct" id="barra-pct">0% reservado</div>
+      <div class="nav-item" id="nav-presentes" onclick="trocarAba('presentes')">
+        <span class="nav-icone">🎁</span> Presentes
       </div>
+      <div class="nav-item" id="nav-mensagens" onclick="trocarAba('mensagens')">
+        <span class="nav-icone">💌</span> Mensagens
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="refresh-badge" id="refresh-info">↻ Atualiza em 30s</div>
+      <button class="btn-sair" onclick="sair()">↩ Sair</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-titulo">
+        <span id="topbar-subtitulo">VISÃO GERAL</span>
+        <span id="topbar-nome">Dashboard</span>
+      </div>
+      <div class="topbar-ornamento">✦ ❧ ✦</div>
     </div>
 
-    <!-- ABA PRESENTES -->
-    <div id="tab-presentes" style="display:none;">
-      <div class="topo-tabela">
-        <h2>Lista de Presentes</h2>
-        <button class="btn-csv" onclick="exportarCSV()">⬇️ Exportar CSV</button>
-      </div>
-      <div class="tabela-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Presente</th>
-              <th>Status</th>
-              <th>Reservado por</th>
-              <th>Data da reserva</th>
-              <th>Ação</th>
-            </tr>
-          </thead>
-          <tbody id="tabela-corpo">
-            <tr><td colspan="6" class="vazio"><span class="spin"></span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <div class="pagina">
 
-    <!-- ABA MENSAGENS -->
-    <div id="tab-mensagens" style="display:none;">
-      <div class="topo-tabela">
-        <h2>Mensagens para a Alice 💌</h2>
-      </div>
-      <div class="msg-grid" id="msg-grid">
-        <div class="vazio"><span class="spin"></span></div>
-      </div>
-    </div>
+      <!-- ── ABA DASHBOARD ── -->
+      <div id="tab-dash">
 
-  </div>
-</div>
+        <div class="sec-titulo">
+          <h2>Números gerais</h2>
+          <div class="sec-linha"></div>
+          <div class="sec-ornamento">❧ ✦ ❧</div>
+        </div>
 
-<!-- tela de acesso negado -->
-<div id="acesso-negado" style="display:none; min-height:100vh; align-items:center; justify-content:center; flex-direction:column; gap:16px; text-align:center; padding:20px; background:#f5ede0;">
-  <div style="font-size:3rem;">🔒</div>
-  <h2 style="font-family:'Playfair Display',serif; font-style:italic; color:#7a2535;">Acesso restrito</h2>
-  <p style="color:#9a7a50; font-weight:600;">Você precisa fazer login para acessar o painel.</p>
-  <a href="login.html" style="background:linear-gradient(135deg,#9b3a4a,#7a2535); color:white; border-radius:8px; padding:12px 28px; text-decoration:none; font-family:'Quicksand',sans-serif; font-weight:700;">Ir para o Login</a>
-</div>
+        <div class="cards-dash">
+          <div class="card-dash tipo-total">
+            <div class="num" id="d-total">–</div>
+            <div class="label">Total de presentes</div>
+          </div>
+          <div class="card-dash tipo-res">
+            <div class="num" id="d-reservados">–</div>
+            <div class="label">Reservados</div>
+          </div>
+          <div class="card-dash tipo-disp">
+            <div class="num" id="d-disponiveis">–</div>
+            <div class="label">Disponíveis</div>
+          </div>
+          <div class="card-dash tipo-msg">
+            <div class="num" id="d-mensagens">–</div>
+            <div class="label">Com mensagem</div>
+          </div>
+        </div>
+
+        <div class="barra-card">
+          <div class="barra-header">
+            <span class="barra-label">🎁 Progresso das reservas</span>
+            <span class="barra-pct" id="barra-pct">0%</span>
+          </div>
+          <div class="barra-bg">
+            <div class="barra-fill" id="barra-fill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="sec-titulo">
+          <h2>Atividade recente</h2>
+          <div class="sec-linha"></div>
+          <div class="sec-ornamento">❧ ✦ ❧</div>
+        </div>
+
+        <div class="grid-atividade">
+          <!-- últimas reservas -->
+          <div class="painel-card">
+            <div class="painel-card-header">
+              <h3>🎀 Últimas reservas</h3>
+              <span class="badge-cont" id="badge-res-cont">–</span>
+            </div>
+            <div class="painel-card-body" id="ultimas-reservas">
+              <div class="ativ-vazio"><span class="spin"></span></div>
+            </div>
+          </div>
+          <!-- últimas mensagens -->
+          <div class="painel-card">
+            <div class="painel-card-header">
+              <h3>💌 Últimas mensagens</h3>
+              <span class="badge-cont" id="badge-msg-cont">–</span>
+            </div>
+            <div class="painel-card-body" id="ultimas-mensagens">
+              <div class="ativ-vazio"><span class="spin"></span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── ABA PRESENTES ── -->
+      <div id="tab-presentes" style="display:none;">
+        <div class="topo-tabela">
+          <div class="sec-titulo" style="margin-bottom:0; flex:1;">
+            <h2>Lista completa</h2>
+            <div class="sec-linha"></div>
+          </div>
+          <button class="btn-csv" onclick="exportarCSV()">⬇ Exportar CSV</button>
+        </div>
+        <div class="tabela-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Presente</th>
+                <th>Status</th>
+                <th>Reservado por</th>
+                <th>Data da reserva</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-corpo">
+              <tr><td colspan="6" class="vazio"><span class="spin"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── ABA MENSAGENS ── -->
+      <div id="tab-mensagens" style="display:none;">
+        <div class="sec-titulo">
+          <h2>Mensagens para a Alice</h2>
+          <div class="sec-linha"></div>
+          <div class="sec-ornamento">💌</div>
+        </div>
+        <div class="msg-grid" id="msg-grid">
+          <div class="vazio"><span class="spin"></span></div>
+        </div>
+      </div>
+
+    </div><!-- /pagina -->
+  </div><!-- /main -->
+
+</div><!-- /painel -->
 
 <script>
-  const SUPABASE_URL = 'https://abojdhxobsyrzyiacaqf.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFib2pkaHhvYnN5cnp5aWFjYXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMTAzOTAsImV4cCI6MjA5NjU4NjM5MH0.qPDwqe0vPKlJm5R1ATY1byTKc__PUPvvVyUbu4dAzWk';
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const sb = window.supabase.createClient(
+    'https://abojdhxobsyrzyiacaqf.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFib2pkaHhvYnN5cnp5aWFjYXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMTAzOTAsImV4cCI6MjA5NjU4NjM5MH0.qPDwqe0vPKlJm5R1ATY1byTKc__PUPvvVyUbu4dAzWk'
+  );
 
-  // ── Proteção de acesso ──
+  // ── Proteção ──
   (async () => {
     const autorizado = sessionStorage.getItem('admin_autorizado');
     const { data: { session } } = await sb.auth.getSession();
     if (!autorizado || !session) {
       document.getElementById('acesso-negado').style.display = 'flex';
+      document.body.style.display = 'flex';
       return;
     }
-    document.getElementById('painel').style.display = 'block';
+    document.getElementById('painel').style.display = 'flex';
+    document.body.style.display = 'flex';
     carregar();
     iniciarRefresh();
   })();
 
-  // ── Dados globais ──
   let todosPresentes = [];
 
-  // ── Carregar dados ──
+  // ── Carregar ──
   async function carregar() {
     const { data, error } = await sb.from('presentes').select('*').order('id', { ascending: true });
     if (error || !data) return;
@@ -448,25 +921,81 @@
     atualizarMensagens(data);
   }
 
-  function atualizarDashboard(data) {
-    const total      = data.length;
-    const reservados = data.filter(g => g.reservado).length;
-    const disponiveis = total - reservados;
-    const comMsg     = data.filter(g => g.mensagem && g.mensagem.trim()).length;
-    const pct        = total > 0 ? Math.round((reservados / total) * 100) : 0;
-
-    document.getElementById('d-total').textContent      = total;
-    document.getElementById('d-reservados').textContent = reservados;
-    document.getElementById('d-disponiveis').textContent = disponiveis;
-    document.getElementById('d-mensagens').textContent  = comMsg;
-    document.getElementById('barra-fill').style.width   = pct + '%';
-    document.getElementById('barra-pct').textContent    = pct + '% reservado';
-  }
-
   function formatarData(iso) {
     if (!iso) return '–';
     const d = new Date(iso);
-    return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString('pt-BR') + ' · ' +
+           d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function inicialDe(nome) {
+    return nome ? nome.trim()[0].toUpperCase() : '?';
+  }
+
+  function atualizarDashboard(data) {
+    const total      = data.length;
+    const reservados = data.filter(g => g.reservado);
+    const disponiveis = total - reservados.length;
+    const comMsg     = data.filter(g => g.mensagem && g.mensagem.trim()).length;
+    const pct        = total > 0 ? Math.round((reservados.length / total) * 100) : 0;
+
+    document.getElementById('d-total').textContent       = total;
+    document.getElementById('d-reservados').textContent  = reservados.length;
+    document.getElementById('d-disponiveis').textContent = disponiveis;
+    document.getElementById('d-mensagens').textContent   = comMsg;
+    document.getElementById('barra-fill').style.width    = pct + '%';
+    document.getElementById('barra-pct').textContent     = pct + '% reservado';
+
+    // Últimas reservas (ordenado por reservado_em desc, pega 5)
+    const ultRes = [...reservados]
+      .filter(g => g.reservado_em)
+      .sort((a, b) => new Date(b.reservado_em) - new Date(a.reservado_em))
+      .slice(0, 5);
+
+    document.getElementById('badge-res-cont').textContent = reservados.length;
+
+    const elRes = document.getElementById('ultimas-reservas');
+    if (!ultRes.length) {
+      elRes.innerHTML = '<div class="ativ-vazio">Nenhuma reserva ainda.</div>';
+    } else {
+      elRes.innerHTML = ultRes.map(g => `
+        <div class="ativ-item">
+          <div class="ativ-avatar">${inicialDe(g.nome_reservante)}</div>
+          <div class="ativ-info">
+            <div class="ativ-nome">${g.nome_reservante || '–'}</div>
+            <div class="ativ-presente">🎁 ${g.titulo}</div>
+            <div class="ativ-data">📅 ${formatarData(g.reservado_em)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Últimas mensagens (ordenado por reservado_em desc, pega 5)
+    const ultMsg = [...data]
+      .filter(g => g.mensagem && g.mensagem.trim() && g.reservado_em)
+      .sort((a, b) => new Date(b.reservado_em) - new Date(a.reservado_em))
+      .slice(0, 5);
+
+    document.getElementById('badge-msg-cont').textContent = comMsg;
+
+    const elMsg = document.getElementById('ultimas-mensagens');
+    if (!ultMsg.length) {
+      elMsg.innerHTML = '<div class="ativ-vazio">Nenhuma mensagem ainda.</div>';
+    } else {
+      elMsg.innerHTML = ultMsg.map(g => `
+        <div class="ativ-item">
+          <div class="ativ-avatar" style="background:linear-gradient(135deg,#b8922a,#7a5a10);">
+            ${inicialDe(g.nome_reservante)}
+          </div>
+          <div class="ativ-info">
+            <div class="ativ-nome">${g.nome_reservante || '–'}</div>
+            <div class="ativ-presente">🎁 ${g.titulo}</div>
+            <div class="ativ-msg">"${g.mensagem}"</div>
+            <div class="ativ-data">📅 ${formatarData(g.reservado_em)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
   }
 
   function atualizarTabela(data) {
@@ -477,32 +1006,35 @@
     }
     corpo.innerHTML = data.map(g => `
       <tr>
-        <td style="color:#b09878; font-weight:700;">${g.id}</td>
+        <td class="id-col">${g.id}</td>
         <td style="font-weight:700; max-width:200px;">${g.titulo}</td>
         <td>${g.reservado
-          ? '<span class="badge-reservado">🎀 Reservado</span>'
-          : '<span class="badge-livre">✅ Disponível</span>'}</td>
+          ? '<span class="badge badge-reservado">🎀 Reservado</span>'
+          : '<span class="badge badge-livre">✅ Disponível</span>'}</td>
         <td>${g.nome_reservante || '–'}</td>
-        <td style="white-space:nowrap; color:#9a7a50;">${formatarData(g.reservado_em)}</td>
+        <td class="data-col">${formatarData(g.reservado_em)}</td>
         <td>${g.reservado
-          ? `<button class="btn-cancelar-res" onclick="cancelarReserva(${g.id})">❌ Cancelar</button>`
+          ? `<button class="btn-cancelar-res" onclick="cancelarReserva(${g.id})">✕ Cancelar</button>`
           : '–'}</td>
       </tr>
     `).join('');
   }
 
   function atualizarMensagens(data) {
-    const comMsg = data.filter(g => g.reservado && g.mensagem && g.mensagem.trim());
+    const comMsg = [...data]
+      .filter(g => g.reservado && g.mensagem && g.mensagem.trim())
+      .sort((a, b) => new Date(b.reservado_em) - new Date(a.reservado_em));
+
     const grid = document.getElementById('msg-grid');
     if (!comMsg.length) {
-      grid.innerHTML = '<div class="vazio">Ainda não há mensagens. 💌</div>';
+      grid.innerHTML = '<div class="vazio" style="grid-column:1/-1;">Ainda não há mensagens. As mensagens aparecem aqui após as reservas. 💌</div>';
       return;
     }
     grid.innerHTML = comMsg.map(g => `
       <div class="msg-card">
         <div class="msg-nome">💙 ${g.nome_reservante}</div>
-        <div class="msg-presente">🎁 ${g.titulo}</div>
-        <div class="msg-texto">"${g.mensagem}"</div>
+        <div class="msg-presente">${g.titulo}</div>
+        <div class="msg-texto">${g.mensagem}</div>
         <div class="msg-data">📅 ${formatarData(g.reservado_em)}</div>
       </div>
     `).join('');
@@ -514,20 +1046,14 @@
     const { error } = await sb.from('presentes')
       .update({ reservado: false, nome_reservante: null, mensagem: null, reservado_em: null })
       .eq('id', id);
-    if (error) {
-      alert('Erro ao cancelar: ' + error.message);
-    } else {
-      await carregar();
-    }
+    if (error) { alert('Erro ao cancelar: ' + error.message); return; }
+    await carregar();
   }
 
   // ── Exportar CSV ──
   function exportarCSV() {
     const reservados = todosPresentes.filter(g => g.reservado);
-    if (!reservados.length) {
-      alert('Nenhum presente reservado ainda!');
-      return;
-    }
+    if (!reservados.length) { alert('Nenhum presente reservado ainda!'); return; }
     const header = ['ID', 'Presente', 'Reservado por', 'Mensagem', 'Data da reserva'];
     const linhas = reservados.map(g => [
       g.id,
@@ -536,20 +1062,25 @@
       `"${(g.mensagem || '').replace(/"/g, '""')}"`,
       formatarData(g.reservado_em)
     ].join(','));
-    const csv = [header.join(','), ...linhas].join('\n');
+    const csv  = [header.join(','), ...linhas].join('\n');
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url; a.download = 'reservas-alice15anos.csv';
-    a.click(); URL.revokeObjectURL(url);
+    const a    = document.createElement('a'); a.href = url;
+    a.download = 'reservas-alice15anos.csv'; a.click();
+    URL.revokeObjectURL(url);
   }
 
   // ── Abas ──
+  const abaLabels = { dash: 'Dashboard', presentes: 'Presentes', mensagens: 'Mensagens' };
+  const abaSubtitulos = { dash: 'VISÃO GERAL', presentes: 'GESTÃO', mensagens: 'CARINHO DA ALICE' };
+
   function trocarAba(aba) {
     ['dash','presentes','mensagens'].forEach(a => {
       document.getElementById('tab-' + a).style.display    = a === aba ? 'block' : 'none';
-      document.getElementById('aba-' + a).classList.toggle('ativa', a === aba);
+      document.getElementById('nav-' + a).classList.toggle('ativa', a === aba);
     });
+    document.getElementById('topbar-nome').textContent      = abaLabels[aba];
+    document.getElementById('topbar-subtitulo').textContent = abaSubtitulos[aba];
   }
 
   // ── Auto-refresh ──
@@ -557,14 +1088,14 @@
   function iniciarRefresh() {
     setInterval(async () => {
       contador--;
-      document.getElementById('refresh-info').textContent = `Atualiza em ${contador}s`;
+      const el = document.getElementById('refresh-info');
       if (contador <= 0) {
         contador = 30;
         await carregar();
-        document.getElementById('refresh-info').textContent = '✅ Atualizado!';
-        setTimeout(() => {
-          document.getElementById('refresh-info').textContent = 'Atualiza em 30s';
-        }, 2000);
+        el.textContent = '✅ Atualizado!';
+        setTimeout(() => { el.textContent = '↻ Atualiza em 30s'; }, 2000);
+      } else {
+        el.textContent = `↻ Atualiza em ${contador}s`;
       }
     }, 1000);
   }
