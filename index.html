@@ -693,7 +693,7 @@
                 ${qrHtml}
                 <div class="pix-box-chave">
                     <span class="pix-chave-label">${imgSrc ? 'ou copie a chave abaixo' : 'Chave Pix'}</span>
-                    <span class="pix-chave-valor">${chaveTexto}</span>
+                    <span class="pix-chave-valor" style="filter:blur(5px);user-select:none;letter-spacing:.12em;pointer-events:none;">••••••••••••</span>
                 </div>
                 <button class="pix-btn-copiar" onclick="copiarPix('${link.replace(/'/g,"\'")}', this)">
                     💙 Copiar chave Pix
