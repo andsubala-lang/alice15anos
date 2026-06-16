@@ -892,7 +892,8 @@
   // Chave publishable — leitura/escrita na tabela presentes
   const sb = window.supabase.createClient(
     'https://abojdhxobsyrzyiacaqf.supabase.co',
-    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
+    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t',
+    { auth: { persistSession: false } }
   );
 
   // ── Proteção ──
@@ -914,7 +915,16 @@
   // ── Carregar ──
   async function carregar() {
     const { data, error } = await sb.from('presentes').select('*').order('id', { ascending: true });
-    if (error || !data) return;
+    if (error) {
+      console.error('Supabase erro:', error.message);
+      ['d-total','d-reservados','d-disponiveis','d-mensagens'].forEach(id => {
+        document.getElementById(id).textContent = '!';
+      });
+      document.getElementById('ultimas-reservas').innerHTML =
+        `<div class="ativ-vazio" style="color:#c97080;">Erro: ${error.message}</div>`;
+      return;
+    }
+    if (!data) return;
     todosPresentes = data;
     atualizarDashboard(data);
     atualizarTabela(data);
