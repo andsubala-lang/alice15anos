@@ -7,742 +7,200 @@
   <title>Painel Admin · 15 Anos da Alice</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-
     :root {
-      --azul:        #5aafd6;
-      --azul-dk:     #2e7ea8;
-      --azul-dkk:    #1a5c80;
-      --azul-cl:     #a8d8ea;
-      --azul-bg:     #e3f4fb;
-      --azul-pale:   #f0f8ff;
-      --marsala:     #9b3a4a;
-      --marsala-dk:  #7a2535;
-      --marsala-cl:  #c97080;
-      --ouro:        #c9a84c;
-      --creme:       #fdf6e8;
-      --creme-md:    #f5e8cc;
-      --creme-dk:    #e2cda0;
-      --texto:       #1a3a4a;
-      --texto-cl:    #2e7ea8;
-      --sidebar-w:   220px;
+      --azul:     #5aafd6;
+      --azul-dk:  #2e7ea8;
+      --azul-cl:  #a8d8ea;
+      --azul-bg:  #e3f4fb;
+      --azul-pale:#f0f8ff;
+      --marsala:  #9b3a4a;
+      --marsala-dk:#7a2535;
+      --marsala-cl:#c97080;
+      --ouro:     #c9a84c;
+      --creme:    #fdf8f0;
+      --creme-md: #f5e8d4;
+      --texto:    #2c3e50;
+      --texto-cl: #6a4a30;
+      --sw:       220px;
     }
+    html, body { height:100%; }
+    body { font-family:'Quicksand',sans-serif; background:var(--azul-pale); color:var(--texto); display:flex; min-height:100vh; }
 
-    html, body { height: 100%; }
-
-    body {
-      font-family: 'Quicksand', sans-serif;
-      background: #e3f4fb;
-      color: #2c3e50;
-      color: var(--texto);
-      display: flex;
-      min-height: 100vh;
-    }
-
-    /* ═══════════════════════════════════════
-       SIDEBAR
-    ═══════════════════════════════════════ */
+    /* ══ SIDEBAR ══ */
     .sidebar {
-      width: var(--sidebar-w);
-      flex-shrink: 0;
-      background: linear-gradient(180deg, #2a0d15 0%, #1a0a0e 60%, #2a0d15 100%);
-      border-right: 2px solid rgba(90,175,214,.3);
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      top: 0; left: 0; bottom: 0;
-      z-index: 200;
-      overflow: hidden;
+      width:var(--sw); flex-shrink:0;
+      background: linear-gradient(160deg, var(--creme) 0%, var(--creme-md) 100%);
+      border-right: 2px solid var(--azul-cl);
+      display:flex; flex-direction:column;
+      position:fixed; top:0; left:0; bottom:0; z-index:200;
+      box-shadow: 3px 0 20px rgba(46,126,168,.1);
     }
-
-    /* ornamento lateral */
-    .sidebar::after {
-      content: '';
-      position: absolute;
-      top: 0; right: 0;
-      width: 2px; height: 100%;
-      background: linear-gradient(180deg,
-        transparent 0%,
-        #5aafd6 20%,
-        #a8d8ea 50%,
-        #5aafd6 80%,
-        transparent 100%);
-      opacity: .5;
-    }
-
     .sidebar-brand {
-      padding: 28px 20px 20px;
-      text-align: center;
-      border-bottom: 1px solid rgba(90,175,214,.15);
-      position: relative;
+      padding:28px 20px 20px; text-align:center;
+      border-bottom:1px solid var(--azul-cl);
+      position:relative;
     }
     .sidebar-brand::after {
-      content: '✦ ❧ ✦';
-      display: block;
-      font-size: .65rem;
-      color: #a8d8ea;
-      opacity: .5;
-      margin-top: 10px;
-      letter-spacing: .2em;
+      content:'❧ ♥ ❧'; display:block; font-size:.65rem;
+      color:var(--marsala); opacity:.4; margin-top:10px; letter-spacing:.15em;
     }
-    .brand-icon {
-      font-size: 2rem;
-      display: block;
-      margin-bottom: 8px;
-      filter: drop-shadow(0 0 12px rgba(184,146,42,.4));
-    }
-    .brand-titulo {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1rem;
-      color: #a8d8ea;
-      line-height: 1.3;
-      letter-spacing: .03em;
-    }
-    .brand-sub {
-      font-size: .65rem;
-      color: rgba(168,216,234,.4);
-      text-transform: uppercase;
-      letter-spacing: .15em;
-      margin-top: 3px;
-      font-weight: 700;
-    }
+    .brand-icon { font-size:2.2rem; display:block; margin-bottom:6px; }
+    .brand-titulo { font-family:'Playfair Display',serif; font-style:italic; font-size:1rem; color:var(--marsala); line-height:1.3; }
+    .brand-sub { font-size:.65rem; color:var(--azul-dk); text-transform:uppercase; letter-spacing:.15em; margin-top:3px; font-weight:700; opacity:.7; }
 
-    /* ornamentos verticais na sidebar */
-    .sidebar-ornamento {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 14px 0;
-    }
-    .sidebar-ornamento span {
-      width: 1px;
-      background: linear-gradient(180deg, transparent, var(--ouro-cl), transparent);
-      opacity: .3;
-    }
-
-    .nav { flex: 1; padding: 8px 0; }
+    .nav { flex:1; padding:10px 0; }
     .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 22px;
-      cursor: pointer;
-      transition: background .2s, color .2s;
-      color: rgba(168,216,234,.55);
-      font-weight: 700;
-      font-size: .85rem;
-      font-family: 'Quicksand', sans-serif;
-      letter-spacing: .03em;
-      position: relative;
-      border-left: 3px solid transparent;
+      display:flex; align-items:center; gap:10px;
+      padding:13px 22px; cursor:pointer;
+      color:var(--azul-dk); font-weight:700; font-size:.85rem;
+      border-left:3px solid transparent;
+      transition:all .2s; position:relative;
     }
-    .nav-item:hover {
-      background: rgba(90,175,214,.08);
-      color: #a8d8ea;
-    }
-    .nav-item.ativa {
-      color: #a8d8ea;
-      background: rgba(90,175,214,.12);
-      border-left-color: #5aafd6;
-    }
-    .nav-item.ativa::after {
-      content: '›';
-      position: absolute;
-      right: 18px;
-      font-size: 1.1rem;
-      color: #a8d8ea;
-      opacity: .6;
-    }
-    .nav-icone { font-size: 1rem; flex-shrink: 0; }
+    .nav-item:hover { background:rgba(90,175,214,.1); color:var(--marsala); }
+    .nav-item.ativa { background:rgba(90,175,214,.15); border-left-color:var(--marsala); color:var(--marsala); }
+    .nav-item.ativa::after { content:'›'; position:absolute; right:16px; font-size:1.2rem; color:var(--marsala); opacity:.5; }
+    .nav-icone { font-size:1rem; flex-shrink:0; }
 
-    .sidebar-footer {
-      padding: 16px 20px;
-      border-top: 1px solid rgba(90,175,214,.15);
-    }
-    .btn-sair {
-      width: 100%;
-      padding: 9px;
-      background: transparent;
-      border: 1px solid rgba(90,175,214,.25);
-      border-radius: 6px;
-      color: rgba(168,216,234,.5);
-      font-family: 'Quicksand', sans-serif;
-      font-size: .78rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all .2s;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-    }
-    .btn-sair:hover {
-      border-color: #a8d8ea;
-      color: #a8d8ea;
-      background: rgba(184,146,42,.08);
-    }
-    .refresh-badge {
-      text-align: center;
-      font-size: .68rem;
-      color: rgba(168,216,234,.35);
-      margin-bottom: 10px;
-      font-weight: 600;
-      letter-spacing: .04em;
-    }
+    .sidebar-footer { padding:16px 20px; border-top:1px solid var(--azul-cl); }
+    .refresh-badge { text-align:center; font-size:.68rem; color:var(--azul-dk); margin-bottom:10px; font-weight:700; opacity:.6; letter-spacing:.04em; }
+    .btn-sair { width:100%; padding:9px; background:transparent; border:1.5px solid var(--marsala-cl); border-radius:6px; color:var(--marsala); font-family:'Quicksand',sans-serif; font-size:.78rem; font-weight:700; cursor:pointer; transition:all .2s; letter-spacing:.05em; text-transform:uppercase; }
+    .btn-sair:hover { background:var(--marsala); color:white; }
 
-    /* ═══════════════════════════════════════
-       MAIN
-    ═══════════════════════════════════════ */
-    .main {
-      margin-left: var(--sidebar-w);
-      flex: 1;
-      background: #f0f8ff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    /* ══ MAIN ══ */
+    .main { margin-left:var(--sw); flex:1; background:var(--azul-pale); min-height:100vh; display:flex; flex-direction:column; }
 
     .topbar {
-      background: linear-gradient(160deg, var(--creme) 0%, var(--creme-md) 100%);
-      border-bottom: 2px solid #5aafd6;
-      padding: 18px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(122,37,53,.06);
+      background: linear-gradient(160deg, var(--creme), var(--creme-md));
+      border-bottom:2px solid var(--azul-cl);
+      padding:16px 32px; display:flex; align-items:center;
+      justify-content:space-between; position:sticky; top:0; z-index:100;
+      box-shadow:0 2px 12px rgba(46,126,168,.08);
     }
-    .topbar-titulo {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.4rem;
-      color: #2e7ea8;
-      letter-spacing: .02em;
-    }
-    .topbar-titulo span {
-      font-size: .78rem;
-      font-style: normal;
-      font-family: 'Quicksand', sans-serif;
-      color: #5aafd6;
-      opacity: .9;
-      display: block;
-      margin-top: 1px;
-      font-weight: 600;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .topbar-ornamento {
-      font-size: .75rem;
-      color: #5aafd6;
-      opacity: .7;
-      letter-spacing: .15em;
-    }
+    .topbar-titulo { font-family:'Playfair Display',serif; font-style:italic; font-size:1.4rem; color:var(--marsala); }
+    .topbar-titulo span { font-size:.72rem; font-style:normal; font-family:'Quicksand',sans-serif; color:var(--azul-dk); display:block; margin-top:2px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; opacity:.7; }
+    .topbar-ornamento { font-size:.78rem; color:var(--marsala); opacity:.35; letter-spacing:.2em; }
 
-    .pagina { padding: 28px 32px 48px; flex: 1; }
+    .pagina { padding:28px 32px 48px; flex:1; }
 
-    /* ═══════════════════════════════════════
-       SEÇÃO TITULO DECORADO
-    ═══════════════════════════════════════ */
-    .sec-titulo {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 22px;
-    }
-    .sec-titulo h2 {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.2rem;
-      color: #2e7ea8;
-      white-space: nowrap;
-    }
-    .sec-linha {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, #5aafd6, transparent);
-    }
-    .sec-ornamento {
-      font-size: .7rem;
-      color: #5aafd6;
-      opacity: .7;
-      white-space: nowrap;
-    }
+    /* ══ SEÇÃO TÍTULO ══ */
+    .sec-titulo { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
+    .sec-titulo h2 { font-family:'Playfair Display',serif; font-style:italic; font-size:1.15rem; color:var(--marsala); white-space:nowrap; }
+    .sec-linha { flex:1; height:1px; background:linear-gradient(90deg,var(--azul-cl),transparent); }
+    .sec-orn { font-size:.7rem; color:var(--azul); opacity:.5; }
 
-    /* ═══════════════════════════════════════
-       CARDS DASHBOARD
-    ═══════════════════════════════════════ */
-    .cards-dash {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-bottom: 28px;
-    }
+    /* ══ CARDS DASH ══ */
+    .cards-dash { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
     .card-dash {
-      background: linear-gradient(160deg, #ffffff, #e3f4fb);
-      border: 1px solid #a8d8ea;
-      border-radius: 3px;
-      padding: 20px 16px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 2px 10px rgba(122,37,53,.06);
-      transition: transform .2s, box-shadow .2s;
+      background:linear-gradient(160deg,var(--creme),var(--creme-md));
+      border:1.5px solid var(--azul-cl); border-radius:8px;
+      padding:22px 16px; text-align:center; position:relative; overflow:hidden;
+      box-shadow:0 3px 12px rgba(46,126,168,.08); transition:transform .2s,box-shadow .2s;
     }
-    .card-dash:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(122,37,53,.1);
-    }
-    /* faixa superior colorida por tipo */
-    .card-dash::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-    }
-    .card-dash.tipo-total::before  { background: linear-gradient(90deg, var(--marsala), var(--ouro)); }
-    .card-dash.tipo-res::before    { background: linear-gradient(90deg, #9b3a4a, #c97080); }
-    .card-dash.tipo-disp::before   { background: linear-gradient(90deg, #2e7ea8, #5aafd6); }
-    .card-dash.tipo-msg::before    { background: linear-gradient(90deg, #9b3a4a, #c97080); }
+    .card-dash:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(46,126,168,.14); }
+    .card-dash::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; }
+    .card-dash.t1::before { background:linear-gradient(90deg,var(--azul-dk),var(--azul)); }
+    .card-dash.t2::before { background:linear-gradient(90deg,var(--marsala),var(--marsala-cl)); }
+    .card-dash.t3::before { background:linear-gradient(90deg,var(--azul),var(--azul-cl)); }
+    .card-dash.t4::before { background:linear-gradient(90deg,var(--marsala-cl),var(--ouro)); }
+    .card-dash::after { content:'✦'; position:absolute; bottom:8px; right:10px; font-size:.55rem; color:var(--azul-cl); opacity:.6; }
+    .card-dash .num { font-family:'Playfair Display',serif; font-size:2.8rem; color:var(--azul-dk); font-weight:700; line-height:1; margin-bottom:6px; }
+    .card-dash .label { font-size:.68rem; color:var(--azul-dk); font-weight:700; text-transform:uppercase; letter-spacing:.1em; opacity:.7; }
 
-    /* cantos decorativos */
-    .card-dash::after {
-      content: '✦';
-      position: absolute;
-      bottom: 8px; right: 10px;
-      font-size: .55rem;
-      color: #5aafd6;
-      opacity: .4;
-    }
-    .card-dash .num {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.8rem;
-      color: #2e7ea8;
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .card-dash .label {
-      font-size: .68rem;
-      color: #2e7ea8;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-    }
+    /* ══ BARRA PROGRESSO ══ */
+    .barra-card { background:linear-gradient(160deg,var(--creme),var(--creme-md)); border:1.5px solid var(--azul-cl); border-radius:8px; padding:20px 24px; margin-bottom:24px; box-shadow:0 3px 12px rgba(46,126,168,.08); }
+    .barra-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    .barra-label { font-family:'Playfair Display',serif; font-style:italic; font-size:1rem; color:var(--marsala); }
+    .barra-pct { font-size:.82rem; color:var(--azul-dk); font-weight:700; }
+    .barra-bg { background:var(--azul-bg); border-radius:50px; height:12px; overflow:hidden; }
+    .barra-fill { height:100%; border-radius:50px; background:linear-gradient(90deg,var(--azul-dk),var(--azul),var(--marsala-cl)); background-size:200% 100%; transition:width .8s cubic-bezier(.4,0,.2,1); animation:shimmer 3s ease infinite; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-    /* barra de progresso */
-    .barra-card {
-      background: linear-gradient(160deg, #ffffff, #e3f4fb);
-      border: 1px solid #a8d8ea;
-      border-radius: 3px;
-      padding: 20px 22px;
-      margin-bottom: 28px;
-      box-shadow: 0 2px 10px rgba(122,37,53,.06);
-    }
-    .barra-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    .barra-label {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1rem;
-      color: #2e7ea8;
-    }
-    .barra-pct {
-      font-size: .78rem;
-      color: var(--azul-dk);
-      font-weight: 700;
-      letter-spacing: .05em;
-    }
-    .barra-bg {
-      background: #a8d8ea;
-      border-radius: 2px;
-      height: 12px;
-      overflow: hidden;
-      position: relative;
-    }
-    .barra-fill {
-      height: 100%;
-      border-radius: 2px;
-      background: linear-gradient(90deg, var(--marsala), var(--ouro), var(--marsala-cl));
-      background-size: 200% 100%;
-      transition: width .8s cubic-bezier(.4,0,.2,1);
-      animation: shimmer 3s ease infinite;
-    }
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
+    /* ══ ATIVIDADE RECENTE ══ */
+    .grid-ativ { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px; }
+    .painel-card { background:linear-gradient(160deg,var(--creme),var(--creme-md)); border:1.5px solid var(--azul-cl); border-radius:8px; overflow:hidden; box-shadow:0 3px 12px rgba(46,126,168,.08); }
+    .painel-header { padding:13px 18px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--azul-cl); }
+    .painel-header h3 { font-family:'Playfair Display',serif; font-style:italic; font-size:.95rem; color:var(--marsala); }
+    .badge-cont { font-size:.7rem; background:var(--marsala); color:white; border-radius:50px; padding:2px 10px; font-weight:700; }
+    .ativ-item { display:flex; align-items:flex-start; gap:12px; padding:13px 18px; border-bottom:1px solid rgba(90,175,214,.1); transition:background .15s; }
+    .ativ-item:last-child { border-bottom:none; }
+    .ativ-item:hover { background:rgba(90,175,214,.06); }
+    .ativ-av { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--marsala-cl),var(--marsala)); display:flex; align-items:center; justify-content:center; font-size:.9rem; font-weight:700; color:white; flex-shrink:0; box-shadow:0 2px 6px rgba(122,37,53,.2); font-family:'Playfair Display',serif; }
+    .ativ-av.msg { background:linear-gradient(135deg,var(--azul),var(--azul-dk)); }
+    .ativ-info { flex:1; min-width:0; }
+    .ativ-nome { font-weight:700; font-size:.84rem; color:var(--marsala); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .ativ-presente { font-size:.75rem; color:var(--azul-dk); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .ativ-msg { font-size:.75rem; color:var(--texto-cl); margin-top:4px; font-style:italic; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .ativ-data { font-size:.68rem; color:var(--azul); font-weight:700; margin-top:3px; }
+    .ativ-vazio { padding:28px; text-align:center; font-family:'Playfair Display',serif; font-style:italic; color:var(--azul-cl); font-size:.9rem; }
 
-    /* ═══════════════════════════════════════
-       GRID ATIVIDADE RECENTE (2 colunas)
-    ═══════════════════════════════════════ */
-    .grid-atividade {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-      margin-bottom: 28px;
-    }
+    /* ══ TABELA ══ */
+    .topo-tab { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px; }
+    .btn-csv { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg,var(--azul-dk),var(--azul)); color:white; border:none; border-radius:6px; padding:9px 18px; font-family:'Quicksand',sans-serif; font-size:.82rem; font-weight:700; cursor:pointer; transition:opacity .2s,transform .15s; box-shadow:0 3px 10px rgba(46,126,168,.2); }
+    .btn-csv:hover { opacity:.88; transform:translateY(-1px); }
+    .tab-wrap { border-radius:8px; overflow:hidden; box-shadow:0 3px 14px rgba(46,126,168,.1); border:1.5px solid var(--azul-cl); }
+    table { width:100%; border-collapse:collapse; background:var(--creme); font-size:.84rem; }
+    thead tr { background:linear-gradient(135deg,var(--azul-dk),var(--azul)); }
+    thead th { padding:13px 16px; text-align:left; font-weight:700; font-size:.7rem; text-transform:uppercase; letter-spacing:.1em; color:white; white-space:nowrap; }
+    tbody tr { border-bottom:1px solid rgba(90,175,214,.12); transition:background .12s; }
+    tbody tr:nth-child(even) { background:var(--azul-bg); }
+    tbody tr:hover { background:rgba(90,175,214,.12) !important; }
+    tbody td { padding:12px 16px; vertical-align:middle; }
+    .badge { display:inline-flex; align-items:center; gap:4px; border-radius:50px; padding:3px 10px; font-size:.72rem; font-weight:700; white-space:nowrap; }
+    .badge-res  { background:rgba(122,37,53,.08); color:var(--marsala); border:1px solid rgba(122,37,53,.2); }
+    .badge-disp { background:rgba(46,126,168,.08); color:var(--azul-dk); border:1px solid rgba(46,126,168,.2); }
+    .btn-acao { background:transparent; border:1.5px solid var(--azul-cl); color:var(--azul-dk); border-radius:6px; padding:5px 12px; font-family:'Quicksand',sans-serif; font-size:.75rem; font-weight:700; cursor:pointer; transition:all .15s; white-space:nowrap; }
+    .btn-acao:hover { border-color:var(--azul-dk); background:rgba(46,126,168,.08); }
+    .btn-acao.cancelar { border-color:var(--marsala-cl); color:var(--marsala); }
+    .btn-acao.cancelar:hover { background:rgba(122,37,53,.07); }
 
-    .painel-card {
-      background: linear-gradient(160deg, #ffffff, #e3f4fb);
-      border: 1px solid #a8d8ea;
-      border-radius: 3px;
-      overflow: hidden;
-      box-shadow: 0 2px 10px rgba(122,37,53,.06);
-    }
-    .painel-card-header {
-      background: linear-gradient(135deg, var(--marsala), #5a1a26);
-      padding: 12px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .painel-card-header h3 {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1rem;
-      color: #ffffff;
-      letter-spacing: .03em;
-    }
-    .painel-card-header .badge-cont {
-      font-size: .68rem;
-      background: rgba(255,255,255,.15);
-      color: var(--ouro-pale);
-      border: 1px solid rgba(255,255,255,.2);
-      border-radius: 50px;
-      padding: 2px 9px;
-      font-weight: 700;
-    }
-    .painel-card-body { padding: 0; }
+    /* ══ MENSAGENS ══ */
+    .msg-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+    .msg-card { background:linear-gradient(160deg,var(--creme),var(--creme-md)); border:1.5px solid var(--azul-cl); border-radius:8px; padding:18px 20px; box-shadow:0 3px 10px rgba(46,126,168,.07); position:relative; transition:transform .2s,box-shadow .2s; }
+    .msg-card:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(46,126,168,.12); }
+    .msg-card::before { content:'"'; position:absolute; top:8px; left:12px; font-family:'Playfair Display',serif; font-size:3rem; color:var(--azul-cl); opacity:.4; line-height:1; }
+    .msg-nome { font-weight:700; color:var(--marsala); font-size:.88rem; margin-bottom:2px; }
+    .msg-presente { font-size:.72rem; color:var(--azul-dk); font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; opacity:.8; }
+    .msg-texto { font-family:'Playfair Display',serif; font-style:italic; font-size:.9rem; color:var(--texto); line-height:1.6; }
+    .msg-data { font-size:.7rem; color:var(--azul); margin-top:10px; font-weight:600; }
 
-    /* item de atividade */
-    .ativ-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 13px 18px;
-      border-bottom: 1px solid rgba(90,175,214,.12);
-      transition: background .15s;
-    }
-    .ativ-item:last-child { border-bottom: none; }
-    .ativ-item:hover { background: rgba(90,175,214,.08); }
-    .ativ-avatar {
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--marsala-cl), var(--marsala));
-      display: flex; align-items: center; justify-content: center;
-      font-size: .88rem;
-      flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(122,37,53,.2);
-    }
-    .ativ-info { flex: 1; min-width: 0; }
-    .ativ-nome {
-      font-weight: 700;
-      font-size: .84rem;
-      color: var(--azul-dk);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .ativ-presente {
-      font-size: .75rem;
-      color: var(--texto-cl);
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .ativ-msg {
-      font-size: .75rem;
-      color: var(--texto-cl);
-      margin-top: 4px;
-      font-style: italic;
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .ativ-data {
-      font-size: .68rem;
-      color: var(--azul);
-      font-weight: 700;
-      white-space: nowrap;
-      margin-top: 2px;
-      letter-spacing: .03em;
-    }
-    .ativ-vazio {
-      padding: 28px;
-      text-align: center;
-      font-style: italic;
-      font-family: 'Playfair Display', serif;
-      color: #a8d8ea;
-      font-size: .9rem;
-    }
+    /* ══ MODAL EDIÇÃO ══ */
+    .modal-ov { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:300; align-items:center; justify-content:center; padding:20px; }
+    .modal-ov.ativo { display:flex; }
+    .modal-box { background:linear-gradient(160deg,var(--creme),var(--creme-md)); border:2px solid var(--azul-cl); border-radius:12px; padding:28px 26px; max-width:440px; width:100%; box-shadow:0 12px 50px rgba(0,0,0,.2); }
+    .modal-box h3 { font-family:'Playfair Display',serif; font-style:italic; font-size:1.15rem; color:var(--marsala); margin-bottom:18px; }
+    .campo-edit { display:flex; flex-direction:column; gap:4px; margin-bottom:12px; }
+    .campo-edit label { font-size:.72rem; font-weight:700; color:var(--azul-dk); text-transform:uppercase; letter-spacing:.07em; }
+    .campo-edit input { padding:9px 12px; border:1.5px solid var(--azul-cl); border-radius:6px; font-family:'Quicksand',sans-serif; font-size:.88rem; font-weight:600; color:var(--texto); outline:none; transition:border-color .2s; background:white; }
+    .campo-edit input:focus { border-color:var(--azul-dk); }
+    .modal-btns { display:flex; gap:10px; margin-top:16px; }
+    .modal-btns button { flex:1; padding:11px; border-radius:7px; font-family:'Quicksand',sans-serif; font-size:.88rem; font-weight:700; cursor:pointer; }
+    .btn-salvar { background:linear-gradient(135deg,var(--marsala),var(--marsala-dk)); color:white; border:none; box-shadow:0 3px 12px rgba(122,37,53,.2); }
+    .btn-cancelar-modal { background:transparent; border:1.5px solid var(--azul-cl); color:var(--azul-dk); }
 
-    /* ═══════════════════════════════════════
-       TABELA PRESENTES
-    ═══════════════════════════════════════ */
-    .topo-tabela {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .btn-csv {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, var(--azul), #1a5c80);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 8px 18px;
-      font-family: 'Quicksand', sans-serif;
-      font-size: .8rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity .2s, transform .15s;
-      letter-spacing: .04em;
-    }
-    .btn-csv:hover { opacity: .88; transform: translateY(-1px); }
+    /* ══ UTILITÁRIOS ══ */
+    .spin { display:inline-block; width:16px; height:16px; border:2px solid rgba(46,126,168,.2); border-top-color:var(--azul-dk); border-radius:50%; animation:girar .7s linear infinite; vertical-align:middle; }
+    @keyframes girar { to{transform:rotate(360deg)} }
+    .vazio { text-align:center; color:var(--azul-cl); padding:36px; font-style:italic; font-family:'Playfair Display',serif; font-size:.9rem; }
+    #painel { display:none; width:100%; }
 
-    .tabela-wrap {
-      border-radius: 4px;
-      overflow: hidden;
-      box-shadow: 0 3px 14px rgba(122,37,53,.08);
-      border: 1px solid #a8d8ea;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #f0f8ff;
-      font-size: .84rem;
-    }
-    thead tr {
-      background: linear-gradient(135deg, #2a0d15, #3e1220);
-    }
-    thead th {
-      padding: 13px 16px;
-      text-align: left;
-      font-weight: 700;
-      font-size: .7rem;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      color: var(--ouro-pale);
-      white-space: nowrap;
-    }
-    tbody tr {
-      border-bottom: 1px solid rgba(201,168,108,.15);
-      transition: background .12s;
-    }
-    tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: rgba(201,168,108,.06); }
-    tbody td {
-      padding: 12px 16px;
-      vertical-align: middle;
-      color: var(--texto);
-    }
-    td.id-col { color: var(--creme-dk); font-weight: 700; font-size: .78rem; }
-    td.data-col { color: var(--texto-cl); font-size: .78rem; white-space: nowrap; }
+    /* ══ ACESSO NEGADO ══ */
+    #acesso-negado { display:none; min-height:100vh; width:100%; align-items:center; justify-content:center; flex-direction:column; padding:20px; background:linear-gradient(160deg,var(--azul-bg),var(--azul-cl)); }
+    .neg-card { background:white; border-radius:16px; padding:48px 40px; text-align:center; box-shadow:0 12px 48px rgba(46,126,168,.18); border:2px solid var(--azul); max-width:380px; width:100%; }
+    .neg-card .icone { font-size:3rem; display:block; margin-bottom:12px; }
+    .neg-titulo { font-family:'Playfair Display',serif; font-style:italic; font-size:1.7rem; color:var(--marsala); margin-bottom:10px; }
+    .neg-sub { color:var(--azul-dk); font-weight:600; font-size:.9rem; line-height:1.5; }
+    .neg-btn { display:inline-block; margin-top:24px; background:linear-gradient(135deg,var(--marsala),var(--marsala-dk)); color:white; border-radius:8px; padding:13px 36px; text-decoration:none; font-family:'Quicksand',sans-serif; font-weight:700; font-size:.92rem; transition:opacity .2s,transform .15s; box-shadow:0 4px 14px rgba(122,37,53,.25); }
+    .neg-btn:hover { opacity:.88; transform:translateY(-1px); }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      border-radius: 50px;
-      padding: 3px 10px;
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: .04em;
-      white-space: nowrap;
-    }
-    .badge-reservado { background: rgba(122,37,53,.08); color: var(--marsala); border: 1px solid rgba(122,37,53,.2); }
-    .badge-livre     { background: rgba(90,175,214,.12); color: #1a5c80; border: 1px solid rgba(90,175,214,.3); }
-
-    .btn-cancelar-res {
-      background: transparent;
-      border: 1px solid rgba(201,168,108,.4);
-      color: var(--texto-cl);
-      border-radius: 4px;
-      padding: 5px 12px;
-      font-family: 'Quicksand', sans-serif;
-      font-size: .75rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all .15s;
-      white-space: nowrap;
-    }
-    .btn-cancelar-res:hover {
-      border-color: var(--marsala);
-      color: var(--marsala);
-      background: rgba(122,37,53,.05);
-    }
-
-    /* ═══════════════════════════════════════
-       MENSAGENS
-    ═══════════════════════════════════════ */
-    .msg-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 16px;
-    }
-    .msg-card {
-      background: linear-gradient(160deg, #ffffff, #e3f4fb);
-      border: 1px solid #a8d8ea;
-      border-radius: 3px;
-      padding: 18px 20px;
-      box-shadow: 0 2px 8px rgba(122,37,53,.06);
-      position: relative;
-      transition: transform .2s, box-shadow .2s;
-    }
-    .msg-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(122,37,53,.1);
-    }
-    /* detalhe canto superior */
-    .msg-card::before {
-      content: '"';
-      position: absolute;
-      top: 10px; left: 14px;
-      font-family: 'Playfair Display', serif;
-      font-size: 3rem;
-      color: #5aafd6;
-      opacity: .15;
-      line-height: 1;
-    }
-    .msg-card::after {
-      content: '✦';
-      position: absolute;
-      bottom: 10px; right: 12px;
-      font-size: .55rem;
-      color: #5aafd6;
-      opacity: .4;
-    }
-    .msg-nome {
-      font-weight: 700;
-      color: var(--azul-dk);
-      font-size: .88rem;
-      margin-bottom: 2px;
-    }
-    .msg-presente {
-      font-size: .72rem;
-      color: var(--marsala);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      margin-bottom: 10px;
-    }
-    .msg-texto {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: .9rem;
-      color: #2c3e50;
-      line-height: 1.6;
-    }
-    .msg-data {
-      font-size: .7rem;
-      color: var(--texto-cl);
-      margin-top: 10px;
-      font-weight: 600;
-      opacity: .6;
-    }
-
-    /* ═══════════════════════════════════════
-       UTILITÁRIOS
-    ═══════════════════════════════════════ */
-    .spin {
-      display: inline-block; width: 16px; height: 16px;
-      border: 2px solid rgba(122,37,53,.15);
-      border-top-color: var(--marsala); border-radius: 50%;
-      animation: girar .7s linear infinite;
-      vertical-align: middle;
-    }
-    @keyframes girar { to { transform: rotate(360deg); } }
-
-    .vazio {
-      text-align: center;
-      color: var(--creme-dk);
-      padding: 36px;
-      font-style: italic;
-      font-family: 'Playfair Display', serif;
-      font-size: .9rem;
-    }
-
-    #painel { display: none; width: 100%; }
-
-    /* ═══════════════════════════════════════
-       ACESSO NEGADO
-    ═══════════════════════════════════════ */
-        #acesso-negado {
-      display: none;
-      min-height: 100vh; width: 100%;
-      align-items: center; justify-content: center;
-      flex-direction: column; text-align: center;
-      padding: 20px;
-      background: linear-gradient(160deg, #e3f4fb 0%, #a8d8ea 100%);
-    }
-    .neg-card {
-      background: white;
-      border-radius: 16px;
-      padding: 48px 40px;
-      box-shadow: 0 12px 48px rgba(46,126,168,.18);
-      border: 2px solid #5aafd6;
-      max-width: 380px;
-      width: 100%;
-    }
-    .neg-icone { font-size: 3rem; display: block; margin-bottom: 12px; }
-    .neg-titulo {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.7rem;
-      color: #9b3a4a;
-      margin-bottom: 10px;
-    }
-    .neg-sub { color: #2e7ea8; font-weight: 600; font-size: .9rem; line-height: 1.5; }
-    .neg-btn {
-      display: inline-block;
-      margin-top: 24px;
-      background: linear-gradient(135deg, #9b3a4a, #7a2535);
-      color: white;
-      border-radius: 8px;
-      padding: 13px 36px;
-      text-decoration: none;
-      font-family: 'Quicksand', sans-serif;
-      font-weight: 700;
-      font-size: .92rem;
-      letter-spacing: .04em;
-      transition: opacity .2s, transform .15s;
-      box-shadow: 0 4px 14px rgba(122,37,53,.25);
-    }
-    .neg-btn:hover { opacity: .88; transform: translateY(-1px); }
-
-    /* ═══════════════════════════════════════
-       RESPONSIVE
-    ═══════════════════════════════════════ */
-    @media (max-width: 900px) {
-      .sidebar { display: none; }
-      .main { margin-left: 0; }
-      .cards-dash { grid-template-columns: repeat(2, 1fr); }
-      .grid-atividade { grid-template-columns: 1fr; }
-      .pagina { padding: 16px; }
-      .topbar { padding: 14px 16px; }
-    }
-    @media (max-width: 520px) {
-      .cards-dash { grid-template-columns: repeat(2, 1fr); }
+    /* ══ RESPONSIVE ══ */
+    @media (max-width:900px) {
+      .sidebar { display:none; } .main { margin-left:0; }
+      .cards-dash { grid-template-columns:repeat(2,1fr); }
+      .grid-ativ { grid-template-columns:1fr; }
+      .pagina { padding:16px; } .topbar { padding:14px 16px; }
     }
   </style>
 </head>
@@ -751,17 +209,15 @@
 <!-- ACESSO NEGADO -->
 <div id="acesso-negado">
   <div class="neg-card">
-    <span class="neg-icone">🔒</span>
+    <span class="icone">🔒</span>
     <h2 class="neg-titulo">Acesso restrito</h2>
     <p class="neg-sub">Você precisa fazer login para acessar o painel da Alice.</p>
     <a href="login.html" class="neg-btn">🎀 Ir para o Login</a>
   </div>
 </div>
 
-<!-- PAINEL PRINCIPAL -->
+<!-- PAINEL -->
 <div id="painel">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-brand">
       <span class="brand-icon">🎀</span>
@@ -769,15 +225,9 @@
       <div class="brand-sub">Painel Administrativo</div>
     </div>
     <nav class="nav">
-      <div class="nav-item ativa" id="nav-dash"      onclick="trocarAba('dash')">
-        <span class="nav-icone">📊</span> Dashboard
-      </div>
-      <div class="nav-item" id="nav-presentes" onclick="trocarAba('presentes')">
-        <span class="nav-icone">🎁</span> Presentes
-      </div>
-      <div class="nav-item" id="nav-mensagens" onclick="trocarAba('mensagens')">
-        <span class="nav-icone">💌</span> Mensagens
-      </div>
+      <div class="nav-item ativa" id="nav-dash"      onclick="trocarAba('dash')"><span class="nav-icone">📊</span> Dashboard</div>
+      <div class="nav-item"       id="nav-presentes" onclick="trocarAba('presentes')"><span class="nav-icone">🎁</span> Presentes</div>
+      <div class="nav-item"       id="nav-mensagens" onclick="trocarAba('mensagens')"><span class="nav-icone">💌</span> Mensagens</div>
     </nav>
     <div class="sidebar-footer">
       <div class="refresh-badge" id="refresh-info">↻ Atualiza em 30s</div>
@@ -785,134 +235,87 @@
     </div>
   </aside>
 
-  <!-- MAIN -->
   <div class="main">
     <div class="topbar">
       <div class="topbar-titulo">
-        <span id="topbar-subtitulo">VISÃO GERAL</span>
-        <span id="topbar-nome">Dashboard</span>
+        <span id="top-sub">VISÃO GERAL</span>
+        <span id="top-nome" style="font-size:1.4rem;font-style:italic;font-family:'Playfair Display',serif;color:var(--marsala);display:block;margin-top:0;">Dashboard</span>
       </div>
       <div class="topbar-ornamento">✦ ❧ ✦</div>
     </div>
 
     <div class="pagina">
 
-      <!-- ── ABA DASHBOARD ── -->
+      <!-- DASHBOARD -->
       <div id="tab-dash">
-
-        <div class="sec-titulo">
-          <h2>Números gerais</h2>
-          <div class="sec-linha"></div>
-          <div class="sec-ornamento">❧ ✦ ❧</div>
-        </div>
-
+        <div class="sec-titulo"><h2>Números gerais</h2><div class="sec-linha"></div><div class="sec-orn">❧ ✦ ❧</div></div>
         <div class="cards-dash">
-          <div class="card-dash tipo-total">
-            <div class="num" id="d-total">–</div>
-            <div class="label">Total de presentes</div>
-          </div>
-          <div class="card-dash tipo-res">
-            <div class="num" id="d-reservados">–</div>
-            <div class="label">Reservados</div>
-          </div>
-          <div class="card-dash tipo-disp">
-            <div class="num" id="d-disponiveis">–</div>
-            <div class="label">Disponíveis</div>
-          </div>
-          <div class="card-dash tipo-msg">
-            <div class="num" id="d-mensagens">–</div>
-            <div class="label">Com mensagem</div>
-          </div>
+          <div class="card-dash t1"><div class="num" id="d-total">–</div><div class="label">Total de presentes</div></div>
+          <div class="card-dash t2"><div class="num" id="d-res">–</div><div class="label">Reservados</div></div>
+          <div class="card-dash t3"><div class="num" id="d-disp">–</div><div class="label">Disponíveis</div></div>
+          <div class="card-dash t4"><div class="num" id="d-msg">–</div><div class="label">Com mensagem</div></div>
         </div>
-
         <div class="barra-card">
           <div class="barra-header">
             <span class="barra-label">🎁 Progresso das reservas</span>
             <span class="barra-pct" id="barra-pct">0%</span>
           </div>
-          <div class="barra-bg">
-            <div class="barra-fill" id="barra-fill" style="width:0%"></div>
-          </div>
+          <div class="barra-bg"><div class="barra-fill" id="barra-fill" style="width:0%"></div></div>
         </div>
-
-        <div class="sec-titulo">
-          <h2>Atividade recente</h2>
-          <div class="sec-linha"></div>
-          <div class="sec-ornamento">❧ ✦ ❧</div>
-        </div>
-
-        <div class="grid-atividade">
-          <!-- últimas reservas -->
+        <div class="sec-titulo"><h2>Atividade recente</h2><div class="sec-linha"></div><div class="sec-orn">❧ ✦ ❧</div></div>
+        <div class="grid-ativ">
           <div class="painel-card">
-            <div class="painel-card-header">
-              <h3>🎀 Últimas reservas</h3>
-              <span class="badge-cont" id="badge-res-cont">–</span>
-            </div>
-            <div class="painel-card-body" id="ultimas-reservas">
-              <div class="ativ-vazio"><span class="spin"></span></div>
-            </div>
+            <div class="painel-header"><h3>🎀 Últimas reservas</h3><span class="badge-cont" id="badge-res">–</span></div>
+            <div id="ul-res"><div class="ativ-vazio"><span class="spin"></span></div></div>
           </div>
-          <!-- últimas mensagens -->
           <div class="painel-card">
-            <div class="painel-card-header">
-              <h3>💌 Últimas mensagens</h3>
-              <span class="badge-cont" id="badge-msg-cont">–</span>
-            </div>
-            <div class="painel-card-body" id="ultimas-mensagens">
-              <div class="ativ-vazio"><span class="spin"></span></div>
-            </div>
+            <div class="painel-header"><h3>💌 Últimas mensagens</h3><span class="badge-cont" id="badge-msg">–</span></div>
+            <div id="ul-msg"><div class="ativ-vazio"><span class="spin"></span></div></div>
           </div>
         </div>
-
       </div>
 
-      <!-- ── ABA PRESENTES ── -->
+      <!-- PRESENTES -->
       <div id="tab-presentes" style="display:none;">
-        <div class="topo-tabela">
-          <div class="sec-titulo" style="margin-bottom:0; flex:1;">
-            <h2>Lista completa</h2>
-            <div class="sec-linha"></div>
-          </div>
+        <div class="topo-tab">
+          <div class="sec-titulo" style="margin-bottom:0;flex:1;"><h2>Lista completa</h2><div class="sec-linha"></div></div>
           <button class="btn-csv" onclick="exportarCSV()">⬇ Exportar CSV</button>
         </div>
-        <div class="tabela-wrap">
+        <div class="tab-wrap">
           <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Presente</th>
-                <th>Status</th>
-                <th>Reservado por</th>
-                <th>Data da reserva</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="tabela-corpo">
-              <tr><td colspan="6" class="vazio"><span class="spin"></span></td></tr>
-            </tbody>
+            <thead><tr><th>#</th><th>Presente</th><th>Status</th><th>Reservado por</th><th>Data</th><th>Ações</th></tr></thead>
+            <tbody id="tab-corpo"><tr><td colspan="6" class="vazio"><span class="spin"></span></td></tr></tbody>
           </table>
         </div>
       </div>
 
-      <!-- ── ABA MENSAGENS ── -->
+      <!-- MENSAGENS -->
       <div id="tab-mensagens" style="display:none;">
-        <div class="sec-titulo">
-          <h2>Mensagens para a Alice</h2>
-          <div class="sec-linha"></div>
-          <div class="sec-ornamento">💌</div>
-        </div>
-        <div class="msg-grid" id="msg-grid">
-          <div class="vazio"><span class="spin"></span></div>
-        </div>
+        <div class="sec-titulo"><h2>Mensagens para a Alice</h2><div class="sec-linha"></div><div class="sec-orn">💌</div></div>
+        <div class="msg-grid" id="msg-grid"><div class="vazio"><span class="spin"></span></div></div>
       </div>
 
-    </div><!-- /pagina -->
-  </div><!-- /main -->
+    </div>
+  </div>
+</div>
 
-</div><!-- /painel -->
+<!-- MODAL EDIÇÃO -->
+<div class="modal-ov" id="modal-edicao">
+  <div class="modal-box">
+    <h3>✏️ Editar presente</h3>
+    <div class="campo-edit"><label>Título</label><input id="e-titulo" type="text"></div>
+    <div class="campo-edit"><label>URL da imagem</label><input id="e-img" type="url" placeholder="https://..."></div>
+    <div class="campo-edit"><label>Link de compra (ou pix:chave)</label><input id="e-link" type="text"></div>
+    <div class="campo-edit"><label>Link 2 (opcional)</label><input id="e-link2" type="url" placeholder="https://..."></div>
+    <div class="campo-edit"><label>Link 3 (opcional)</label><input id="e-link3" type="url" placeholder="https://..."></div>
+    <div class="modal-btns">
+      <button class="btn-cancelar-modal" onclick="fecharEdicao()">Cancelar</button>
+      <button class="btn-salvar" id="btn-salvar-ed" onclick="salvarEdicao()">✔️ Salvar</button>
+    </div>
+  </div>
+</div>
 
 <script>
-  // Chave publishable — leitura/escrita na tabela presentes
   const sb = window.supabase.createClient(
     'https://abojdhxobsyrzyiacaqf.supabase.co',
     'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t',
@@ -921,319 +324,179 @@
 
   // ── Proteção ──
   (async () => {
-    const autorizado = sessionStorage.getItem('admin_autorizado');
-    if (!autorizado) {
-      document.getElementById('acesso-negado').style.display = 'flex';
-      document.body.style.display = 'flex';
-      return;
-    }
-    document.getElementById('painel').style.display = 'flex';
-    document.body.style.display = 'flex';
-    carregar();
-    iniciarRefresh();
-    iniciarTimeout();
+    const ok = sessionStorage.getItem('admin_autorizado');
+    const el = id => document.getElementById(id);
+    if (!ok) { el('acesso-negado').style.display='flex'; document.body.style.display='flex'; return; }
+    el('painel').style.display='flex'; document.body.style.display='flex';
+    carregar(); iniciarRefresh(); iniciarTimeout();
   })();
 
-  // ── Timeout de sessão — 30 min sem atividade ──
-  let timerInatividade;
+  // ── Timeout 30min ──
+  let timerInativ;
   function resetarTimeout() {
-    clearTimeout(timerInatividade);
-    timerInatividade = setTimeout(() => {
-      sessionStorage.removeItem("admin_autorizado");
-      alert("Sessão encerrada por inatividade. Faça login novamente.");
-      window.location.href = "login.html";
-    }, 30 * 60 * 1000);
+    clearTimeout(timerInativ);
+    timerInativ = setTimeout(() => {
+      sessionStorage.removeItem('admin_autorizado');
+      alert('Sessão encerrada por inatividade.');
+      window.location.href = 'login.html';
+    }, 30*60*1000);
   }
   function iniciarTimeout() {
-    ["mousemove","keydown","click","scroll","touchstart"].forEach(ev =>
-      document.addEventListener(ev, resetarTimeout, { passive: true })
+    ['mousemove','keydown','click','scroll','touchstart'].forEach(ev =>
+      document.addEventListener(ev, resetarTimeout, { passive:true })
     );
     resetarTimeout();
   }
 
   let todosPresentes = [];
 
-  // ── Carregar ──
   async function carregar() {
-    const { data, error } = await sb.from('presentes').select('*').order('id', { ascending: true });
+    const { data, error } = await sb.from('presentes').select('*').order('id', { ascending:true });
     if (error) {
-      console.error('Supabase erro:', error.message);
-      ['d-total','d-reservados','d-disponiveis','d-mensagens'].forEach(id => {
-        document.getElementById(id).textContent = '!';
-      });
-      document.getElementById('ultimas-reservas').innerHTML =
+      ['d-total','d-res','d-disp','d-msg'].forEach(id =>
+        document.getElementById(id).textContent = '!'
+      );
+      document.getElementById('ul-res').innerHTML =
         `<div class="ativ-vazio" style="color:#c97080;">Erro: ${error.message}</div>`;
       return;
     }
     if (!data) return;
     todosPresentes = data;
-    atualizarDashboard(data);
+    atualizarDash(data);
     atualizarTabela(data);
     atualizarMensagens(data);
   }
 
-  function formatarData(iso) {
+  function fmt(iso) {
     if (!iso) return '–';
     const d = new Date(iso);
-    return d.toLocaleDateString('pt-BR') + ' · ' +
-           d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString('pt-BR') + ' · ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   }
+  function inicial(n) { return n ? n.trim()[0].toUpperCase() : '?'; }
 
-  function inicialDe(nome) {
-    return nome ? nome.trim()[0].toUpperCase() : '?';
-  }
+  function atualizarDash(data) {
+    const res  = data.filter(g => g.reservado);
+    const disp = data.length - res.length;
+    const msgs = data.filter(g => g.mensagem && g.mensagem.trim()).length;
+    const pct  = data.length ? Math.round(res.length/data.length*100) : 0;
 
-  function atualizarDashboard(data) {
-    const total      = data.length;
-    const reservados = data.filter(g => g.reservado);
-    const disponiveis = total - reservados.length;
-    const comMsg     = data.filter(g => g.mensagem && g.mensagem.trim()).length;
-    const pct        = total > 0 ? Math.round((reservados.length / total) * 100) : 0;
+    document.getElementById('d-total').textContent = data.length;
+    document.getElementById('d-res').textContent   = res.length;
+    document.getElementById('d-disp').textContent  = disp;
+    document.getElementById('d-msg').textContent   = msgs;
+    document.getElementById('barra-fill').style.width = pct + '%';
+    document.getElementById('barra-pct').textContent  = pct + '% reservado';
+    document.getElementById('badge-res').textContent  = res.length;
+    document.getElementById('badge-msg').textContent  = msgs;
 
-    document.getElementById('d-total').textContent       = total;
-    document.getElementById('d-reservados').textContent  = reservados.length;
-    document.getElementById('d-disponiveis').textContent = disponiveis;
-    document.getElementById('d-mensagens').textContent   = comMsg;
-    document.getElementById('barra-fill').style.width    = pct + '%';
-    document.getElementById('barra-pct').textContent     = pct + '% reservado';
+    const ultRes = [...res].filter(g=>g.reservado_em).sort((a,b)=>new Date(b.reservado_em)-new Date(a.reservado_em)).slice(0,5);
+    document.getElementById('ul-res').innerHTML = ultRes.length
+      ? ultRes.map(g=>`<div class="ativ-item"><div class="ativ-av">${inicial(g.nome_reservante)}</div><div class="ativ-info"><div class="ativ-nome">${g.nome_reservante||'–'}</div><div class="ativ-presente">🎁 ${g.titulo}</div><div class="ativ-data">📅 ${fmt(g.reservado_em)}</div></div></div>`).join('')
+      : '<div class="ativ-vazio">Nenhuma reserva ainda.</div>';
 
-    // Últimas reservas (ordenado por reservado_em desc, pega 5)
-    const ultRes = [...reservados]
-      .filter(g => g.reservado_em)
-      .sort((a, b) => new Date(b.reservado_em) - new Date(a.reservado_em))
-      .slice(0, 5);
-
-    document.getElementById('badge-res-cont').textContent = reservados.length;
-
-    const elRes = document.getElementById('ultimas-reservas');
-    if (!ultRes.length) {
-      elRes.innerHTML = '<div class="ativ-vazio">Nenhuma reserva ainda.</div>';
-    } else {
-      elRes.innerHTML = ultRes.map(g => `
-        <div class="ativ-item">
-          <div class="ativ-avatar">${inicialDe(g.nome_reservante)}</div>
-          <div class="ativ-info">
-            <div class="ativ-nome">${g.nome_reservante || '–'}</div>
-            <div class="ativ-presente">🎁 ${g.titulo}</div>
-            <div class="ativ-data">📅 ${formatarData(g.reservado_em)}</div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Últimas mensagens (ordenado por reservado_em desc, pega 5)
-    const ultMsg = [...data]
-      .filter(g => g.mensagem && g.mensagem.trim() && g.reservado_em)
-      .sort((a, b) => new Date(b.reservado_em) - new Date(a.reservado_em))
-      .slice(0, 5);
-
-    document.getElementById('badge-msg-cont').textContent = comMsg;
-
-    const elMsg = document.getElementById('ultimas-mensagens');
-    if (!ultMsg.length) {
-      elMsg.innerHTML = '<div class="ativ-vazio">Nenhuma mensagem ainda.</div>';
-    } else {
-      elMsg.innerHTML = ultMsg.map(g => `
-        <div class="ativ-item">
-          <div class="ativ-avatar" style="background:linear-gradient(135deg,#b8922a,#7a5a10);">
-            ${inicialDe(g.nome_reservante)}
-          </div>
-          <div class="ativ-info">
-            <div class="ativ-nome">${g.nome_reservante || '–'}</div>
-            <div class="ativ-presente">🎁 ${g.titulo}</div>
-            <div class="ativ-msg">"${g.mensagem}"</div>
-            <div class="ativ-data">📅 ${formatarData(g.reservado_em)}</div>
-          </div>
-        </div>
-      `).join('');
-    }
+    const ultMsg = [...data].filter(g=>g.mensagem&&g.mensagem.trim()&&g.reservado_em).sort((a,b)=>new Date(b.reservado_em)-new Date(a.reservado_em)).slice(0,5);
+    document.getElementById('ul-msg').innerHTML = ultMsg.length
+      ? ultMsg.map(g=>`<div class="ativ-item"><div class="ativ-av msg">${inicial(g.nome_reservante)}</div><div class="ativ-info"><div class="ativ-nome">${g.nome_reservante||'–'}</div><div class="ativ-presente">🎁 ${g.titulo}</div><div class="ativ-msg">"${g.mensagem}"</div><div class="ativ-data">📅 ${fmt(g.reservado_em)}</div></div></div>`).join('')
+      : '<div class="ativ-vazio">Nenhuma mensagem ainda.</div>';
   }
 
   function atualizarTabela(data) {
-    const corpo = document.getElementById('tabela-corpo');
-    if (!data.length) {
-      corpo.innerHTML = '<tr><td colspan="7" class="vazio">Nenhum presente cadastrado.</td></tr>';
-      return;
-    }
-    corpo.innerHTML = data.map(g => `
+    const corpo = document.getElementById('tab-corpo');
+    if (!data.length) { corpo.innerHTML='<tr><td colspan="6" class="vazio">Nenhum presente.</td></tr>'; return; }
+    corpo.innerHTML = data.map(g=>`
       <tr>
-        <td class="id-col">${g.id}</td>
-        <td>
-          <div style="display:flex;align-items:center;gap:10px;">
-            ${g.imagem_url
-              ? `<img src="${g.imagem_url}" style="width:38px;height:38px;object-fit:contain;border-radius:4px;border:1px solid rgba(201,168,108,.3);background:#fff;flex-shrink:0;" loading="lazy">`
-              : `<div style="width:38px;height:38px;border-radius:4px;background:rgba(201,168,108,.08);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;">🎁</div>`}
-            <span style="font-weight:700;">${g.titulo}</span>
-          </div>
-        </td>
-        <td>${g.reservado
-          ? '<span class="badge badge-reservado">🎀 Reservado</span>'
-          : '<span class="badge badge-livre">✅ Disponível</span>'}</td>
-        <td>${g.nome_reservante || '–'}</td>
-        <td class="data-col">${formatarData(g.reservado_em)}</td>
-        <td>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <button class="btn-cancelar-res" style="background:rgba(46,126,168,.08);border-color:rgba(46,126,168,.3);color:#2e7ea8;" onclick="abrirEdicao(${g.id})">✏️ Editar</button>
-            ${g.reservado ? `<button class="btn-cancelar-res" onclick="cancelarReserva(${g.id})">✕ Cancelar</button>` : ''}
-          </div>
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  // Modal de edicao
-  let editandoId = null;
-  function abrirEdicao(id) {
-    const g = todosPresentes.find(p => p.id === id);
-    if (!g) return;
-    editandoId = id;
-    document.getElementById('edit-titulo').value  = g.titulo || '';
-    document.getElementById('edit-img').value     = g.imagem_url || '';
-    document.getElementById('edit-link').value    = g.link_compra || '';
-    document.getElementById('edit-link2').value   = g.link_compra_2 || '';
-    document.getElementById('edit-link3').value   = g.link_compra_3 || '';
-    document.getElementById('modal-edicao').classList.add('ativo');
-  }
-  function fecharEdicao() {
-    document.getElementById('modal-edicao').classList.remove('ativo');
-    editandoId = null;
-  }
-  async function salvarEdicao() {
-    if (!editandoId) return;
-    const titulo = document.getElementById('edit-titulo').value.trim();
-    const img    = document.getElementById('edit-img').value.trim();
-    const link   = document.getElementById('edit-link').value.trim();
-    const link2  = document.getElementById('edit-link2').value.trim();
-    const link3  = document.getElementById('edit-link3').value.trim();
-    if (!titulo) { alert('O titulo nao pode ficar vazio.'); return; }
-    const btn = document.getElementById('btn-salvar-edicao');
-    btn.disabled = true; btn.textContent = 'Salvando...';
-    const { error } = await sb.from('presentes').update({
-      titulo, imagem_url: img||null, link_compra: link||null,
-      link_compra_2: link2||null, link_compra_3: link3||null
-    }).eq('id', editandoId);
-    btn.disabled = false; btn.textContent = 'Salvar';
-    if (error) { alert('Erro: ' + error.message); return; }
-    fecharEdicao();
-    await carregar();
+        <td style="color:var(--azul-cl);font-weight:700;font-size:.78rem;">${g.id}</td>
+        <td><div style="display:flex;align-items:center;gap:10px;">
+          ${g.imagem_url?`<img src="${g.imagem_url}" style="width:38px;height:38px;object-fit:contain;border-radius:4px;border:1px solid var(--azul-cl);background:#fff;flex-shrink:0;" loading="lazy">`:`<div style="width:38px;height:38px;border-radius:4px;background:var(--azul-bg);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;">🎁</div>`}
+          <span style="font-weight:700;">${g.titulo}</span>
+        </div></td>
+        <td>${g.reservado?'<span class="badge badge-res">🎀 Reservado</span>':'<span class="badge badge-disp">✅ Disponível</span>'}</td>
+        <td style="font-weight:600;">${g.nome_reservante||'–'}</td>
+        <td style="font-size:.78rem;color:var(--azul-dk);white-space:nowrap;">${fmt(g.reservado_em)}</td>
+        <td><div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn-acao" onclick="abrirEdicao(${g.id})">✏️ Editar</button>
+          ${g.reservado?`<button class="btn-acao cancelar" onclick="cancelarReserva(${g.id})">✕ Cancelar</button>`:''}
+        </div></td>
+      </tr>`).join('');
   }
 
   function atualizarMensagens(data) {
-    const comMsg = [...data]
-      .filter(g => g.reservado && g.mensagem && g.mensagem.trim())
-      .sort((a, b) => new Date(b.reservado_em) - new Date(a.reservado_em));
-
+    const com = [...data].filter(g=>g.reservado&&g.mensagem&&g.mensagem.trim()).sort((a,b)=>new Date(b.reservado_em)-new Date(a.reservado_em));
     const grid = document.getElementById('msg-grid');
-    if (!comMsg.length) {
-      grid.innerHTML = '<div class="vazio" style="grid-column:1/-1;">Ainda não há mensagens. As mensagens aparecem aqui após as reservas. 💌</div>';
-      return;
-    }
-    grid.innerHTML = comMsg.map(g => `
-      <div class="msg-card">
-        <div class="msg-nome">💙 ${g.nome_reservante}</div>
-        <div class="msg-presente">${g.titulo}</div>
-        <div class="msg-texto">${g.mensagem}</div>
-        <div class="msg-data">📅 ${formatarData(g.reservado_em)}</div>
-      </div>
-    `).join('');
+    grid.innerHTML = com.length
+      ? com.map(g=>`<div class="msg-card"><div class="msg-nome">💙 ${g.nome_reservante}</div><div class="msg-presente">${g.titulo}</div><div class="msg-texto">${g.mensagem}</div><div class="msg-data">📅 ${fmt(g.reservado_em)}</div></div>`).join('')
+      : '<div class="vazio" style="grid-column:1/-1;">Ainda não há mensagens. 💌</div>';
   }
 
-  // ── Cancelar reserva ──
   async function cancelarReserva(id) {
     if (!confirm('Cancelar a reserva deste presente?')) return;
-    const { error } = await sb.from('presentes')
-      .update({ reservado: false, nome_reservante: null, mensagem: null, reservado_em: null })
-      .eq('id', id);
-    if (error) { alert('Erro ao cancelar: ' + error.message); return; }
+    const { error } = await sb.from('presentes').update({ reservado:false, nome_reservante:null, mensagem:null, reservado_em:null }).eq('id',id);
+    if (error) { alert('Erro: '+error.message); return; }
     await carregar();
   }
 
-  // ── Exportar CSV ──
   function exportarCSV() {
-    const reservados = todosPresentes.filter(g => g.reservado);
-    if (!reservados.length) { alert('Nenhum presente reservado ainda!'); return; }
-    const header = ['ID', 'Presente', 'Reservado por', 'Mensagem', 'Data da reserva'];
-    const linhas = reservados.map(g => [
-      g.id,
-      `"${(g.titulo || '').replace(/"/g, '""')}"`,
-      `"${(g.nome_reservante || '').replace(/"/g, '""')}"`,
-      `"${(g.mensagem || '').replace(/"/g, '""')}"`,
-      formatarData(g.reservado_em)
-    ].join(','));
-    const csv  = [header.join(','), ...linhas].join('\n');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a'); a.href = url;
-    a.download = 'reservas-alice15anos.csv'; a.click();
-    URL.revokeObjectURL(url);
+    const res = todosPresentes.filter(g=>g.reservado);
+    if (!res.length) { alert('Nenhum presente reservado ainda!'); return; }
+    const header = ['ID','Presente','Reservado por','Mensagem','Data'];
+    const linhas = res.map(g=>[g.id,`"${(g.titulo||'').replace(/"/g,'""')}"`,`"${(g.nome_reservante||'').replace(/"/g,'""')}"`,`"${(g.mensagem||'').replace(/"/g,'""')}"`,fmt(g.reservado_em)].join(','));
+    const blob = new Blob(['\uFEFF'+[header.join(','),...linhas].join('\n')],{type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download='reservas-alice15anos.csv'; a.click();
   }
 
-  // ── Abas ──
-  const abaLabels = { dash: 'Dashboard', presentes: 'Presentes', mensagens: 'Mensagens' };
-  const abaSubtitulos = { dash: 'VISÃO GERAL', presentes: 'GESTÃO', mensagens: 'CARINHO DA ALICE' };
-
+  const abaLabel = { dash:'Dashboard', presentes:'Presentes', mensagens:'Mensagens' };
+  const abaSub   = { dash:'VISÃO GERAL', presentes:'GESTÃO', mensagens:'MENSAGENS' };
   function trocarAba(aba) {
-    ['dash','presentes','mensagens'].forEach(a => {
-      document.getElementById('tab-' + a).style.display    = a === aba ? 'block' : 'none';
-      document.getElementById('nav-' + a).classList.toggle('ativa', a === aba);
+    ['dash','presentes','mensagens'].forEach(a=>{
+      document.getElementById('tab-'+a).style.display = a===aba?'block':'none';
+      document.getElementById('nav-'+a).classList.toggle('ativa',a===aba);
     });
-    document.getElementById('topbar-nome').textContent      = abaLabels[aba];
-    document.getElementById('topbar-subtitulo').textContent = abaSubtitulos[aba];
+    document.getElementById('top-nome').textContent = abaLabel[aba];
+    document.getElementById('top-sub').textContent  = abaSub[aba];
   }
 
-  // ── Auto-refresh ──
-  let contador = 30;
+  let contador=30;
   function iniciarRefresh() {
-    setInterval(async () => {
+    setInterval(async()=>{
       contador--;
       const el = document.getElementById('refresh-info');
-      if (contador <= 0) {
-        contador = 30;
-        await carregar();
-        el.textContent = '✅ Atualizado!';
-        setTimeout(() => { el.textContent = '↻ Atualiza em 30s'; }, 2000);
-      } else {
-        el.textContent = `↻ Atualiza em ${contador}s`;
-      }
-    }, 1000);
+      if (contador<=0) { contador=30; await carregar(); el.textContent='✅ Atualizado!'; setTimeout(()=>el.textContent='↻ Atualiza em 30s',2000); }
+      else el.textContent=`↻ Atualiza em ${contador}s`;
+    },1000);
   }
 
-  // ── Sair ──
-  async function sair() {
-    sessionStorage.removeItem('admin_autorizado');
-    await sb.auth.signOut();
-    window.location.href = 'login.html';
+  async function sair() { sessionStorage.removeItem('admin_autorizado'); await sb.auth.signOut(); window.location.href='login.html'; }
+
+  // ── Editar ──
+  let editId=null;
+  function abrirEdicao(id) {
+    const g = todosPresentes.find(p=>p.id===id);
+    if (!g) return; editId=id;
+    document.getElementById('e-titulo').value = g.titulo||'';
+    document.getElementById('e-img').value    = g.imagem_url||'';
+    document.getElementById('e-link').value   = g.link_compra||'';
+    document.getElementById('e-link2').value  = g.link_compra_2||'';
+    document.getElementById('e-link3').value  = g.link_compra_3||'';
+    document.getElementById('modal-edicao').classList.add('ativo');
+  }
+  function fecharEdicao() { document.getElementById('modal-edicao').classList.remove('ativo'); editId=null; }
+  async function salvarEdicao() {
+    if (!editId) return;
+    const titulo = document.getElementById('e-titulo').value.trim();
+    if (!titulo) { alert('Título não pode ser vazio.'); return; }
+    const btn = document.getElementById('btn-salvar-ed');
+    btn.disabled=true; btn.textContent='⏳ Salvando…';
+    const { error } = await sb.from('presentes').update({
+      titulo, imagem_url:document.getElementById('e-img').value.trim()||null,
+      link_compra:document.getElementById('e-link').value.trim()||null,
+      link_compra_2:document.getElementById('e-link2').value.trim()||null,
+      link_compra_3:document.getElementById('e-link3').value.trim()||null,
+    }).eq('id',editId);
+    btn.disabled=false; btn.textContent='✔️ Salvar';
+    if (error) { alert('Erro: '+error.message); return; }
+    fecharEdicao(); await carregar();
   }
 </script>
-
-<!-- MODAL EDIÇÃO -->
-<div class="modal-overlay" id="modal-edicao" style="z-index:300;">
-  <div class="modal" style="max-width:440px;">
-    <h3>✏️ Editar presente</h3>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px;text-align:left;">
-      <label style="font-size:.78rem;font-weight:700;color:#9a7a50;text-transform:uppercase;letter-spacing:.06em;">Título</label>
-      <input id="edit-titulo" type="text" style="width:100%;padding:9px 12px;border:1.5px solid #e2cda0;border-radius:6px;font-family:Quicksand,sans-serif;font-size:.88rem;font-weight:600;color:#2e1a10;outline:none;">
-      <label style="font-size:.78rem;font-weight:700;color:#9a7a50;text-transform:uppercase;letter-spacing:.06em;">URL da imagem</label>
-      <input id="edit-img" type="url" style="width:100%;padding:9px 12px;border:1.5px solid #e2cda0;border-radius:6px;font-family:Quicksand,sans-serif;font-size:.88rem;font-weight:600;color:#2e1a10;outline:none;" placeholder="https://...">
-      <label style="font-size:.78rem;font-weight:700;color:#9a7a50;text-transform:uppercase;letter-spacing:.06em;">Link de compra (ou pix:chave)</label>
-      <input id="edit-link" type="text" style="width:100%;padding:9px 12px;border:1.5px solid #e2cda0;border-radius:6px;font-family:Quicksand,sans-serif;font-size:.88rem;font-weight:600;color:#2e1a10;outline:none;">
-      <label style="font-size:.78rem;font-weight:700;color:#9a7a50;text-transform:uppercase;letter-spacing:.06em;">Link 2 (opcional)</label>
-      <input id="edit-link2" type="url" style="width:100%;padding:9px 12px;border:1.5px solid #e2cda0;border-radius:6px;font-family:Quicksand,sans-serif;font-size:.88rem;font-weight:600;color:#2e1a10;outline:none;" placeholder="https://...">
-      <label style="font-size:.78rem;font-weight:700;color:#9a7a50;text-transform:uppercase;letter-spacing:.06em;">Link 3 (opcional)</label>
-      <input id="edit-link3" type="url" style="width:100%;padding:9px 12px;border:1.5px solid #e2cda0;border-radius:6px;font-family:Quicksand,sans-serif;font-size:.88rem;font-weight:600;color:#2e1a10;outline:none;" placeholder="https://...">
-    </div>
-    <div class="modal-btns" style="margin-top:18px;">
-      <button onclick="fecharEdicao()" style="flex:1;padding:11px;border:1.5px solid #c9a86c;border-radius:8px;background:transparent;color:#9a7a50;font-family:Quicksand,sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;">Cancelar</button>
-      <button id="btn-salvar-edicao" onclick="salvarEdicao()" style="flex:1;padding:11px;border:none;border-radius:8px;background:linear-gradient(135deg,#9b3a4a,#7a2535);color:white;font-family:Quicksand,sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;">✔️ Salvar</button>
-    </div>
-  </div>
-</div>
-
-<style>
-.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:200; align-items:center; justify-content:center; padding:20px; }
-.modal-overlay.ativo { display:flex; }
-.modal { background:linear-gradient(160deg,#fdf8f0,#f5e8d4); border:2px solid #c9a86c; border-radius:12px; padding:28px 24px; width:100%; box-shadow:0 12px 50px rgba(0,0,0,.25); }
-.modal h3 { font-family:"Playfair Display",serif; font-style:italic; font-size:1.1rem; color:#7a2535; margin-bottom:4px; }
-</style>
 </body>
 </html>
