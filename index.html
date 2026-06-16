@@ -425,18 +425,17 @@
             return;
         }
         todosPresentes = data;
-        atualizarContador(data);
+        atualizarContador(data, false);
         renderizar();
     }
 
-    function atualizarContador(data) {
+    function atualizarContador(data, animar) {
         const disponiveis = data.filter(g => !g.reservado).length;
         const numEl = document.getElementById('num-disp');
         const bannerEl = document.getElementById('banner-disp');
         if (!numEl || !bannerEl) return;
-        const anterior = parseInt(numEl.textContent) || -1;
         numEl.textContent = disponiveis;
-        if (anterior !== -1 && anterior !== disponiveis) {
+        if (animar) {
             numEl.classList.remove('animando');
             void numEl.offsetWidth;
             numEl.classList.add('animando');
@@ -615,7 +614,18 @@
         } else { alert('Erro ao reservar: ' + error.message); }
     }
 
-    function fecharObrigada() { document.getElementById('overlay-obrigada').style.display = 'none'; }
+    function fecharObrigada() {
+        document.getElementById('overlay-obrigada').style.display = 'none';
+        // Anima o contador ao voltar para a lista
+        const disponiveis = todosPresentes.filter(g => !g.reservado).length;
+        const numEl = document.getElementById('num-disp');
+        if (numEl) {
+            numEl.classList.remove('animando');
+            void numEl.offsetWidth;
+            numEl.classList.add('animando');
+            setTimeout(() => numEl.classList.remove('animando'), 500);
+        }
+    }
 
     carregar();
 </script>
