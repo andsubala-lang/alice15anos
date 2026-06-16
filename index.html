@@ -167,6 +167,15 @@
         #confete-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 99999; display: none; }
 
 
+        /* ── PIX CARD ── */
+        .pix-card {
+            grid-column: 1 / -1;
+            max-width: 360px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .pix-box { margin: 0; border-radius: 0 0 4px 4px; }
+
         /* ── PIX BOX ── */
         .pix-box {
             margin: 0 12px 8px;
@@ -590,7 +599,7 @@
 
         document.getElementById('root').innerHTML = lista.map(g => {
             const meu = sessionStorage.getItem(`res_${g.id}`);
-            const isPix = (g.link_compra && (g.link_compra.startsWith('pix:') || g.link_compra.startsWith('000201'))) || (g.titulo && g.titulo.toLowerCase().includes('pix'));
+            const isPix = (g.link_compra && (g.link_compra.startsWith('pix:') || g.link_compra.startsWith('000201') || g.link_compra.startsWith('data:image') || g.link_compra.startsWith('iVBOR') || g.link_compra.startsWith('/9j/'))) || (g.titulo && g.titulo.toLowerCase().includes('pix'));
             const imgHtml = g.imagem_url
                 ? `<div class="card-img-wrap" onclick="abrirImagem('${g.imagem_url.replace(/'/g,"\\'")}','${g.titulo.replace(/'/g,"\\'")}')"><img src="${g.imagem_url}" alt="${g.titulo}" loading="lazy"></div>`
                 : '';
@@ -608,6 +617,13 @@
                     </div>
                 </div>`;
 
+            // Card especial para Pix
+            if (isPix) return `
+                <div class="card pix-card" id="card-${g.id}">
+                    <div class="card-stripe"></div>
+                    ${btnVerProduto(g.link_compra, g.titulo, g.link_compra_2, g.link_compra_3)}
+                </div>`;
+
             return `
                 <div class="card" id="card-${g.id}">
                     <div class="card-stripe"></div>
@@ -618,7 +634,7 @@
                     </div>
                     ${btnVerProduto(g.link_compra, g.titulo, g.link_compra_2, g.link_compra_3)}
                     <div class="card-footer">
-                        ${!isPix ? `<button class="btn-reservar" id="btn-${g.id}" onclick="abrirForm(${g.id})">🎁 Reservar este presente</button>` : ''}
+                        <button class="btn-reservar" id="btn-${g.id}" onclick="abrirForm(${g.id})">🎁 Reservar este presente</button>
                         <div class="form-area" id="form-${g.id}" style="display:none;">
                             <input type="text" id="nome-${g.id}" placeholder="Seu nome" maxlength="60">
                             <input type="text" id="msg-${g.id}" placeholder="Mensagem para a Alice (opcional)" maxlength="120">
@@ -632,11 +648,54 @@
 
     function btnVerProduto(link, titulo, link2, link3) {
         if (!link) return '';
-        const isPix = link.startsWith('pix:') || link.startsWith('000201') || (titulo && titulo.toLowerCase().includes('pix'));
+
+        // Detectar Pix: prefixo pix:, base64 de imagem, código EMV (000201) ou título com "pix"
+        const isPix = link.startsWith('pix:')
+            || link.startsWith('000201')
+            || link.startsWith('data:image')
+            || link.startsWith('iVBOR')
+            || link.startsWith('/9j/')
+            || (titulo && titulo.toLowerCase().includes('pix'));
+
         if (isPix) {
-            const chave = link.startsWith('pix:') ? link.slice(4) : link;
-            return `<button class="btn-ver-produto btn-pix" onclick="copiarPix('${chave.replace(/'/g,"\\'")}', this)">💙 Copiar Pix</button>`;
+            // Extrair a imagem/chave
+            let imgSrc = null;
+            let chaveTexto = '';
+
+            if (link.startsWith('data:image')) {
+                imgSrc = link;
+                chaveTexto = 'Escaneie o QR Code acima';
+            } else if (link.startsWith('iVBOR') || link.startsWith('/9j/')) {
+                imgSrc = 'data:image/png;base64,' + link;
+                chaveTexto = 'Escaneie o QR Code acima';
+            } else if (link.startsWith('pix:')) {
+                chaveTexto = link.slice(4);
+            } else {
+                chaveTexto = link;
+            }
+
+            const qrHtml = imgSrc
+                ? `<div class="pix-box-qr"><img src="${imgSrc}" alt="QR Code Pix" class="pix-qr-img"></div>`
+                : '';
+
+            const uid = Math.random().toString(36).slice(2,8);
+            return `<div class="pix-box">
+                <div class="pix-box-header">
+                    <span class="pix-box-titulo">Presentear via Pix 💙</span>
+                    <span class="pix-box-sub">Fique à vontade para escolher o valor!</span>
+                </div>
+                ${qrHtml}
+                <div class="pix-box-chave">
+                    <span class="pix-chave-label">${imgSrc ? 'ou copie a chave abaixo' : 'Chave Pix'}</span>
+                    <span class="pix-chave-valor">${chaveTexto}</span>
+                </div>
+                <button class="pix-btn-copiar" onclick="copiarPix('${link.replace(/'/g,"\'")}', this)">
+                    💙 Copiar chave Pix
+                </button>
+                <p class="pix-box-msg">Qualquer valor recebido com muito carinho 💙</p>
+            </div>`;
         }
+
         if (link2 || link3) {
             const tl = titulo ? titulo.toLowerCase() : '';
             const vols = tl.match(/vols?\.?\s*([\d,\s]+e[\d\s]+|[\d\s,]+)/i);
@@ -652,6 +711,7 @@
                 ${link3 ? `<a class="btn-ver-produto" href="${link3}" target="_blank" rel="noopener">🛒 ${labels[2]||'Vol. 3'}</a>` : ''}
             </div>`;
         }
+
         return `<a class="btn-ver-produto" href="${link}" target="_blank" rel="noopener">🛒 Ver Produto</a>`;
     }
 
