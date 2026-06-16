@@ -416,8 +416,6 @@
   );
 
   (async () => {
-    const autorizado = sessionStorage.getItem('admin_autorizado');
-    if (!autorizado) { await sb.auth.signOut(); window.location.href='login.html'; return; }
     const { data:{ session } } = await sb.auth.getSession();
     if (!session) { window.location.href='login.html'; return; }
     document.getElementById('load').style.display='none';
@@ -426,7 +424,6 @@
   })();
 
   async function sair() {
-    sessionStorage.removeItem('admin_autorizado');
     await sb.auth.signOut();
     window.location.href='login.html';
   }
