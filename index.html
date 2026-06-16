@@ -323,65 +323,59 @@
 
         /* ── mobile ── */
         @media (max-width: 520px) {
-            /* No mobile, fundo sólido creme sem imagem */
-            body {
-                background: linear-gradient(160deg, #fdf8f0 0%, #f5e8d4 100%) !important;
-            }
+            /* fundo creme no mobile */
+            body { background: #f5e8d4 !important; }
 
-            /* No mobile, esconde o hero com a imagem de fundo e o contador */
+            /* esconde hero do desktop */
             .hero { display: none; }
 
-            /* Cabeçalho mobile simples no topo */
+            /* banner com imagem de fundo recortada no topo */
             .mobile-header {
-                display: flex !important;
-                flex-direction: column;
-                align-items: center;
-                padding: 28px 20px 20px;
-                background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
-                border-bottom: 2px solid #c9a86c;
-                box-shadow: 0 4px 16px rgba(122,37,53,.08);
+                display: block !important;
+                width: 100%;
+                height: 240px;
+                background: url('fundo.jpg') center top / cover no-repeat;
+                position: relative;
+                margin-bottom: 0;
             }
-            .mobile-header .mob-titulo {
-                font-family: 'Playfair Display', serif;
-                font-style: italic;
-                font-size: 1.5rem;
-                color: var(--marsala);
-                text-align: center;
-                margin-bottom: 6px;
-            }
-            .mobile-header .mob-sub {
-                font-size: 0.75rem;
-                color: #9a7a50;
-                text-align: center;
-                margin-bottom: 14px;
-                font-weight: 600;
-            }
+
+            /* contador sobre a imagem */
             .mobile-header .mob-timer {
-                background: linear-gradient(160deg, #fdf8f0, #f0e2cc);
+                position: absolute;
+                bottom: 16px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(253,248,240,.92);
                 border: 1.5px solid #c9a86c;
                 border-radius: 6px;
-                padding: 10px 24px;
+                padding: 8px 20px;
                 text-align: center;
-                box-shadow: 0 4px 14px rgba(122,37,53,.12);
+                box-shadow: 0 4px 14px rgba(122,37,53,.18);
+                white-space: nowrap;
+                backdrop-filter: blur(4px);
             }
             .mobile-header .mob-timer .label {
-                font-size: 0.65rem;
+                font-size: 0.6rem;
                 text-transform: uppercase;
                 letter-spacing: .1em;
                 color: #9a7a50;
                 font-weight: 700;
                 display: block;
-                margin-bottom: 2px;
+                margin-bottom: 1px;
             }
             .mobile-header .mob-timer .tempo {
-                font-size: 1.3rem;
+                font-size: 1.15rem;
                 font-weight: 700;
                 color: var(--marsala);
                 font-family: 'Playfair Display', serif;
             }
 
-            .secao { padding: 20px 10px 40px; }
-            .secao-titulo { font-size: 1.3rem; }
+            /* esconde título e sub que não existem mais */
+            .mobile-header .mob-titulo,
+            .mobile-header .mob-sub { display: none; }
+
+            .secao { padding: 16px 10px 40px; }
+            .secao-titulo-wrap { display: none; }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .card-img-wrap { width: 80px; height: 80px; }
             .card-body h3 { font-size: 0.76rem; }
