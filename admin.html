@@ -447,6 +447,17 @@
           <div class="card-dash t2"><div class="num" id="d-res">–</div><div class="label">Reservados</div></div>
           <div class="card-dash t3"><div class="num" id="d-disp">–</div><div class="label">Disponíveis</div></div>
           <div class="card-dash t4"><div class="num" id="d-msg">–</div><div class="label">Com mensagem</div></div>
+          <div class="card-dash t1" style="grid-column:1/-1;">
+            <div style="display:flex;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:16px;margin-bottom:14px;">
+              <div style="text-align:center;"><div class="num" id="d-visitas-total">–</div><div class="label">Total de visitas</div></div>
+              <div style="text-align:center;"><div class="num" id="d-visitas-hoje">–</div><div class="label">Visitas hoje</div></div>
+              <div style="text-align:center;"><div class="num" id="d-visitas-mobile">–</div><div class="label">Via mobile</div></div>
+              <div style="text-align:center;"><div class="num" id="d-visitas-desktop">–</div><div class="label">Via desktop</div></div>
+            </div>
+            <div style="text-align:center;">
+              <button onclick="zerarVisitas()" style="background:transparent;border:1.5px solid var(--marsala-cl);color:var(--marsala);border-radius:6px;padding:6px 16px;font-family:'Quicksand',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='rgba(155,58,74,.08)'" onmouseout="this.style.background='transparent'">🗑️ Zerar histórico de visitas</button>
+            </div>
+          </div>
         </div>
         <div class="barra-card">
           <div class="barra-header">
@@ -729,6 +740,24 @@
       if (contador<=0) { contador=30; await carregar(); el.textContent='✅ Atualizado!'; setTimeout(()=>el.textContent='↻ Atualiza em 30s',2000); }
       else el.textContent=`↻ Atualiza em ${contador}s`;
     },1000);
+  }
+
+  // ── Zerar visitas ──
+  async function zerarVisitas() {
+    cmConfirm(
+      'Isso vai apagar todo o histórico de visitas. Use antes de divulgar o link para os convidados!',
+      async (ok) => {
+        if (!ok) return;
+        const { error } = await sb.from('visitas').delete().neq('id', 0);
+        if (error) {
+          cmAlert('Erro ao zerar: ' + error.message, { titulo: 'Erro', icone: '❌' });
+          return;
+        }
+        await carregar();
+        cmAlert('Histórico zerado com sucesso! Agora só contará visitas dos convidados. 🎉', { titulo: 'Pronto!', icone: '✅' });
+      },
+      { titulo: 'Zerar visitas', icone: '🗑️', btnOk: 'Sim, zerar' }
+    );
   }
 
   async function sair() { sessionStorage.removeItem('admin_autorizado'); await sb.auth.signOut(); window.location.href='login.html'; }
