@@ -718,6 +718,17 @@
             return;
         }
 
+        // Registrar visita na primeira renderização
+        if (!window._visitaRegistrada) {
+            window._visitaRegistrada = true;
+            const dispositivo = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+            sb.from('visitas').insert({ dispositivo, pagina: 'index' })
+              .then(({ error }) => {
+                  if (error) console.error('Erro visita:', error.message);
+                  else console.log('Visita registrada:', dispositivo);
+              });
+        }
+
         window._pixData = null;
         document.getElementById('root').innerHTML = lista.map(g => {
             const meu = sessionStorage.getItem(`res_${g.id}`);
@@ -899,15 +910,15 @@
             alert('😢 Ops! Alguém acabou de reservar este presente. Escolha outro!');
             carregar();
 
-    // ── Registrar visita (após carregar) ──
-    setTimeout(async () => {
+    // ── Registrar visita ──
+    window.addEventListener('load', async () => {
         try {
             const dispositivo = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
             const { error } = await sb.from('visitas').insert({ dispositivo, pagina: 'index' });
             if (error) console.error('Erro visita:', error.message);
             else console.log('Visita registrada:', dispositivo);
         } catch(e) { console.error('Visita exception:', e); }
-    }, 2000); return;
+    }); return;
         }
 
         const idTemp = modalId, nomeTemp = modalNome, msgTemp = modalMsg;
