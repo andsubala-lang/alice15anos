@@ -4,312 +4,576 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Acesso Admin · 15 Anos da Alice</title>
+  <title>Painel Admin · 15 Anos da Alice</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-
     :root {
       --marsala:    #7a2535;
       --marsala-md: #9b3a4a;
       --creme:      #faf3e8;
       --creme-dk:   #e8d8c0;
       --texto:      #3a1a20;
+      --azul:       #2e7ea8;
     }
-
     body {
       font-family: 'Quicksand', sans-serif;
       min-height: 100vh;
-      background: url('fundo.jpg') center top / cover no-repeat fixed;
+      background: #f5ede0;
+      color: var(--texto);
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, var(--marsala), #5a1a26);
+      color: white;
+      padding: 16px 24px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 0 20px;
-      position: relative;
+      justify-content: space-between;
+      box-shadow: 0 4px 18px rgba(122,37,53,.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-
-    /* espaço para mostrar o topo da imagem */
-    .espacador { height: 360px; width: 100%; flex-shrink: 0; }
-
-    .card {
-      position: relative;
-      width: 100%;
-      max-width: 370px;
-      background: linear-gradient(160deg, #fdf8f0 0%, #f5e8d0 100%);
+    .header-titulo {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      letter-spacing: .03em;
+    }
+    .header-acoes { display: flex; gap: 10px; align-items: center; }
+    .btn-sair {
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      color: white;
       border-radius: 6px;
-      padding: 36px 34px 30px;
-      box-shadow:
-        0 0 0 2px var(--marsala),
-        0 0 0 7px #f5e8d0,
-        0 0 0 9px var(--marsala),
-        0 12px 50px rgba(0,0,0,.38);
-      margin-bottom: 40px;
+      padding: 7px 14px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-sair:hover { background: rgba(255,255,255,.25); }
+    .refresh-info {
+      font-size: .75rem;
+      opacity: .7;
+      font-weight: 600;
     }
 
-    /* cantos decorativos */
-    .card::before { content:'✦'; position:absolute; top:12px; left:16px; font-size:.9rem; color:var(--marsala); opacity:.4; }
-    .card::after  { content:'✦'; position:absolute; bottom:12px; right:16px; font-size:.9rem; color:var(--marsala); opacity:.4; }
-
-    .logo-wrap { text-align:center; margin-bottom:4px; }
-    .logo-moldura {
-      display:inline-block; border:2px solid var(--marsala);
-      border-radius:50%; padding:6px 12px;
-      font-size:1.3rem; color:var(--marsala); opacity:.8;
+    /* ── ABAS ── */
+    .abas {
+      display: flex;
+      gap: 0;
+      background: linear-gradient(160deg, #fdf8f0, #f0e2cc);
+      border-bottom: 2px solid #c9a86c;
+      padding: 0 24px;
+    }
+    .aba {
+      padding: 14px 22px;
+      font-weight: 700;
+      font-size: .9rem;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      color: #9a7a50;
+      transition: color .2s, border-color .2s;
+    }
+    .aba.ativa {
+      color: var(--marsala);
+      border-bottom-color: var(--marsala);
     }
 
-    .titulo {
-      font-family:'Playfair Display',serif; font-style:italic;
-      font-size:1.5rem; color:var(--marsala);
-      text-align:center; margin:10px 0 4px; line-height:1.2;
+    /* ── CONTEÚDO ── */
+    .conteudo { padding: 24px; max-width: 1100px; margin: 0 auto; }
+
+    /* ── DASHBOARD ── */
+    .cards-dash {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .card-dash {
+      background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
+      border: 1.5px solid #c9a86c;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 14px rgba(122,37,53,.08);
+      text-align: center;
+    }
+    .card-dash .num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      color: var(--marsala);
+      font-weight: 700;
+      line-height: 1;
+    }
+    .card-dash .label {
+      font-size: .78rem;
+      color: #9a7a50;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-top: 6px;
     }
 
-    .divisor {
-      display:flex; align-items:center; gap:8px;
-      margin:8px 0 16px; color:var(--marsala); opacity:.4; font-size:.78rem;
+    .barra-wrap {
+      background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
+      border: 1.5px solid #c9a86c;
+      border-radius: 10px;
+      padding: 20px 24px;
+      box-shadow: 0 4px 14px rgba(122,37,53,.08);
+      margin-bottom: 24px;
     }
-    .divisor::before,.divisor::after { content:''; flex:1; height:1px; background:var(--marsala); }
+    .barra-titulo {
+      font-weight: 700;
+      color: var(--marsala);
+      margin-bottom: 10px;
+      font-size: .9rem;
+    }
+    .barra-bg {
+      background: var(--creme-dk);
+      border-radius: 50px;
+      height: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+    .barra-fill {
+      height: 100%;
+      border-radius: 50px;
+      background: linear-gradient(90deg, var(--marsala), #c9a86c);
+      transition: width .6s ease;
+    }
+    .barra-pct {
+      font-size: .82rem;
+      color: #9a7a50;
+      font-weight: 700;
+      margin-top: 6px;
+      text-align: right;
+    }
 
-    .subtitulo { font-size:.78rem; color:#8a6a50; text-align:center; margin-bottom:22px; line-height:1.5; }
+    /* ── TABELA ── */
+    .topo-tabela {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .topo-tabela h2 {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--marsala);
+    }
+    .btn-csv {
+      background: linear-gradient(135deg, #2e7ea8, #1a5c80);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .btn-csv:hover { opacity: .88; }
 
-    .campo { position:relative; margin-bottom:10px; }
-    .icone-campo {
-      position:absolute; left:12px; top:50%;
-      transform:translateY(-50%); font-size:.82rem; opacity:.45; pointer-events:none;
+    .tabela-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(122,37,53,.08);
     }
-    .campo input {
-      width:100%; padding:11px 38px;
-      border:1.5px solid var(--creme-dk); border-radius:8px;
-      background:rgba(255,255,255,.75);
-      font-family:'Quicksand',sans-serif; font-size:.88rem; font-weight:600;
-      color:var(--texto); outline:none;
-      transition:border-color .2s, box-shadow .2s, background .2s;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
+      font-size: .85rem;
     }
-    .campo input:focus {
-      border-color:var(--marsala); background:rgba(255,255,255,.95);
-      box-shadow:0 0 0 3px rgba(122,37,53,.10);
+    thead tr {
+      background: linear-gradient(135deg, var(--marsala), #5a1a26);
+      color: white;
     }
-    .campo input::placeholder { color:#b09878; font-weight:500; }
+    thead th {
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 700;
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(201,168,108,.2);
+      transition: background .15s;
+    }
+    tbody tr:hover { background: rgba(201,168,108,.08); }
+    tbody td {
+      padding: 11px 14px;
+      vertical-align: middle;
+    }
+    .badge-reservado {
+      display: inline-block;
+      background: rgba(122,37,53,.1);
+      color: var(--marsala);
+      border: 1px solid rgba(122,37,53,.2);
+      border-radius: 50px;
+      padding: 3px 10px;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+    .badge-livre {
+      display: inline-block;
+      background: rgba(46,126,168,.1);
+      color: var(--azul);
+      border: 1px solid rgba(46,126,168,.2);
+      border-radius: 50px;
+      padding: 3px 10px;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+    .btn-cancelar-res {
+      background: transparent;
+      border: 1.5px solid #c9a86c;
+      color: #9a7a50;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .btn-cancelar-res:hover { background: rgba(201,168,108,.15); }
 
-    .olho {
-      position:absolute; right:11px; top:50%;
-      transform:translateY(-50%);
-      background:none; border:none; cursor:pointer;
-      font-size:.88rem; opacity:.4; transition:opacity .2s;
+    /* ── MENSAGENS ── */
+    .msg-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
     }
-    .olho:hover { opacity:.7; }
+    .msg-card {
+      background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
+      border: 1.5px solid #c9a86c;
+      border-radius: 10px;
+      padding: 16px 18px;
+      box-shadow: 0 3px 10px rgba(122,37,53,.07);
+    }
+    .msg-card .msg-nome {
+      font-weight: 700;
+      color: var(--marsala);
+      font-size: .9rem;
+      margin-bottom: 4px;
+    }
+    .msg-card .msg-presente {
+      font-size: .75rem;
+      color: #9a7a50;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .msg-card .msg-texto {
+      font-size: .85rem;
+      color: var(--texto);
+      line-height: 1.5;
+      font-style: italic;
+    }
+    .msg-card .msg-data {
+      font-size: .72rem;
+      color: #b09878;
+      margin-top: 8px;
+      font-weight: 600;
+    }
 
-    .btn-entrar {
-      width:100%; padding:12px; margin-top:10px;
-      border:none; border-radius:8px;
-      background:linear-gradient(135deg, var(--marsala-md), var(--marsala));
-      color:white; font-family:'Playfair Display',serif;
-      font-style:italic; font-size:1rem; letter-spacing:.05em;
-      cursor:pointer; box-shadow:0 4px 16px rgba(122,37,53,.28);
-      transition:opacity .2s, transform .15s;
+    .vazio {
+      text-align: center;
+      color: #b09878;
+      padding: 40px;
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
     }
-    .btn-entrar:hover:not(:disabled) { opacity:.9; transform:translateY(-1px); }
-    .btn-entrar:disabled { opacity:.6; cursor:not-allowed; }
 
     .spin {
-      display:inline-block; width:13px; height:13px;
-      border:2px solid rgba(255,255,255,.35);
-      border-top-color:white; border-radius:50%;
-      animation:girar .7s linear infinite;
-      vertical-align:middle; margin-right:5px;
+      display: inline-block; width: 18px; height: 18px;
+      border: 3px solid rgba(122,37,53,.2);
+      border-top-color: var(--marsala); border-radius: 50%;
+      animation: girar .7s linear infinite;
+      vertical-align: middle;
     }
-    @keyframes girar { to { transform:rotate(360deg); } }
+    @keyframes girar { to { transform: rotate(360deg); } }
 
-    /* esqueci senha — agora é clicável */
-    .esqueci {
-      display:block; text-align:center; margin-top:12px;
-      font-size:.76rem; color:var(--marsala);
-      cursor:pointer; opacity:.65;
-      text-decoration:underline; background:none; border:none;
-      font-family:'Quicksand',sans-serif; font-weight:600;
-      width:100%;
-      transition:opacity .2s;
-    }
-    .esqueci:hover { opacity:1; }
+    /* painel oculto (proteção) */
+    #painel { display: none; }
 
-    .msg {
-      margin-top:10px; padding:9px 12px; border-radius:7px;
-      font-size:.8rem; font-weight:600; text-align:center; display:none;
-      background:rgba(122,37,53,.07); color:var(--marsala);
-      border:1px solid rgba(122,37,53,.18);
-    }
-    .msg.ativo { display:block; }
-    .msg.ok { background:rgba(46,126,168,.07); color:#2e7ea8; border-color:rgba(46,126,168,.2); }
-
-    /* tela de recuperação */
-    #tela-recuperar { display:none; }
-
-    #overlay {
-      display:none; position:fixed; inset:0;
-      background:rgba(250,243,232,.88); backdrop-filter:blur(4px);
-      z-index:999; align-items:center; justify-content:center;
-      flex-direction:column; gap:14px;
-    }
-    #overlay.ativo { display:flex; }
-    #overlay .grande {
-      width:44px; height:44px; border:4px solid var(--creme-dk);
-      border-top-color:var(--marsala); border-radius:50%;
-      animation:girar .8s linear infinite;
-    }
-    #overlay p { font-family:'Playfair Display',serif; font-style:italic; font-size:.95rem; color:var(--marsala); }
-
-    @media (max-width:440px) {
-      .espacador { height:160px; }
-      .card { padding:28px 18px 24px; }
-      .titulo { font-size:1.25rem; }
+    @media (max-width: 600px) {
+      .conteudo { padding: 14px; }
+      .header { padding: 12px 14px; }
+      .header-titulo { font-size: 1rem; }
+      .aba { padding: 11px 14px; font-size: .82rem; }
+      .cards-dash { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
 
-<div id="overlay">
-  <div class="grande"></div>
-  <p>Entrando no País das Maravilhas…</p>
+<div id="painel">
+  <!-- HEADER -->
+  <div class="header">
+    <span class="header-titulo">🎀 Painel Admin · Alice 15 Anos</span>
+    <div class="header-acoes">
+      <span class="refresh-info" id="refresh-info">Atualiza em 30s</span>
+      <button class="btn-sair" onclick="sair()">Sair</button>
+    </div>
+  </div>
+
+  <!-- ABAS -->
+  <div class="abas">
+    <div class="aba ativa" id="aba-dash"       onclick="trocarAba('dash')">📊 Dashboard</div>
+    <div class="aba"       id="aba-presentes"  onclick="trocarAba('presentes')">🎁 Presentes</div>
+    <div class="aba"       id="aba-mensagens"  onclick="trocarAba('mensagens')">💌 Mensagens</div>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <div class="conteudo">
+
+    <!-- ABA DASHBOARD -->
+    <div id="tab-dash">
+      <div class="cards-dash">
+        <div class="card-dash">
+          <div class="num" id="d-total">–</div>
+          <div class="label">Total de presentes</div>
+        </div>
+        <div class="card-dash">
+          <div class="num" id="d-reservados">–</div>
+          <div class="label">Reservados</div>
+        </div>
+        <div class="card-dash">
+          <div class="num" id="d-disponiveis">–</div>
+          <div class="label">Disponíveis</div>
+        </div>
+        <div class="card-dash">
+          <div class="num" id="d-mensagens">–</div>
+          <div class="label">Com mensagem</div>
+        </div>
+      </div>
+      <div class="barra-wrap">
+        <div class="barra-titulo">🎁 Progresso das reservas</div>
+        <div class="barra-bg">
+          <div class="barra-fill" id="barra-fill" style="width:0%"></div>
+        </div>
+        <div class="barra-pct" id="barra-pct">0% reservado</div>
+      </div>
+    </div>
+
+    <!-- ABA PRESENTES -->
+    <div id="tab-presentes" style="display:none;">
+      <div class="topo-tabela">
+        <h2>Lista de Presentes</h2>
+        <button class="btn-csv" onclick="exportarCSV()">⬇️ Exportar CSV</button>
+      </div>
+      <div class="tabela-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Presente</th>
+              <th>Status</th>
+              <th>Reservado por</th>
+              <th>Data da reserva</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-corpo">
+            <tr><td colspan="6" class="vazio"><span class="spin"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ABA MENSAGENS -->
+    <div id="tab-mensagens" style="display:none;">
+      <div class="topo-tabela">
+        <h2>Mensagens para a Alice 💌</h2>
+      </div>
+      <div class="msg-grid" id="msg-grid">
+        <div class="vazio"><span class="spin"></span></div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<!-- espaço para mostrar o topo da imagem -->
-<div class="espacador"></div>
-
-<div class="card">
-  <div class="logo-wrap"><span class="logo-moldura">🎀</span></div>
-  <h1 class="titulo">Bem-vinda de volta!</h1>
-  <div class="divisor">❧ ♥ ❧</div>
-  <p class="subtitulo">Faça login para acessar o painel da Alice.</p>
-
-  <!-- tela de login -->
-  <div id="tela-login">
-    <div class="campo">
-      <span class="icone-campo">👤</span>
-      <input type="email" id="email" placeholder="E-mail" autocomplete="username"/>
-    </div>
-    <div class="campo">
-      <span class="icone-campo">🔒</span>
-      <input type="password" id="senha" placeholder="Senha" autocomplete="current-password"/>
-      <button class="olho" id="olho" type="button">👁</button>
-    </div>
-    <button class="btn-entrar" id="btn-login" onclick="entrar()">Entrar</button>
-    <button class="esqueci" onclick="mostrarRecuperar()">Esqueci minha senha</button>
-  </div>
-
-  <!-- tela de recuperação de senha -->
-  <div id="tela-recuperar">
-    <p class="subtitulo" style="margin-bottom:14px;">Digite seu e-mail e enviaremos um link para redefinir sua senha.</p>
-    <div class="campo">
-      <span class="icone-campo">👤</span>
-      <input type="email" id="email-recuperar" placeholder="Seu e-mail"/>
-    </div>
-    <button class="btn-entrar" id="btn-recuperar" onclick="enviarRecuperacao()">Enviar link de recuperação</button>
-    <button class="esqueci" onclick="mostrarLogin()">← Voltar para o login</button>
-  </div>
-
-  <div class="msg" id="msg"></div>
+<!-- tela de acesso negado -->
+<div id="acesso-negado" style="display:none; min-height:100vh; align-items:center; justify-content:center; flex-direction:column; gap:16px; text-align:center; padding:20px; background:#f5ede0;">
+  <div style="font-size:3rem;">🔒</div>
+  <h2 style="font-family:'Playfair Display',serif; font-style:italic; color:#7a2535;">Acesso restrito</h2>
+  <p style="color:#9a7a50; font-weight:600;">Você precisa fazer login para acessar o painel.</p>
+  <a href="login.html" style="background:linear-gradient(135deg,#9b3a4a,#7a2535); color:white; border-radius:8px; padding:12px 28px; text-decoration:none; font-family:'Quicksand',sans-serif; font-weight:700;">Ir para o Login</a>
 </div>
 
 <script>
-  const sb = window.supabase.createClient(
-    'https://abojdhxobsyrzyiacaqf.supabase.co',
-    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
-  );
+  const SUPABASE_URL = 'https://abojdhxobsyrzyiacaqf.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFib2pkaHhvYnN5cnp5aWFjYXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMTAzOTAsImV4cCI6MjA5NjU4NjM5MH0.qPDwqe0vPKlJm5R1ATY1byTKc__PUPvvVyUbu4dAzWk';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  // ── Proteção de acesso ──
   (async () => {
-    sessionStorage.removeItem('admin_autorizado');
-    await sb.auth.signOut();
-  })();
-
-  const emailEl  = document.getElementById('email');
-  const senhaEl  = document.getElementById('senha');
-  const btnEl    = document.getElementById('btn-login');
-  const msgEl    = document.getElementById('msg');
-  const olhoEl   = document.getElementById('olho');
-
-  olhoEl.addEventListener('click', () => {
-    const v = senhaEl.type === 'text';
-    senhaEl.type = v ? 'password' : 'text';
-    olhoEl.textContent = v ? '👁' : '🙈';
-  });
-
-  [emailEl, senhaEl].forEach(el =>
-    el.addEventListener('keydown', e => { if (e.key === 'Enter') entrar(); })
-  );
-
-  function mostrarMsg(txt, tipo='erro') {
-    msgEl.textContent = txt;
-    msgEl.className = 'msg ativo' + (tipo === 'ok' ? ' ok' : '');
-  }
-
-  function mostrarRecuperar() {
-    document.getElementById('tela-login').style.display = 'none';
-    document.getElementById('tela-recuperar').style.display = 'block';
-    msgEl.className = 'msg';
-  }
-
-  function mostrarLogin() {
-    document.getElementById('tela-recuperar').style.display = 'none';
-    document.getElementById('tela-login').style.display = 'block';
-    msgEl.className = 'msg';
-  }
-
-  function ir() {
-    sessionStorage.setItem('admin_autorizado', '1');
-    document.getElementById('overlay').classList.add('ativo');
-    setTimeout(() => { window.location.href = 'admin.html'; }, 900);
-  }
-
-  async function entrar() {
-    msgEl.className = 'msg';
-    const email = emailEl.value.trim();
-    const senha = senhaEl.value;
-    if (!email) { mostrarMsg('Informe seu e-mail.'); emailEl.focus(); return; }
-    if (!senha)  { mostrarMsg('Informe sua senha.');  senhaEl.focus(); return; }
-
-    btnEl.disabled = true;
-    btnEl.innerHTML = '<span class="spin"></span> Verificando…';
-
-    const { error } = await sb.auth.signInWithPassword({ email, password: senha });
-
-    btnEl.disabled = false;
-    btnEl.innerHTML = 'Entrar';
-
-    if (error) {
-      const erros = {
-        'Invalid login credentials': 'E-mail ou senha incorretos.',
-        'Email not confirmed':        'Confirme seu e-mail antes de entrar.',
-        'Too many requests':          'Muitas tentativas. Aguarde um momento.',
-      };
-      mostrarMsg(erros[error.message] ?? 'Algo deu errado. Tente novamente.');
-      senhaEl.value = ''; senhaEl.focus();
+    const autorizado = sessionStorage.getItem('admin_autorizado');
+    const { data: { session } } = await sb.auth.getSession();
+    if (!autorizado || !session) {
+      document.getElementById('acesso-negado').style.display = 'flex';
       return;
     }
-    ir();
+    document.getElementById('painel').style.display = 'block';
+    carregar();
+    iniciarRefresh();
+  })();
+
+  // ── Dados globais ──
+  let todosPresentes = [];
+
+  // ── Carregar dados ──
+  async function carregar() {
+    const { data, error } = await sb.from('presentes').select('*').order('id', { ascending: true });
+    if (error || !data) return;
+    todosPresentes = data;
+    atualizarDashboard(data);
+    atualizarTabela(data);
+    atualizarMensagens(data);
   }
 
-  async function enviarRecuperacao() {
-    const email = document.getElementById('email-recuperar').value.trim();
-    if (!email) { mostrarMsg('Informe seu e-mail.'); return; }
+  function atualizarDashboard(data) {
+    const total      = data.length;
+    const reservados = data.filter(g => g.reservado).length;
+    const disponiveis = total - reservados;
+    const comMsg     = data.filter(g => g.mensagem && g.mensagem.trim()).length;
+    const pct        = total > 0 ? Math.round((reservados / total) * 100) : 0;
 
-    const btn = document.getElementById('btn-recuperar');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spin"></span> Enviando…';
+    document.getElementById('d-total').textContent      = total;
+    document.getElementById('d-reservados').textContent = reservados;
+    document.getElementById('d-disponiveis').textContent = disponiveis;
+    document.getElementById('d-mensagens').textContent  = comMsg;
+    document.getElementById('barra-fill').style.width   = pct + '%';
+    document.getElementById('barra-pct').textContent    = pct + '% reservado';
+  }
 
-    const { error } = await sb.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/login.html'
-    });
+  function formatarData(iso) {
+    if (!iso) return '–';
+    const d = new Date(iso);
+    return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  }
 
-    btn.disabled = false;
-    btn.innerHTML = 'Enviar link de recuperação';
-
-    if (error) {
-      mostrarMsg('Erro ao enviar. Verifique o e-mail informado.');
-    } else {
-      mostrarMsg('✅ Link enviado! Verifique sua caixa de entrada.', 'ok');
+  function atualizarTabela(data) {
+    const corpo = document.getElementById('tabela-corpo');
+    if (!data.length) {
+      corpo.innerHTML = '<tr><td colspan="6" class="vazio">Nenhum presente cadastrado.</td></tr>';
+      return;
     }
+    corpo.innerHTML = data.map(g => `
+      <tr>
+        <td style="color:#b09878; font-weight:700;">${g.id}</td>
+        <td style="font-weight:700; max-width:200px;">${g.titulo}</td>
+        <td>${g.reservado
+          ? '<span class="badge-reservado">🎀 Reservado</span>'
+          : '<span class="badge-livre">✅ Disponível</span>'}</td>
+        <td>${g.nome_reservante || '–'}</td>
+        <td style="white-space:nowrap; color:#9a7a50;">${formatarData(g.reservado_em)}</td>
+        <td>${g.reservado
+          ? `<button class="btn-cancelar-res" onclick="cancelarReserva(${g.id})">❌ Cancelar</button>`
+          : '–'}</td>
+      </tr>
+    `).join('');
+  }
+
+  function atualizarMensagens(data) {
+    const comMsg = data.filter(g => g.reservado && g.mensagem && g.mensagem.trim());
+    const grid = document.getElementById('msg-grid');
+    if (!comMsg.length) {
+      grid.innerHTML = '<div class="vazio">Ainda não há mensagens. 💌</div>';
+      return;
+    }
+    grid.innerHTML = comMsg.map(g => `
+      <div class="msg-card">
+        <div class="msg-nome">💙 ${g.nome_reservante}</div>
+        <div class="msg-presente">🎁 ${g.titulo}</div>
+        <div class="msg-texto">"${g.mensagem}"</div>
+        <div class="msg-data">📅 ${formatarData(g.reservado_em)}</div>
+      </div>
+    `).join('');
+  }
+
+  // ── Cancelar reserva ──
+  async function cancelarReserva(id) {
+    if (!confirm('Cancelar a reserva deste presente?')) return;
+    const { error } = await sb.from('presentes')
+      .update({ reservado: false, nome_reservante: null, mensagem: null, reservado_em: null })
+      .eq('id', id);
+    if (error) {
+      alert('Erro ao cancelar: ' + error.message);
+    } else {
+      await carregar();
+    }
+  }
+
+  // ── Exportar CSV ──
+  function exportarCSV() {
+    const reservados = todosPresentes.filter(g => g.reservado);
+    if (!reservados.length) {
+      alert('Nenhum presente reservado ainda!');
+      return;
+    }
+    const header = ['ID', 'Presente', 'Reservado por', 'Mensagem', 'Data da reserva'];
+    const linhas = reservados.map(g => [
+      g.id,
+      `"${(g.titulo || '').replace(/"/g, '""')}"`,
+      `"${(g.nome_reservante || '').replace(/"/g, '""')}"`,
+      `"${(g.mensagem || '').replace(/"/g, '""')}"`,
+      formatarData(g.reservado_em)
+    ].join(','));
+    const csv = [header.join(','), ...linhas].join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'reservas-alice15anos.csv';
+    a.click(); URL.revokeObjectURL(url);
+  }
+
+  // ── Abas ──
+  function trocarAba(aba) {
+    ['dash','presentes','mensagens'].forEach(a => {
+      document.getElementById('tab-' + a).style.display    = a === aba ? 'block' : 'none';
+      document.getElementById('aba-' + a).classList.toggle('ativa', a === aba);
+    });
+  }
+
+  // ── Auto-refresh ──
+  let contador = 30;
+  function iniciarRefresh() {
+    setInterval(async () => {
+      contador--;
+      document.getElementById('refresh-info').textContent = `Atualiza em ${contador}s`;
+      if (contador <= 0) {
+        contador = 30;
+        await carregar();
+        document.getElementById('refresh-info').textContent = '✅ Atualizado!';
+        setTimeout(() => {
+          document.getElementById('refresh-info').textContent = 'Atualiza em 30s';
+        }, 2000);
+      }
+    }, 1000);
+  }
+
+  // ── Sair ──
+  async function sair() {
+    sessionStorage.removeItem('admin_autorizado');
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
   }
 </script>
 </body>
