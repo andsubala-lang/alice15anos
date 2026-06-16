@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -259,6 +260,34 @@
     #load p { font-family:'Playfair Display',serif; font-style:italic; color:var(--marsala); }
     @keyframes girar { to { transform:rotate(360deg); } }
 
+    .prog-wrap { margin-bottom:22px; }
+    .prog-bar { height:10px; border-radius:50px; background:var(--creme-dk); overflow:hidden; margin:6px 0; }
+    .prog-fill { height:100%; border-radius:50px; background:linear-gradient(90deg,var(--marsala-md),var(--marsala)); transition:width .5s; }
+    .prog-info { display:flex; justify-content:space-between; font-size:.75rem; color:#9a7a60; }
+
+    .btn-exportar {
+        display:inline-flex; align-items:center; gap:6px;
+        background:rgba(46,126,168,.1); border:1.5px solid var(--azul-cl);
+        color:var(--azul-dk); border-radius:8px;
+        padding:8px 16px; font-family:'Quicksand',sans-serif;
+        font-size:.82rem; font-weight:700; cursor:pointer;
+        transition:background .18s; margin-bottom:16px;
+    }
+    .btn-exportar:hover { background:rgba(46,126,168,.18); }
+
+    .btn-cancelar-res {
+        background:rgba(122,37,53,.07); border:1px solid var(--marsala-cl);
+        color:var(--marsala); border-radius:6px;
+        padding:5px 10px; font-family:'Quicksand',sans-serif;
+        font-size:.75rem; font-weight:700; cursor:pointer;
+        transition:background .15s; white-space:nowrap;
+    }
+    .btn-cancelar-res:hover { background:rgba(122,37,53,.14); }
+
+    .auto-update { font-size:.72rem; color:#b0a090; display:flex; align-items:center; gap:6px; margin-bottom:16px; }
+    .dot-verde { width:7px; height:7px; border-radius:50%; background:#25D366; animation:pulsar 1.5s infinite; flex-shrink:0; }
+    @keyframes pulsar { 0%,100%{opacity:1} 50%{opacity:.35} }
+
     @media (max-width:680px) {
       .sidebar { width:180px; }
       .main { margin-left:180px; }
@@ -311,6 +340,17 @@
 
     <!-- DASHBOARD -->
     <div class="tela ativa" id="tela-dashboard">
+      <div class="auto-update"><div class="dot-verde"></div> Painel atualiza automaticamente a cada 30 segundos</div>
+
+      <div class="prog-wrap">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+          <span style="font-size:.85rem;font-weight:700;color:var(--marsala);">Progresso das reservas</span>
+          <span id="prog-texto" style="font-size:.78rem;color:#9a7a60;">–</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+        <div class="prog-info"><span id="prog-pct">0%</span><span id="prog-resto">– presentes disponíveis</span></div>
+      </div>
+
       <div class="banner">
         <h2>Bem-vindo ao painel administrativo!</h2>
         <p>Gerencie sua lista de presentes da melhor forma.</p>
@@ -347,7 +387,7 @@
         <div class="painel-header">🎁 Todos os presentes reservados</div>
         <table>
           <thead>
-            <tr><th>Presente</th><th>Reservado por</th><th>Mensagem</th></tr>
+            <tr><th>Presente</th><th>Reservado por</th><th>Mensagem</th><th>Quando</th><th></th></tr>
           </thead>
           <tbody id="tbody-presentes">
             <tr><td colspan="3"><div class="estado"><span>⏳</span>Carregando…</div></td></tr>
@@ -402,10 +442,13 @@
     }
   }
 
+  let todosOsDados = [];
+
   async function carregar() {
     const { data, error } = await sb.from('presentes').select('*').order('id',{ascending:true});
     if (error||!data) return;
 
+    todosOsDados = data;
     const reservados  = data.filter(g => g.reservado);
     const disponiveis = data.filter(g => !g.reservado);
     const comMensagem = reservados.filter(g => g.mensagem && g.mensagem.trim());
@@ -414,20 +457,22 @@
     document.getElementById('s-total').textContent = data.length;
     document.getElementById('s-res').textContent   = reservados.length;
     document.getElementById('s-disp').textContent  = disponiveis.length;
+    document.getElementById('s-msg').textContent   = comMensagem.length;
+
+    // barra de progresso
+    const pct = data.length ? Math.round((reservados.length / data.length) * 100) : 0;
+    document.getElementById('prog-fill').style.width  = pct + '%';
+    document.getElementById('prog-pct').textContent   = pct + '% concluído';
+    document.getElementById('prog-texto').textContent = `${reservados.length} de ${data.length} reservados`;
+    document.getElementById('prog-resto').textContent = `${disponiveis.length} presentes disponíveis`;
 
     // último reservado
     if (reservados.length) {
       const ult = reservados[reservados.length - 1];
       document.getElementById('ultimo-conteudo').innerHTML = `
         <div class="ultimo-info">
-          <div class="ultimo-campo">
-            <label>Presente</label>
-            <strong>${ult.titulo}</strong>
-          </div>
-          <div class="ultimo-campo">
-            <label>Reservado por</label>
-            <strong>${ult.nome_reservante || 'Anônimo'}</strong>
-          </div>
+          <div class="ultimo-campo"><label>Presente</label><strong>${ult.titulo}</strong></div>
+          <div class="ultimo-campo"><label>Reservado por</label><strong>${ult.nome_reservante||'Anônimo'}</strong></div>
           ${ult.mensagem ? `<div class="ultimo-campo"><label>Mensagem</label><strong>${ult.mensagem}</strong></div>` : ''}
         </div>`;
     }
@@ -435,14 +480,21 @@
     // tabela presentes
     const tbody = document.getElementById('tbody-presentes');
     if (!reservados.length) {
-      tbody.innerHTML = '<tr><td colspan="3"><div class="estado"><span>🎈</span>Nenhum presente reservado ainda.</div></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5"><div class="estado"><span>🎈</span>Nenhum presente reservado ainda.</div></td></tr>';
     } else {
-      tbody.innerHTML = reservados.map(g => `
-        <tr>
-          <td><span class="tag-presente">${g.titulo}</span></td>
-          <td><span class="nome-res">${g.nome_reservante||'Anônimo'}</span></td>
-          <td><span class="msg-col">${g.mensagem||'—'}</span></td>
-        </tr>`).join('');
+      tbody.innerHTML = reservados.map(g => {
+        const quando = g.reservado_em
+          ? new Date(g.reservado_em).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})
+          : '—';
+        return `
+          <tr>
+            <td><span class="tag-presente">${g.titulo}</span></td>
+            <td><span class="nome-res">${g.nome_reservante||'Anônimo'}</span></td>
+            <td><span class="msg-col">${g.mensagem||'—'}</span></td>
+            <td style="color:#b0a090;font-size:.78rem;white-space:nowrap;">${quando}</td>
+            <td><button class="btn-cancelar-res" onclick="cancelarReserva(${g.id},'${(g.titulo||'').replace(/'/g,"\'")}')">Cancelar</button></td>
+          </tr>`;
+      }).join('');
     }
 
     // mensagens
@@ -460,6 +512,47 @@
           </div>
         </div>`).join('');
     }
+  }
+
+  // Auto-refresh a cada 30 segundos
+  setInterval(carregar, 30000);
+
+  // Cancelar reserva
+  async function cancelarReserva(id, titulo) {
+    if (!confirm(`Cancelar a reserva de "${titulo}"?`)) return;
+    const { error } = await sb.from('presentes')
+      .update({ reservado: false, nome_reservante: null, mensagem: null })
+      .eq('id', id);
+    if (!error) carregar();
+    else alert('Erro ao cancelar. Tente novamente.');
+  }
+
+  // Exportar CSV
+  function exportarCSV() {
+    const reservados = todosOsDados.filter(g => g.reservado);
+    if (!reservados.length) { alert('Nenhum presente reservado ainda.'); return; }
+
+    const linhas = [
+      ['Presente','Reservado por','Mensagem','Data'].join(','),
+      ...reservados.map(g => {
+        const quando = g.reservado_em
+          ? new Date(g.reservado_em).toLocaleString('pt-BR')
+          : '';
+        return [
+          `"${(g.titulo||'').replace(/"/g,'""')}"`,
+          `"${(g.nome_reservante||'').replace(/"/g,'""')}"`,
+          `"${(g.mensagem||'').replace(/"/g,'""')}"`,
+          `"${quando}"`
+        ].join(',');
+      })
+    ];
+
+    const blob = new Blob(['﻿' + linhas.join('
+')], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'reservas-alice.csv';
+    a.click(); URL.revokeObjectURL(url);
   }
 </script>
 </body>
