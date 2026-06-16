@@ -323,17 +323,23 @@
 
         /* ── mobile ── */
         @media (max-width: 520px) {
+            /* No mobile, fundo sólido creme sem imagem */
+            body {
+                background: linear-gradient(160deg, #fdf8f0 0%, #f5e8d4 100%) !important;
+            }
+
             /* No mobile, esconde o hero com a imagem de fundo e o contador */
             .hero { display: none; }
 
             /* Cabeçalho mobile simples no topo */
             .mobile-header {
-                display: flex;
+                display: flex !important;
                 flex-direction: column;
                 align-items: center;
-                padding: 24px 16px 16px;
+                padding: 28px 20px 20px;
                 background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
                 border-bottom: 2px solid #c9a86c;
+                box-shadow: 0 4px 16px rgba(122,37,53,.08);
             }
             .mobile-header .mob-titulo {
                 font-family: 'Playfair Display', serif;
