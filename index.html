@@ -922,15 +922,19 @@
         ultimaReserva = Date.now();
 
         sessionStorage.setItem(`res_${idTemp}`, '1');
-        const { error } = await sb.from('presentes')
+        console.log('Tentando reservar id:', idTemp, 'nome:', nomeTemp);
+        const { data: updData, error } = await sb.from('presentes')
             .update({ reservado: true, nome_reservante: nomeTemp, mensagem: msgTemp, reservado_em: new Date().toISOString() })
-            .eq('id', idTemp);
+            .eq('id', idTemp)
+            .select();
+        console.log('Resultado:', updData, 'Erro:', error);
         if (!error) {
             carregar();
-            // Mostra overlay de agradecimento
             const overlay = document.getElementById('overlay-obrigada');
             document.getElementById('msg-obrigada').innerHTML = `Você reservou <strong>${presenteTemp}</strong> para a Alice.<br>Ela vai adorar! 💙`;
             overlay.style.display = 'flex';
+        } else {
+            alert('Erro ao reservar: ' + error.message);
         }
     }
 
