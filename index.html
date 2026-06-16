@@ -14,7 +14,6 @@
     <meta name="twitter:card" content="summary_large_image"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -22,13 +21,12 @@
         :root {
             --azul:       #5aafd6;
             --azul-cl:    #a8d8ea;
-            --azul-bg:    #e3f4fb;
             --azul-dk:    #2e7ea8;
             --marsala:    #9b3a4a;
+            --marsala-dk: #7a2535;
             --marsala-cl: #c97080;
-            --marsala-bg: #f8eaec;
             --ouro:       #c9a84c;
-            --branco:     #ffffff;
+            --creme:      #fdf8f0;
             --texto:      #2c3e50;
         }
         body {
@@ -42,58 +40,98 @@
             background-color: #d8dfe8;
         }
         .hero {
-            width: 100%;
-            min-height: 500px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            padding-bottom: 24px;
-            padding-top: 280px;
-            overflow: hidden;
-            background: transparent;
+            width: 100%; min-height: 500px; position: relative;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-end;
+            padding-bottom: 24px; padding-top: 280px;
+            overflow: hidden; background: transparent;
         }
-        .hero-svg { display: none; }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-            margin-top: auto;
-        }
-        .hero-titulo { display: none; }
-        .hero-sub { display: none; }
+        .hero-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: auto; }
         .timer-box {
             background: linear-gradient(160deg, rgba(253,248,240,.95), rgba(240,225,200,.92));
-            border: 2px solid #c9a86c;
-            border-radius: 6px;
-            padding: 14px 36px;
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: 1.15rem;
-            color: var(--marsala);
+            border: 2px solid #c9a86c; border-radius: 6px; padding: 14px 36px;
+            font-family: 'Playfair Display', serif; font-style: italic;
+            font-size: 1.15rem; color: var(--marsala);
             box-shadow: 0 0 0 1px rgba(201,168,108,.3), 0 6px 28px rgba(122,37,53,.15);
-            backdrop-filter: blur(6px);
-            position: relative;
-            letter-spacing: .03em;
+            backdrop-filter: blur(6px); position: relative; letter-spacing: .03em;
         }
         .timer-box::before, .timer-box::after { content: '✦'; position: absolute; font-size: .7rem; color: #c9a86c; opacity: .7; }
         .timer-box::before { top: 6px; left: 10px; }
         .timer-box::after  { bottom: 6px; right: 10px; }
-        .timer-box .label  { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; opacity: .6; font-style: normal; font-family: 'Quicksand', sans-serif; display: block; margin-bottom: 2px; }
-        .timer-box .tempo  { font-size: 1.5rem; font-weight: 700; font-style: normal; color: var(--marsala); letter-spacing: .05em; }
+        .timer-box .label { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; opacity: .6; font-style: normal; font-family: 'Quicksand', sans-serif; display: block; margin-bottom: 2px; }
+        .timer-box .tempo { font-size: 1.5rem; font-weight: 700; font-style: normal; color: var(--marsala); letter-spacing: .05em; }
+
+        /* ── CONTROLES (busca + filtro) ── */
+        .controles {
+            display: flex; flex-wrap: wrap; align-items: center;
+            justify-content: center; gap: 10px;
+            margin-bottom: 20px;
+        }
+        .busca-wrap {
+            position: relative;
+        }
+        .busca-input {
+            padding: 10px 16px 10px 36px;
+            border: 1.5px solid rgba(201,168,108,.5);
+            border-radius: 50px;
+            background: rgba(253,248,240,.92);
+            font-family: 'Quicksand', sans-serif;
+            font-size: .88rem; font-weight: 600;
+            color: var(--texto); outline: none;
+            width: 220px;
+            transition: border-color .2s, box-shadow .2s;
+            box-shadow: 0 2px 8px rgba(122,37,53,.08);
+        }
+        .busca-input:focus {
+            border-color: var(--azul);
+            box-shadow: 0 0 0 3px rgba(90,175,214,.15);
+        }
+        .busca-input::placeholder { color: #b09878; }
+        .busca-icone {
+            position: absolute; left: 12px; top: 50%;
+            transform: translateY(-50%);
+            font-size: .82rem; opacity: .5; pointer-events: none;
+        }
+        .filtros { display: flex; gap: 6px; }
+        .btn-filtro {
+            padding: 9px 18px; border-radius: 50px;
+            border: 1.5px solid rgba(201,168,108,.4);
+            background: rgba(253,248,240,.88);
+            font-family: 'Quicksand', sans-serif;
+            font-size: .82rem; font-weight: 700;
+            color: #9a7a50; cursor: pointer;
+            transition: all .2s;
+            box-shadow: 0 2px 8px rgba(122,37,53,.06);
+        }
+        .btn-filtro:hover { border-color: var(--azul); color: var(--azul-dk); }
+        .btn-filtro.ativo {
+            background: linear-gradient(135deg, var(--azul-dk), var(--azul));
+            border-color: var(--azul-dk); color: white;
+            box-shadow: 0 3px 12px rgba(46,126,168,.25);
+        }
+
+        /* ── BANNER DISPONÍVEIS ── */
         .banner-disponiveis {
             display: inline-flex; align-items: center; gap: 10px;
             background: linear-gradient(135deg, rgba(253,248,240,.92), rgba(240,225,200,.88));
             border: 1.5px solid #c9a86c; border-radius: 50px;
             padding: 10px 24px; font-size: 0.88rem; font-weight: 700;
             color: var(--marsala); box-shadow: 0 3px 14px rgba(122,37,53,.12);
-            margin-bottom: 20px;
+            margin-bottom: 16px; transition: all .4s ease;
         }
-        .banner-disponiveis .num { font-size: 1.1rem; font-weight: 700; color: var(--marsala); }
+        .banner-disponiveis .num {
+            font-size: 1.2rem; font-weight: 700; color: var(--marsala);
+            display: inline-block; transition: transform .3s ease;
+        }
+        .banner-disponiveis .num.animando {
+            animation: pulsar .4s ease;
+        }
+        @keyframes pulsar {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.4); color: var(--azul-dk); }
+            100% { transform: scale(1); }
+        }
+
         .btn-whatsapp {
             display: inline-flex; align-items: center; gap: 8px;
             background: #25D366; color: white; border: none; border-radius: 50px;
@@ -106,18 +144,9 @@
         .rodape { text-align: center; padding: 32px 20px 50px; }
 
         /* ── MODAL CONFIRMAÇÃO ── */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,.45); z-index: 999;
-            align-items: center; justify-content: center; padding: 20px;
-        }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 999; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.ativo { display: flex; }
-        .modal {
-            background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
-            border: 2px solid #c9a86c; border-radius: 16px;
-            padding: 32px 28px; max-width: 380px; width: 100%;
-            box-shadow: 0 12px 50px rgba(0,0,0,.25); text-align: center;
-        }
+        .modal { background: linear-gradient(160deg, #fdf8f0, #f5e8d4); border: 2px solid #c9a86c; border-radius: 16px; padding: 32px 28px; max-width: 380px; width: 100%; box-shadow: 0 12px 50px rgba(0,0,0,.25); text-align: center; }
         .modal h3 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.2rem; color: var(--marsala); margin-bottom: 10px; }
         .modal p { font-size: 0.88rem; color: #6a4a30; margin-bottom: 8px; line-height: 1.5; }
         .modal p strong { color: var(--marsala); }
@@ -128,104 +157,55 @@
         .modal-btns button:hover { opacity: .88; }
 
         /* ── MODAL IMAGEM ── */
-        .modal-img-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,.82); z-index: 1000;
-            align-items: center; justify-content: center;
-            cursor: zoom-out;
-        }
+        .modal-img-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.82); z-index: 1000; align-items: center; justify-content: center; cursor: zoom-out; }
         .modal-img-overlay.ativo { display: flex; }
-        .modal-img-overlay img {
-            max-width: 90vw; max-height: 85vh;
-            object-fit: contain; border-radius: 8px;
-            box-shadow: 0 20px 60px rgba(0,0,0,.5);
-            border: 2px solid rgba(201,168,108,.3);
-        }
-        .modal-img-fechar {
-            position: fixed; top: 20px; right: 24px;
-            background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3);
-            color: white; border-radius: 50%; width: 38px; height: 38px;
-            font-size: 1.1rem; cursor: pointer; display: flex;
-            align-items: center; justify-content: center;
-            transition: background .2s;
-        }
+        .modal-img-overlay img { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.5); border: 2px solid rgba(201,168,108,.3); }
+        .modal-img-fechar { position: fixed; top: 20px; right: 24px; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); color: white; border-radius: 50%; width: 38px; height: 38px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; }
         .modal-img-fechar:hover { background: rgba(255,255,255,.28); }
 
-        /* ── ERRO AMIGÁVEL ── */
-        .erro-amigavel {
-            display: none; flex-direction: column; align-items: center;
-            gap: 14px; padding: 60px 20px; text-align: center;
-            grid-column: 1/-1;
-        }
+        /* ── CONFETE ── */
+        #confete-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998; display: none; }
+
+        /* ── ERRO ── */
+        .erro-amigavel { display: none; flex-direction: column; align-items: center; gap: 14px; padding: 60px 20px; text-align: center; grid-column: 1/-1; }
         .erro-amigavel.ativo { display: flex; }
-        .erro-icone { font-size: 3rem; }
         .erro-titulo { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.3rem; color: var(--marsala); }
         .erro-sub { font-size: .85rem; color: #9a7a50; font-weight: 600; max-width: 280px; line-height: 1.6; }
-        .erro-btn {
-            background: linear-gradient(135deg, var(--marsala), #5a1a26);
-            color: white; border: none; border-radius: 50px;
-            padding: 11px 28px; font-family: 'Quicksand', sans-serif;
-            font-size: .88rem; font-weight: 700; cursor: pointer;
-            transition: opacity .2s;
-        }
-        .erro-btn:hover { opacity: .88; }
+        .erro-btn { background: linear-gradient(135deg, var(--marsala), #5a1a26); color: white; border: none; border-radius: 50px; padding: 11px 28px; font-family: 'Quicksand', sans-serif; font-size: .88rem; font-weight: 700; cursor: pointer; transition: opacity .2s; }
 
+        /* ── SEÇÃO ── */
         .secao { padding: 36px 16px 60px; max-width: 1140px; margin: 0 auto; }
-        .secao-titulo-wrap { text-align: center; margin-bottom: 30px; }
-        .secao-titulo { font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(1.6rem, 4vw, 2.2rem); color: var(--marsala); display: inline-block; position: relative; padding: 0 16px; text-shadow: 0 2px 8px rgba(122,37,53,.12); letter-spacing: .02em; }
+        .secao-titulo-wrap { text-align: center; margin-bottom: 22px; }
+        .secao-titulo { font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(1.6rem, 4vw, 2.2rem); color: var(--marsala); display: inline-block; padding: 0 16px; text-shadow: 0 2px 8px rgba(122,37,53,.12); letter-spacing: .02em; }
         .secao-ornamento { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 6px; color: var(--marsala); opacity: .45; font-size: .85rem; }
         .secao-ornamento::before, .secao-ornamento::after { content: ''; width: 80px; height: 1px; background: linear-gradient(90deg, transparent, var(--marsala-cl)); }
         .secao-ornamento::after { background: linear-gradient(90deg, var(--marsala-cl), transparent); }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; align-items: start; }
-        .card {
-            background: linear-gradient(160deg, #fdf8f0 0%, #f5e8d4 100%);
-            border-radius: 4px; border: 1.5px solid #c9a86c;
-            display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 0 0 1px rgba(201,168,108,.2), 0 6px 24px rgba(122,37,53,.10);
-            transition: transform .22s, box-shadow .22s; align-self: start; position: relative;
-        }
-        /* cards reservados ficam levemente apagados */
-        .card.reservado { opacity: .72; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 0 0 1px rgba(201,168,108,.3), 0 12px 36px rgba(122,37,53,.16); }
-        .card.reservado:hover { transform: none; }
+
+        /* ── VAZIO BUSCA ── */
+        .vazio-busca { grid-column: 1/-1; text-align: center; padding: 48px 20px; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: rgba(122,37,53,.4); }
+
+        /* ── CARD ── */
+        .card { background: linear-gradient(160deg, #fdf8f0 0%, #f5e8d4 100%); border-radius: 4px; border: 1.5px solid #c9a86c; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 0 1px rgba(201,168,108,.2), 0 6px 24px rgba(122,37,53,.10); transition: transform .22s, box-shadow .22s, opacity .3s; align-self: start; position: relative; }
+        .card.reservado { opacity: .68; }
+        .card:not(.reservado):hover { transform: translateY(-5px); box-shadow: 0 0 0 1px rgba(201,168,108,.3), 0 12px 36px rgba(122,37,53,.16); }
         .card::before, .card::after { content: '✦'; position: absolute; font-size: .65rem; color: #c9a86c; opacity: .6; z-index: 1; }
         .card::before { top: 7px; left: 9px; }
         .card::after  { bottom: 7px; right: 9px; }
         .card-stripe { height: 4px; background: linear-gradient(90deg, var(--marsala), #c9a86c, var(--marsala)); }
         .card-body { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 18px 14px 10px; flex: 1; }
-        .card-img-wrap {
-            width: 120px; height: 120px; border-radius: 8px; overflow: hidden;
-            border: 1.5px solid rgba(201,168,108,.35); box-shadow: 0 3px 10px rgba(0,0,0,.08);
-            background: rgba(255,255,255,.6); display: flex; align-items: center; justify-content: center;
-            cursor: zoom-in; transition: box-shadow .2s;
-        }
+        .card-img-wrap { width: 120px; height: 120px; border-radius: 8px; overflow: hidden; border: 1.5px solid rgba(201,168,108,.35); box-shadow: 0 3px 10px rgba(0,0,0,.08); background: rgba(255,255,255,.6); display: flex; align-items: center; justify-content: center; cursor: zoom-in; transition: box-shadow .2s; }
         .card-img-wrap:hover { box-shadow: 0 4px 16px rgba(122,37,53,.18); }
         .card-body img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
         .card-body h3 { font-family: 'Quicksand', sans-serif; font-size: 0.88rem; font-weight: 700; color: var(--marsala); line-height: 1.4; text-align: center; letter-spacing: .01em; }
         .card-divisor { width: 60%; height: 1px; background: linear-gradient(90deg, transparent, #c9a86c, transparent); opacity: .5; margin: 2px 0; }
         .volumes-wrap { display: flex; flex-direction: column; gap: 5px; margin: 0 12px 8px; }
         .volumes-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: .07em; color: #9a7a50; font-weight: 700; text-align: center; }
-        .btn-ver-produto {
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700;
-            font-family: 'Quicksand', sans-serif; text-decoration: none; font-style: normal;
-            color: #fdf8f0; border: none; cursor: pointer;
-            background: linear-gradient(135deg, #2e7ea8, #1a5c80);
-            box-shadow: 0 3px 10px rgba(46,126,168,.25);
-            transition: background .3s, opacity .18s, transform .15s;
-            margin: 0 12px 8px; width: calc(100% - 24px);
-        }
+        .btn-ver-produto { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; font-family: 'Quicksand', sans-serif; text-decoration: none; font-style: normal; color: #fdf8f0; border: none; cursor: pointer; background: linear-gradient(135deg, #2e7ea8, #1a5c80); box-shadow: 0 3px 10px rgba(46,126,168,.25); transition: opacity .18s, transform .15s; margin: 0 12px 8px; width: calc(100% - 24px); }
         .btn-ver-produto:hover { opacity: .88; transform: translateY(-1px); }
         .btn-pix { background: linear-gradient(135deg, #7a2535, #5a1a26); box-shadow: 0 3px 10px rgba(122,37,53,.28); }
         .card-footer { padding: 0 12px 14px; display: flex; flex-direction: column; gap: 6px; }
-        .btn-reservar {
-            width: 100%; padding: 10px; border: none; border-radius: 6px;
-            background: linear-gradient(135deg, var(--marsala), #5a1a26);
-            color: #fdf8f0; font-family: 'Quicksand', sans-serif; font-style: normal;
-            font-size: 0.88rem; font-weight: 700; cursor: pointer;
-            box-shadow: 0 3px 14px rgba(122,37,53,.28);
-            transition: opacity .18s, transform .15s; letter-spacing: .02em;
-        }
+        .btn-reservar { width: 100%; padding: 10px; border: none; border-radius: 6px; background: linear-gradient(135deg, var(--marsala), #5a1a26); color: #fdf8f0; font-family: 'Quicksand', sans-serif; font-style: normal; font-size: 0.88rem; font-weight: 700; cursor: pointer; box-shadow: 0 3px 14px rgba(122,37,53,.28); transition: opacity .18s, transform .15s; letter-spacing: .02em; }
         .btn-reservar:hover { opacity: .9; transform: translateY(-1px); }
         .btn-cancelar { width: 100%; padding: 8px; border: 1.5px solid #c9a86c; border-radius: 6px; background: transparent; color: #9a7a50; font-family: 'Quicksand', sans-serif; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: background .15s; }
         .btn-cancelar:hover { background: rgba(201,168,108,.12); }
@@ -238,7 +218,6 @@
 
         /* ── OVERLAY OBRIGADA ── */
         #overlay-obrigada { display:none; position:fixed; inset:0; background:rgba(253,248,240,.96); z-index:9999; align-items:center; justify-content:center; flex-direction:column; gap:16px; text-align:center; padding:20px; }
-        @keyframes balanco { 0%,100%{transform:scale(1) rotate(-2deg)} 50%{transform:scale(1.08) rotate(2deg)} }
 
         /* ── MOBILE ── */
         @media (max-width: 520px) {
@@ -255,6 +234,7 @@
             .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .card-img-wrap { width: 80px; height: 80px; }
             .card-body h3 { font-size: 0.76rem; }
+            .busca-input { width: 160px; }
         }
         .mobile-header { display: none; }
         @media (max-width: 340px) { .grid { grid-template-columns: 1fr; } }
@@ -262,7 +242,8 @@
 </head>
 <body>
 
-<!-- HERO -->
+<canvas id="confete-canvas"></canvas>
+
 <div class="hero">
     <div class="hero-content">
         <div class="timer-box">
@@ -272,7 +253,6 @@
     </div>
 </div>
 
-<!-- HEADER MOBILE -->
 <div class="mobile-header">
     <div class="mob-titulo">🎀 O Baú dos Sonhos da Alice</div>
     <div class="mob-sub">❧ Uma aventura no País das Maravilhas ❧</div>
@@ -282,15 +262,29 @@
     </div>
 </div>
 
-<!-- LISTA DE PRESENTES -->
 <div class="secao">
     <div id="banner-disp" style="display:none;" class="banner-disponiveis">
         🎁 <span id="num-disp" class="num">–</span> presentes ainda disponíveis!
     </div>
+
     <div class="secao-titulo-wrap">
         <h2 class="secao-titulo">🎁 Lista de Presentes</h2>
         <div class="secao-ornamento">❧ ♥ ❧</div>
     </div>
+
+    <!-- CONTROLES -->
+    <div class="controles">
+        <div class="busca-wrap">
+            <span class="busca-icone">🔍</span>
+            <input class="busca-input" id="busca" type="text" placeholder="Buscar presente…" oninput="filtrar()">
+        </div>
+        <div class="filtros">
+            <button class="btn-filtro ativo" id="filtro-todos"       onclick="setFiltro('todos')">Todos</button>
+            <button class="btn-filtro"       id="filtro-disponiveis" onclick="setFiltro('disponiveis')">✅ Disponíveis</button>
+            <button class="btn-filtro"       id="filtro-reservados"  onclick="setFiltro('reservados')">🎀 Reservados</button>
+        </div>
+    </div>
+
     <div id="root" class="grid">
         <p style="grid-column:1/-1;color:#aaa;padding:40px;">Carregando lista…</p>
     </div>
@@ -298,8 +292,7 @@
 
 <!-- OVERLAY OBRIGADA -->
 <div id="overlay-obrigada">
-    <div style="font-size:2.5rem; letter-spacing:8px; animation: balanco 1s ease infinite;">🎀 🎉 ✨ 🎊 💙</div>
-    <h2 style="font-family:'Playfair Display',serif; font-style:italic; font-size:1.8rem; color:#7a2535; margin:0;">Obrigada!</h2>
+    <h2 style="font-family:'Playfair Display',serif; font-style:italic; font-size:1.8rem; color:#7a2535; margin:0;">Obrigada! 🎀</h2>
     <p id="msg-obrigada" style="font-size:1rem; color:#6a4a30; max-width:320px; line-height:1.6;"></p>
     <button onclick="fecharObrigada()" style="margin-top:8px; background:linear-gradient(135deg,#9b3a4a,#7a2535); color:white; border:none; border-radius:50px; padding:12px 32px; font-family:'Quicksand',sans-serif; font-size:0.95rem; font-weight:700; cursor:pointer;">Ver outros presentes 🎁</button>
 </div>
@@ -318,60 +311,45 @@
     </div>
 </div>
 
-<!-- MODAL IMAGEM EXPANDIDA -->
+<!-- MODAL IMAGEM -->
 <div class="modal-img-overlay" id="modal-img" onclick="fecharImagem()">
     <button class="modal-img-fechar" onclick="fecharImagem()">✕</button>
-    <img id="modal-img-src" src="" alt="Imagem do presente"/>
+    <img id="modal-img-src" src="" alt=""/>
 </div>
 
 <div class="rodape">
     <p style="font-size:.82rem; color:#7a5a40; margin-bottom:14px; font-weight:600;">Compartilhe a lista com os convidados 💙</p>
-    <a class="btn-whatsapp" href="https://wa.me/?text=Confira+a+lista+de+presentes+dos+15+anos+da+Alice%21%0Ahttps%3A%2F%2Falice15anos.vercel.app%2F" target="_blank" rel="noopener">
-        📲 Compartilhar no WhatsApp
-    </a>
+    <a class="btn-whatsapp" href="https://wa.me/?text=Confira+a+lista+de+presentes+dos+15+anos+da+Alice%21%0Ahttps%3A%2F%2Falice15anos.vercel.app%2F" target="_blank" rel="noopener">📲 Compartilhar no WhatsApp</a>
     <p style="font-size:.75rem; color:#aaa; margin-top:20px;">Feito com 💙 e ♥️ para os 15 anos da Alice · 2026</p>
 </div>
 
 <script>
+    // ── EmailJS ──
+    const EMAILJS_SERVICE_ID  = 'service_d8uzzrl';
+    const EMAILJS_TEMPLATE_ID = 'template_50g8jja';
+    const EMAILJS_PUBLIC_KEY  = 'NIMqO9l6qqFLmWJ8o';
+    async function enviarEmailReserva(nome, presente, mensagem) {
+        try {
+            emailjs.init(EMAILJS_PUBLIC_KEY);
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                to_email: 'anderson11cabral@hotmail.com',
+                nome_reservante: nome, presente, mensagem: mensagem || '(sem mensagem)',
+                data: new Date().toLocaleString('pt-BR'),
+            });
+        } catch(e) { console.warn('Email não enviado:', e); }
+    }
+
     // ── Timer ──
     const alvo = new Date("Aug 1, 2026 21:00:00").getTime();
     function tick() {
         const d = alvo - Date.now();
         if (d <= 0) { document.getElementById('timer').textContent = '🎉 Chegou!'; return; }
-        const dd = Math.floor(d/86400000);
-        const hh = Math.floor((d%86400000)/3600000);
-        const mm = Math.floor((d%3600000)/60000);
-        const ss = Math.floor((d%60000)/1000);
-        const txt = `${dd}d ${hh}h ${mm}m ${ss}s`;
+        const txt = `${Math.floor(d/86400000)}d ${Math.floor((d%86400000)/3600000)}h ${Math.floor((d%3600000)/60000)}m ${Math.floor((d%60000)/1000)}s`;
         document.getElementById('timer').textContent = txt;
         const tm = document.getElementById('timer-mobile');
         if (tm) tm.textContent = txt;
     }
     tick(); setInterval(tick, 1000);
-
-
-    // ── Notificação por e-mail ──
-    // Configure com suas credenciais do EmailJS (emailjs.com)
-    const EMAILJS_SERVICE_ID  = 'service_d8uzzrl';   // ex: service_abc123
-    const EMAILJS_TEMPLATE_ID = 'template_50g8jja';  // ex: template_xyz456
-    const EMAILJS_PUBLIC_KEY  = 'NIMqO9l6qqFLmWJ8o';   // ex: abcXYZ123
-
-    async function enviarEmailReserva(nome, presente, mensagem) {
-        try {
-            emailjs.init(EMAILJS_PUBLIC_KEY);
-            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                to_email:       'anderson11cabral@hotmail.com',
-                nome_reservante: nome,
-                presente:        presente,
-                mensagem:        mensagem || '(sem mensagem)',
-                data:            new Date().toLocaleString('pt-BR'),
-            });
-            console.log('Email de notificação enviado!');
-        } catch(e) {
-            console.warn('Email não enviado:', e);
-            // Não bloqueia a reserva se o email falhar
-        }
-    }
 
     // ── Supabase ──
     const sb = window.supabase.createClient(
@@ -380,87 +358,128 @@
         { auth: { persistSession: false } }
     );
 
+    // ── Confete ──
+    function lancarConfete() {
+        const canvas = document.getElementById('confete-canvas');
+        canvas.style.display = 'block';
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const cores = ['#9b3a4a','#5aafd6','#a8d8ea','#c9a84c','#c97080','#2e7ea8','#fdf8f0'];
+        const particulas = Array.from({length: 120}, () => ({
+            x: Math.random() * canvas.width,
+            y: -10 - Math.random() * 100,
+            r: 4 + Math.random() * 6,
+            cor: cores[Math.floor(Math.random() * cores.length)],
+            vx: (Math.random() - .5) * 3,
+            vy: 2 + Math.random() * 4,
+            rot: Math.random() * 360,
+            vrot: (Math.random() - .5) * 8,
+            forma: Math.random() > .5 ? 'rect' : 'circle',
+        }));
+        let frame = 0;
+        function animar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particulas.forEach(p => {
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot * Math.PI / 180);
+                ctx.fillStyle = p.cor;
+                ctx.globalAlpha = Math.max(0, 1 - frame / 180);
+                if (p.forma === 'rect') ctx.fillRect(-p.r/2, -p.r/4, p.r, p.r/2);
+                else { ctx.beginPath(); ctx.arc(0, 0, p.r/2, 0, Math.PI*2); ctx.fill(); }
+                ctx.restore();
+                p.x += p.vx; p.y += p.vy; p.rot += p.vrot; p.vy += .05;
+            });
+            frame++;
+            if (frame < 200) requestAnimationFrame(animar);
+            else { ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.style.display = 'none'; }
+        }
+        animar();
+    }
+
     // ── Modal imagem ──
     function abrirImagem(src, alt) {
         document.getElementById('modal-img-src').src = src;
         document.getElementById('modal-img-src').alt = alt;
         document.getElementById('modal-img').classList.add('ativo');
     }
-    function fecharImagem() {
-        document.getElementById('modal-img').classList.remove('ativo');
-    }
+    function fecharImagem() { document.getElementById('modal-img').classList.remove('ativo'); }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharImagem(); });
 
-    // ── Botão ver produto ──
-    function btnVerProduto(link, titulo, link2, link3) {
-        if (!link) return '';
-        const isPix = link.startsWith('pix:') || link.startsWith('000201') || (titulo && titulo.toLowerCase().includes('pix'));
-        if (isPix) {
-            const chave = link.startsWith('pix:') ? link.slice(4) : link;
-            return `<button class="btn-ver-produto btn-pix" onclick="copiarPix('${chave.replace(/'/g,"\\'")}', this)">💙 Copiar Pix</button>`;
-        }
-        if (link2 || link3) {
-            const tl = titulo ? titulo.toLowerCase() : '';
-            const vols = tl.match(/vols?\.?\s*([\d,\s]+e[\d\s]+|[\d\s,]+)/i);
-            let labels = ['Vol. 1', 'Vol. 2', 'Vol. 3'];
-            if (vols) {
-                const nums = vols[0].replace(/vols?\.?\s*/i,'').trim().replace(' e ', ', ').split(/[,\s]+/).filter(n => n.match(/\d/));
-                labels = nums.map(n => `Vol. ${n.trim()}`);
-            }
-            return `<div class="volumes-wrap">
-                <span class="volumes-label">🛒 Comprar por volume:</span>
-                ${link  ? `<a class="btn-ver-produto" href="${link}"  target="_blank" rel="noopener">🛒 ${labels[0]||'Vol. 1'}</a>` : ''}
-                ${link2 ? `<a class="btn-ver-produto" href="${link2}" target="_blank" rel="noopener">🛒 ${labels[1]||'Vol. 2'}</a>` : ''}
-                ${link3 ? `<a class="btn-ver-produto" href="${link3}" target="_blank" rel="noopener">🛒 ${labels[2]||'Vol. 3'}</a>` : ''}
-            </div>`;
-        }
-        return `<a class="btn-ver-produto" href="${link}" target="_blank" rel="noopener">🛒 Ver Produto</a>`;
-    }
+    // ── Dados globais ──
+    let todosPresentes = [];
+    let filtroAtual = 'todos';
 
-    async function copiarPix(codigo, btn) {
-        try { await navigator.clipboard.writeText(codigo); } catch(e) {
-            const el = document.createElement('textarea');
-            el.value = codigo; document.body.appendChild(el);
-            el.select(); document.execCommand('copy'); document.body.removeChild(el);
-        }
-        const original = btn.innerHTML;
-        btn.innerHTML = '✅ Pix copiado!';
-        btn.style.background = 'linear-gradient(135deg, #2e7ea8, #1a5c80)';
-        setTimeout(() => { btn.innerHTML = original; btn.style.background = ''; }, 2500);
-    }
-
-    // ── Carregar — disponíveis primeiro, reservados no final ──
+    // ── Carregar ──
     async function carregar() {
         const { data, error } = await sb.from('presentes').select('*').order('id', { ascending: true });
         if (error || !data) {
             document.getElementById('root').innerHTML = `
                 <div class="erro-amigavel ativo">
-                    <div class="erro-icone">🎀</div>
+                    <div style="font-size:2.5rem;">🎀</div>
                     <div class="erro-titulo">Ops! Algo deu errado…</div>
-                    <div class="erro-sub">Não conseguimos carregar a lista de presentes. Verifique sua conexão e tente novamente.</div>
+                    <div class="erro-sub">Não conseguimos carregar a lista. Verifique sua conexão.</div>
                     <button class="erro-btn" onclick="carregar()">↻ Tentar novamente</button>
                 </div>`;
             return;
         }
+        todosPresentes = data;
+        atualizarContador(data);
+        renderizar();
+    }
 
-        // Ordenar: disponíveis primeiro, reservados no final
-        const disponiveis = data.filter(g => !g.reservado);
-        const reservados  = data.filter(g =>  g.reservado);
-        const ordenados   = [...disponiveis, ...reservados];
+    function atualizarContador(data) {
+        const disponiveis = data.filter(g => !g.reservado).length;
+        const numEl = document.getElementById('num-disp');
+        const bannerEl = document.getElementById('banner-disp');
+        if (!numEl || !bannerEl) return;
+        const anterior = parseInt(numEl.textContent) || -1;
+        numEl.textContent = disponiveis;
+        if (anterior !== -1 && anterior !== disponiveis) {
+            numEl.classList.remove('animando');
+            void numEl.offsetWidth;
+            numEl.classList.add('animando');
+            setTimeout(() => numEl.classList.remove('animando'), 500);
+        }
+        bannerEl.style.display = disponiveis > 0 ? 'inline-flex' : 'none';
+    }
 
-        const total = data.length;
-        const numDisp = document.getElementById('num-disp');
-        const bannerDisp = document.getElementById('banner-disp');
-        if (numDisp) numDisp.textContent = disponiveis.length;
-        if (bannerDisp) bannerDisp.style.display = disponiveis.length > 0 ? 'inline-flex' : 'none';
+    function setFiltro(f) {
+        filtroAtual = f;
+        ['todos','disponiveis','reservados'].forEach(id => {
+            document.getElementById('filtro-' + id).classList.toggle('ativo', id === f);
+        });
+        renderizar();
+    }
 
-        document.getElementById('root').innerHTML = ordenados.map(g => {
+    function filtrar() { renderizar(); }
+
+    function renderizar() {
+        const busca = document.getElementById('busca').value.toLowerCase().trim();
+        let lista = [...todosPresentes];
+
+        // Disponíveis primeiro
+        lista.sort((a, b) => (a.reservado ? 1 : 0) - (b.reservado ? 1 : 0));
+
+        // Filtro status
+        if (filtroAtual === 'disponiveis') lista = lista.filter(g => !g.reservado);
+        if (filtroAtual === 'reservados')  lista = lista.filter(g =>  g.reservado);
+
+        // Busca
+        if (busca) lista = lista.filter(g => g.titulo.toLowerCase().includes(busca));
+
+        if (!lista.length) {
+            document.getElementById('root').innerHTML =
+                `<div class="vazio-busca">Nenhum presente encontrado… 🎁</div>`;
+            return;
+        }
+
+        document.getElementById('root').innerHTML = lista.map(g => {
             const meu = sessionStorage.getItem(`res_${g.id}`);
             const isPix = (g.link_compra && (g.link_compra.startsWith('pix:') || g.link_compra.startsWith('000201'))) || (g.titulo && g.titulo.toLowerCase().includes('pix'));
             const imgHtml = g.imagem_url
-                ? `<div class="card-img-wrap" onclick="abrirImagem('${g.imagem_url.replace(/'/g,"\\'")}','${g.titulo.replace(/'/g,"\\'")}')">
-                       <img src="${g.imagem_url}" alt="${g.titulo}" loading="lazy">
-                   </div>`
+                ? `<div class="card-img-wrap" onclick="abrirImagem('${g.imagem_url.replace(/'/g,"\\'")}','${g.titulo.replace(/'/g,"\\'")}')"><img src="${g.imagem_url}" alt="${g.titulo}" loading="lazy"></div>`
                 : '';
 
             if (g.reservado) return `
@@ -498,6 +517,41 @@
         }).join('');
     }
 
+    function btnVerProduto(link, titulo, link2, link3) {
+        if (!link) return '';
+        const isPix = link.startsWith('pix:') || link.startsWith('000201') || (titulo && titulo.toLowerCase().includes('pix'));
+        if (isPix) {
+            const chave = link.startsWith('pix:') ? link.slice(4) : link;
+            return `<button class="btn-ver-produto btn-pix" onclick="copiarPix('${chave.replace(/'/g,"\\'")}', this)">💙 Copiar Pix</button>`;
+        }
+        if (link2 || link3) {
+            const tl = titulo ? titulo.toLowerCase() : '';
+            const vols = tl.match(/vols?\.?\s*([\d,\s]+e[\d\s]+|[\d\s,]+)/i);
+            let labels = ['Vol. 1', 'Vol. 2', 'Vol. 3'];
+            if (vols) {
+                const nums = vols[0].replace(/vols?\.?\s*/i,'').trim().replace(' e ', ', ').split(/[,\s]+/).filter(n => n.match(/\d/));
+                labels = nums.map(n => `Vol. ${n.trim()}`);
+            }
+            return `<div class="volumes-wrap">
+                <span class="volumes-label">🛒 Comprar por volume:</span>
+                ${link  ? `<a class="btn-ver-produto" href="${link}"  target="_blank" rel="noopener">🛒 ${labels[0]||'Vol. 1'}</a>` : ''}
+                ${link2 ? `<a class="btn-ver-produto" href="${link2}" target="_blank" rel="noopener">🛒 ${labels[1]||'Vol. 2'}</a>` : ''}
+                ${link3 ? `<a class="btn-ver-produto" href="${link3}" target="_blank" rel="noopener">🛒 ${labels[2]||'Vol. 3'}</a>` : ''}
+            </div>`;
+        }
+        return `<a class="btn-ver-produto" href="${link}" target="_blank" rel="noopener">🛒 Ver Produto</a>`;
+    }
+
+    async function copiarPix(codigo, btn) {
+        try { await navigator.clipboard.writeText(codigo); } catch(e) {
+            const el = document.createElement('textarea'); el.value = codigo;
+            document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+        }
+        const original = btn.innerHTML;
+        btn.innerHTML = '✅ Pix copiado!'; btn.style.background = 'linear-gradient(135deg, #2e7ea8, #1a5c80)';
+        setTimeout(() => { btn.innerHTML = original; btn.style.background = ''; }, 2500);
+    }
+
     let ultimaReserva = 0;
     let modalId = null, modalNome = '', modalMsg = '';
 
@@ -512,85 +566,56 @@
     }
 
     function reservar(id) {
-        const agora = Date.now();
-        if (agora - ultimaReserva < 10000) { alert('Aguarde alguns segundos antes de fazer outra reserva.'); return; }
+        if (Date.now() - ultimaReserva < 10000) { alert('Aguarde alguns segundos antes de fazer outra reserva.'); return; }
         const nomeEl = document.getElementById(`nome-${id}`);
-        const nome   = nomeEl.value.trim();
+        const nome = nomeEl.value.trim();
         if (!nome) { nomeEl.classList.add('erro'); nomeEl.focus(); return; }
         nomeEl.classList.remove('erro');
-        const msg    = document.getElementById(`msg-${id}`).value.trim();
-        const card   = document.getElementById(`card-${id}`);
+        const msg = document.getElementById(`msg-${id}`).value.trim();
+        const card = document.getElementById(`card-${id}`);
         const titulo = card ? card.querySelector('h3').textContent : 'este presente';
         modalId = id; modalNome = nome; modalMsg = msg;
         document.getElementById('modal-presente').textContent = titulo;
-        document.getElementById('modal-nome').textContent     = nome;
+        document.getElementById('modal-nome').textContent = nome;
         document.getElementById('modal-overlay').classList.add('ativo');
     }
 
-    function fecharModal() {
-        document.getElementById('modal-overlay').classList.remove('ativo');
-        modalId = null;
-    }
+    function fecharModal() { document.getElementById('modal-overlay').classList.remove('ativo'); modalId = null; }
 
     async function confirmarReserva() {
         if (!modalId) return;
+        const btn = document.getElementById('btn-confirmar-modal');
+        btn.disabled = true; btn.textContent = '⏳ Verificando…';
 
-        // ── PROTEÇÃO CONTRA DUPLA RESERVA ──
-        const btnConfirmar = document.getElementById('btn-confirmar-modal');
-        btnConfirmar.disabled = true;
-        btnConfirmar.textContent = '⏳ Verificando…';
-
-        const { data: check, error: checkErr } = await sb
-            .from('presentes').select('reservado').eq('id', parseInt(modalId, 10)).single();
-
-        if (checkErr || !check) {
-            btnConfirmar.disabled = false;
-            btnConfirmar.textContent = '✔️ Confirmar';
-            alert('Erro ao verificar disponibilidade. Tente novamente.');
-            fecharModal();
-            return;
-        }
-
-        if (check.reservado) {
-            btnConfirmar.disabled = false;
-            btnConfirmar.textContent = '✔️ Confirmar';
+        const { data: check } = await sb.from('presentes').select('reservado').eq('id', parseInt(modalId,10)).single();
+        if (check && check.reservado) {
+            btn.disabled = false; btn.textContent = '✔️ Confirmar';
             fecharModal();
             alert('😢 Ops! Alguém acabou de reservar este presente. Escolha outro!');
-            carregar();
-            return;
+            carregar(); return;
         }
 
-        // Tudo certo — salvar reserva
-        const idTemp       = modalId;
-        const nomeTemp     = modalNome;
-        const msgTemp      = modalMsg;
+        const idTemp = modalId, nomeTemp = modalNome, msgTemp = modalMsg;
         const presenteTemp = document.getElementById('modal-presente').textContent;
         fecharModal();
-        btnConfirmar.disabled = false;
-        btnConfirmar.textContent = '✔️ Confirmar';
-
+        btn.disabled = false; btn.textContent = '✔️ Confirmar';
         ultimaReserva = Date.now();
         sessionStorage.setItem(`res_${idTemp}`, '1');
 
         const { error } = await sb.from('presentes')
             .update({ reservado: true, nome_reservante: nomeTemp, mensagem: msgTemp, reservado_em: new Date().toISOString() })
-            .eq('id', parseInt(idTemp, 10));
+            .eq('id', parseInt(idTemp,10));
 
         if (!error) {
             carregar();
-            document.getElementById('msg-obrigada').innerHTML =
-                `Você reservou <strong>${presenteTemp}</strong> para a Alice.<br>Ela vai adorar! 💙`;
+            document.getElementById('msg-obrigada').innerHTML = `Você reservou <strong>${presenteTemp}</strong> para a Alice.<br>Ela vai adorar! 💙`;
             document.getElementById('overlay-obrigada').style.display = 'flex';
-            // Notificação por e-mail
+            lancarConfete();
             enviarEmailReserva(nomeTemp, presenteTemp, msgTemp);
-        } else {
-            alert('Erro ao reservar: ' + error.message);
-        }
+        } else { alert('Erro ao reservar: ' + error.message); }
     }
 
-    function fecharObrigada() {
-        document.getElementById('overlay-obrigada').style.display = 'none';
-    }
+    function fecharObrigada() { document.getElementById('overlay-obrigada').style.display = 'none'; }
 
     carregar();
 </script>
