@@ -19,9 +19,9 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --azul:       #5aafd6;
-            --azul-cl:    #a8d8ea;
-            --azul-dk:    #2e7ea8;
+            --azul:       #92A8D1;
+            --azul-cl:    #C5D5E8;
+            --azul-dk:    #6B89BB;
             --marsala:    #9b3a4a;
             --marsala-dk: #7a2535;
             --marsala-cl: #c97080;
@@ -201,7 +201,7 @@
         .card-divisor { width: 60%; height: 1px; background: linear-gradient(90deg, transparent, #c9a86c, transparent); opacity: .5; margin: 2px 0; }
         .volumes-wrap { display: flex; flex-direction: column; gap: 5px; margin: 0 12px 8px; }
         .volumes-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: .07em; color: #9a7a50; font-weight: 700; text-align: center; }
-        .btn-ver-produto { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; font-family: 'Quicksand', sans-serif; text-decoration: none; font-style: normal; color: #fdf8f0; border: none; cursor: pointer; background: linear-gradient(135deg, #2e7ea8, #1a5c80); box-shadow: 0 3px 10px rgba(46,126,168,.25); transition: opacity .18s, transform .15s; margin: 0 12px 8px; width: calc(100% - 24px); }
+        .btn-ver-produto { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; font-family: 'Quicksand', sans-serif; text-decoration: none; font-style: normal; color: #fdf8f0; border: none; cursor: pointer; background: linear-gradient(135deg, #6B89BB, #4A6A9E); box-shadow: 0 3px 10px rgba(46,126,168,.25); transition: opacity .18s, transform .15s; margin: 0 12px 8px; width: calc(100% - 24px); }
         .btn-ver-produto:hover { opacity: .88; transform: translateY(-1px); }
         .btn-pix { background: linear-gradient(135deg, #7a2535, #5a1a26); box-shadow: 0 3px 10px rgba(122,37,53,.28); }
         .card-footer { padding: 0 12px 14px; display: flex; flex-direction: column; gap: 6px; }
@@ -369,7 +369,7 @@
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        const cores = ['#9b3a4a','#5aafd6','#a8d8ea','#c9a84c','#c97080','#2e7ea8','#fdf8f0'];
+        const cores = ['#9b3a4a','#92A8D1','#C5D5E8','#c9a84c','#c97080','#6B89BB','#fdf8f0'];
         const particulas = Array.from({length: 120}, () => ({
             x: Math.random() * canvas.width,
             y: -10 - Math.random() * 100,
@@ -551,7 +551,7 @@
             document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
         }
         const original = btn.innerHTML;
-        btn.innerHTML = '✅ Pix copiado!'; btn.style.background = 'linear-gradient(135deg, #2e7ea8, #1a5c80)';
+        btn.innerHTML = '✅ Pix copiado!'; btn.style.background = 'linear-gradient(135deg, #6B89BB, #4A6A9E)';
         setTimeout(() => { btn.innerHTML = original; btn.style.background = ''; }, 2500);
     }
 
