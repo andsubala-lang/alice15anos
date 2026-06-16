@@ -221,6 +221,177 @@
     .cm-confirmar { background:linear-gradient(135deg,var(--marsala),var(--marsala-dk)); color:white; border:none; box-shadow:0 3px 12px rgba(122,37,53,.2); }
     .cm-cancelar  { background:transparent; border:1.5px solid var(--azul-cl); color:var(--azul-dk); }
     .cm-ok        { background:linear-gradient(135deg,var(--azul-dk),var(--azul)); color:white; border:none; box-shadow:0 3px 12px rgba(46,126,168,.2); }
+
+    /* ══ DARK MODE ══ */
+    body.dark {
+      --azul:     #92A8D1;
+      --azul-dk:  #C5D5E8;
+      --azul-cl:  #4A6A9E;
+      --azul-bg:  #1a2035;
+      --azul-pale:#141828;
+      --marsala:  #e07080;
+      --marsala-dk:#c97080;
+      --marsala-cl:#f0a0a8;
+      --ouro:     #d4aa50;
+      --creme:    #1e2030;
+      --creme-md: #252840;
+      --creme-dk: #2e3550;
+      --texto:    #e8eef8;
+      --texto-cl: #92A8D1;
+    }
+    body.dark .sidebar {
+      background: linear-gradient(160deg, #141828 0%, #0e1220 60%, #141828 100%) !important;
+      border-right-color: #2e3550 !important;
+      box-shadow: 3px 0 20px rgba(0,0,0,.4) !important;
+    }
+    body.dark .sidebar-brand {
+      border-bottom-color: #2e3550 !important;
+    }
+    body.dark .brand-titulo { color: #C5D5E8 !important; }
+    body.dark .brand-sub { color: #92A8D1 !important; opacity:.8 !important; }
+    body.dark .sidebar-brand::after { color: #92A8D1 !important; }
+    body.dark .nav-item { color: #6B89BB !important; }
+    body.dark .nav-item:hover { background: rgba(146,168,209,.08) !important; color: #C5D5E8 !important; }
+    body.dark .nav-item.ativa { background: rgba(146,168,209,.12) !important; border-left-color: #92A8D1 !important; color: #C5D5E8 !important; }
+    body.dark .nav-item.ativa::after { color: #92A8D1 !important; }
+    body.dark .sidebar-footer { border-top-color: #2e3550 !important; }
+    body.dark .refresh-badge { color: #6B89BB !important; }
+    body.dark .btn-sair { border-color: #e07080 !important; color: #e07080 !important; }
+    body.dark .btn-sair:hover { background: #e07080 !important; color: white !important; }
+
+    body.dark .main { background: #141828 !important; }
+    body.dark .topbar {
+      background: linear-gradient(160deg, #1e2030, #252840) !important;
+      border-bottom-color: #2e3550 !important;
+      box-shadow: 0 2px 12px rgba(0,0,0,.3) !important;
+    }
+    body.dark .topbar-titulo { color: #e07080 !important; }
+    body.dark .topbar-titulo span { color: #92A8D1 !important; }
+    body.dark .topbar-ornamento { color: #e07080 !important; opacity:.5 !important; }
+
+    body.dark .pagina { background: #141828 !important; }
+    body.dark .sec-titulo h2 { color: #e07080 !important; }
+    body.dark .sec-linha { background: linear-gradient(90deg, #2e3550, transparent) !important; }
+    body.dark .sec-orn { color: #92A8D1 !important; }
+
+    body.dark .card-dash {
+      background: linear-gradient(160deg, #1e2030, #252840) !important;
+      border-color: #2e3550 !important;
+      box-shadow: 0 3px 12px rgba(0,0,0,.3) !important;
+    }
+    body.dark .card-dash .num { color: #C5D5E8 !important; }
+    body.dark .card-dash .label { color: #92A8D1 !important; }
+    body.dark .card-dash::after { color: #4A6A9E !important; }
+
+    body.dark .barra-card {
+      background: linear-gradient(160deg, #1e2030, #252840) !important;
+      border-color: #2e3550 !important;
+    }
+    body.dark .barra-label { color: #e07080 !important; }
+    body.dark .barra-pct { color: #92A8D1 !important; }
+    body.dark .barra-bg { background: #2e3550 !important; }
+
+    body.dark .painel-card {
+      background: linear-gradient(160deg, #1e2030, #252840) !important;
+      border-color: #2e3550 !important;
+    }
+    body.dark .painel-header { border-bottom-color: #2e3550 !important; }
+    body.dark .painel-header h3 { color: #e07080 !important; }
+    body.dark .ativ-item { border-bottom-color: rgba(146,168,209,.08) !important; }
+    body.dark .ativ-item:hover { background: rgba(146,168,209,.05) !important; }
+    body.dark .ativ-nome { color: #e07080 !important; }
+    body.dark .ativ-presente { color: #92A8D1 !important; }
+    body.dark .ativ-msg { color: #C5D5E8 !important; opacity:.7 !important; }
+    body.dark .ativ-data { color: #6B89BB !important; }
+    body.dark .ativ-vazio { color: #2e3550 !important; }
+
+    body.dark .tab-wrap { border-color: #2e3550 !important; }
+    body.dark table { background: #1e2030 !important; }
+    body.dark thead tr { background: linear-gradient(135deg, #0e1220, #141828) !important; }
+    body.dark tbody tr { background: #1e2030 !important; border-bottom-color: rgba(146,168,209,.08) !important; }
+    body.dark tbody tr:nth-child(even) { background: #252840 !important; }
+    body.dark tbody tr:hover { background: rgba(146,168,209,.08) !important; }
+    body.dark tbody td { color: #e8eef8 !important; }
+    body.dark .badge-res  { background: rgba(224,112,128,.1) !important; color: #e07080 !important; border-color: rgba(224,112,128,.25) !important; }
+    body.dark .badge-disp { background: rgba(146,168,209,.1) !important; color: #C5D5E8 !important; border-color: rgba(146,168,209,.25) !important; }
+    body.dark .btn-acao { border-color: #2e3550 !important; color: #92A8D1 !important; }
+    body.dark .btn-acao:hover { border-color: #92A8D1 !important; background: rgba(146,168,209,.08) !important; }
+    body.dark .btn-acao.cancelar { border-color: rgba(224,112,128,.3) !important; color: #e07080 !important; }
+
+    body.dark .msg-grid .msg-card {
+      background: linear-gradient(160deg, #1e2030, #252840) !important;
+      border-color: #2e3550 !important;
+    }
+    body.dark .msg-card::before { color: #4A6A9E !important; }
+    body.dark .msg-nome { color: #e07080 !important; }
+    body.dark .msg-presente { color: #92A8D1 !important; }
+    body.dark .msg-texto { color: #C5D5E8 !important; }
+    body.dark .msg-data { color: #6B89BB !important; }
+
+    body.dark .modal-box {
+      background: linear-gradient(160deg, #1e2030, #252840) !important;
+      border-color: #2e3550 !important;
+    }
+    body.dark .modal-box h3 { color: #e07080 !important; }
+    body.dark .campo-edit label { color: #92A8D1 !important; }
+    body.dark .campo-edit input { background: #141828 !important; border-color: #2e3550 !important; color: #e8eef8 !important; }
+    body.dark .campo-edit input:focus { border-color: #92A8D1 !important; }
+    body.dark .btn-cancelar-modal { border-color: #2e3550 !important; color: #92A8D1 !important; }
+
+    body.dark .custom-modal-box {
+      background: linear-gradient(160deg, #1e2030, #252840) !important;
+      border-color: #2e3550 !important;
+    }
+    body.dark .custom-modal-titulo { color: #e07080 !important; }
+    body.dark .custom-modal-msg { color: #92A8D1 !important; }
+    body.dark .cm-cancelar { border-color: #2e3550 !important; color: #92A8D1 !important; }
+
+    body.dark .neg-card {
+      background: #1e2030 !important;
+      border-color: #2e3550 !important;
+    }
+    body.dark .neg-titulo { color: #e07080 !important; }
+    body.dark .neg-sub { color: #92A8D1 !important; }
+
+    /* Transição suave */
+    body, .sidebar, .main, .topbar, .card-dash, .barra-card,
+    .painel-card, table, tbody tr, .msg-card, .modal-box,
+    .custom-modal-box, .neg-card, .nav-item, .btn-sair {
+      transition: background .3s, border-color .3s, color .3s, box-shadow .3s;
+    }
+
+    /* Botão dark mode */
+    .btn-dark {
+      background: transparent;
+      border: 1.5px solid var(--azul-cl);
+      border-radius: 50px;
+      padding: 5px 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--azul-dk);
+      display: flex; align-items: center; gap: 5px;
+      transition: all .2s;
+    }
+    .btn-dark:hover { background: rgba(146,168,209,.1); }
+    body.dark .btn-dark { border-color: #4A6A9E; color: #92A8D1; }
+
+
+    @media (max-width: 900px) {
+      body.dark .topbar {
+        background: linear-gradient(160deg, #1e2030, #252840) !important;
+        border-bottom-color: #2e3550 !important;
+      }
+      body.dark .pagina {
+        background: #141828 !important;
+      }
+      body.dark .ad-nav {
+        background: linear-gradient(160deg, #1e2030, #252840) !important;
+        border-top-color: #2e3550 !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -260,7 +431,10 @@
         <span id="top-sub">VISÃO GERAL</span>
         <span id="top-nome" style="font-size:1.4rem;font-style:italic;font-family:'Playfair Display',serif;color:var(--marsala);display:block;margin-top:0;">Dashboard</span>
       </div>
-      <div class="topbar-ornamento">✦ ❧ ✦</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn-dark" onclick="toggleDark()" id="btn-dark">🌙 Escuro</button>
+        <div class="topbar-ornamento">✦ ❧ ✦</div>
+      </div>
     </div>
 
     <div class="pagina">
@@ -298,7 +472,10 @@
       <div id="tab-presentes" style="display:none;">
         <div class="topo-tab">
           <div class="sec-titulo" style="margin-bottom:0;flex:1;"><h2>Lista completa</h2><div class="sec-linha"></div></div>
-          <button class="btn-csv" onclick="exportarCSV()">⬇ Exportar CSV</button>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-csv" style="background:linear-gradient(135deg,var(--marsala),var(--marsala-dk));" onclick="abrirNovoPresente()">＋ Novo presente</button>
+            <button class="btn-csv" onclick="exportarCSV()">⬇ Exportar CSV</button>
+          </div>
         </div>
         <div class="tab-wrap">
           <table>
@@ -340,6 +517,43 @@
     <p class="custom-modal-msg" id="cm-alert-msg"></p>
     <div class="custom-modal-btns">
       <button class="cm-ok" onclick="cmAlertFechar()">OK</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL NOVO PRESENTE -->
+<div class="modal-ov" id="modal-novo">
+  <div class="modal-box" style="max-width:480px;">
+    <h3>＋ Adicionar novo presente</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="campo-edit" style="grid-column:1/-1;">
+        <label>Título *</label>
+        <input id="n-titulo" type="text" placeholder="Ex: Relógio Casio Vintage">
+      </div>
+      <div class="campo-edit" style="grid-column:1/-1;">
+        <label>URL da imagem</label>
+        <input id="n-img" type="url" placeholder="https://...">
+      </div>
+      <div class="campo-edit" style="grid-column:1/-1;">
+        <label>Link de compra (ou pix:chave para Pix)</label>
+        <input id="n-link" type="text" placeholder="https://... ou pix:chavepix@email.com">
+      </div>
+      <div class="campo-edit">
+        <label>Link 2 (opcional)</label>
+        <input id="n-link2" type="url" placeholder="https://...">
+      </div>
+      <div class="campo-edit">
+        <label>Link 3 (opcional)</label>
+        <input id="n-link3" type="url" placeholder="https://...">
+      </div>
+    </div>
+    <div id="n-preview" style="display:none;margin-top:10px;padding:10px;background:var(--azul-bg);border-radius:8px;border:1px solid var(--azul-cl);text-align:center;">
+      <img id="n-preview-img" src="" style="max-height:80px;max-width:120px;object-fit:contain;border-radius:6px;" alt="Preview">
+    </div>
+    <div class="modal-btns" style="margin-top:16px;">
+      <button class="btn-cancelar-modal" onclick="fecharNovoPresente()">Cancelar</button>
+      <button class="btn-salvar" id="btn-salvar-novo" onclick="salvarNovoPresente()">✔️ Adicionar</button>
     </div>
   </div>
 </div>
@@ -519,6 +733,64 @@
 
   async function sair() { sessionStorage.removeItem('admin_autorizado'); await sb.auth.signOut(); window.location.href='login.html'; }
 
+
+  // ── Novo presente ──
+  function abrirNovoPresente() {
+    ['n-titulo','n-img','n-link','n-link2','n-link3'].forEach(id =>
+      document.getElementById(id).value = ''
+    );
+    document.getElementById('n-preview').style.display = 'none';
+    document.getElementById('modal-novo').classList.add('ativo');
+
+    // Preview da imagem ao digitar URL
+    document.getElementById('n-img').oninput = function() {
+      const url = this.value.trim();
+      const prev = document.getElementById('n-preview');
+      const img  = document.getElementById('n-preview-img');
+      if (url) {
+        img.src = url;
+        img.onload  = () => prev.style.display = 'block';
+        img.onerror = () => prev.style.display = 'none';
+      } else {
+        prev.style.display = 'none';
+      }
+    };
+  }
+
+  function fecharNovoPresente() {
+    document.getElementById('modal-novo').classList.remove('ativo');
+  }
+
+  async function salvarNovoPresente() {
+    const titulo = document.getElementById('n-titulo').value.trim();
+    if (!titulo) {
+      cmAlert('O título é obrigatório.', {titulo:'Campo obrigatório', icone:'✏️'});
+      return;
+    }
+    const btn = document.getElementById('btn-salvar-novo');
+    btn.disabled = true; btn.textContent = '⏳ Salvando…';
+
+    const { error } = await sb.from('presentes').insert({
+      titulo,
+      imagem_url:   document.getElementById('n-img').value.trim()   || null,
+      link_compra:  document.getElementById('n-link').value.trim()   || null,
+      link_compra_2:document.getElementById('n-link2').value.trim()  || null,
+      link_compra_3:document.getElementById('n-link3').value.trim()  || null,
+      reservado: false,
+    });
+
+    btn.disabled = false; btn.textContent = '✔️ Adicionar';
+
+    if (error) {
+      cmAlert('Erro ao adicionar: ' + error.message, {titulo:'Erro', icone:'❌'});
+      return;
+    }
+    fecharNovoPresente();
+    trocarAba('presentes');
+    await carregar();
+    cmAlert('Presente adicionado com sucesso! 🎁', {titulo:'Sucesso', icone:'✅'});
+  }
+
   // ── Editar ──
   let editId=null;
   function abrirEdicao(id) {
@@ -576,6 +848,23 @@
   function cmAlertFechar() {
     document.getElementById('cm-alert').classList.remove('ativo');
   }
+
+  // ── Dark Mode ──
+  function toggleDark() {
+    const isDark = document.body.classList.toggle('dark');
+    const btn = document.getElementById('btn-dark');
+    btn.textContent = isDark ? '☀️ Claro' : '🌙 Escuro';
+    localStorage.setItem('admin_dark', isDark ? '1' : '0');
+  }
+  // Restaurar preferência salva
+  if (localStorage.getItem('admin_dark') === '1') {
+    document.body.classList.add('dark');
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('btn-dark');
+      if (btn) btn.textContent = '☀️ Claro';
+    });
+  }
+
 </script>
 </body>
 </html>
