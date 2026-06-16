@@ -323,56 +323,58 @@
 
         /* ── mobile ── */
         @media (max-width: 520px) {
-            /* fundo creme no mobile */
-            body { background: #f5e8d4 !important; }
+            body { background: linear-gradient(160deg, #fdf8f0 0%, #f5e8d4 100%) !important; }
 
-            /* esconde hero do desktop */
             .hero { display: none; }
 
-            /* banner com imagem de fundo recortada no topo */
             .mobile-header {
-                display: block !important;
-                width: 100%;
-                height: 240px;
-                background: url('fundo.jpg') center top / cover no-repeat;
-                position: relative;
-                margin-bottom: 0;
+                display: flex !important;
+                flex-direction: column;
+                align-items: center;
+                padding: 28px 20px 20px;
+                background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
+                border-bottom: 2px solid #c9a86c;
+                box-shadow: 0 4px 16px rgba(122,37,53,.08);
             }
-
-            /* contador sobre a imagem */
+            .mobile-header .mob-titulo {
+                font-family: 'Playfair Display', serif;
+                font-style: italic;
+                font-size: 1.5rem;
+                color: var(--marsala);
+                text-align: center;
+                margin-bottom: 4px;
+            }
+            .mobile-header .mob-sub {
+                font-size: 0.72rem;
+                color: #9a7a50;
+                text-align: center;
+                margin-bottom: 14px;
+                font-weight: 600;
+                letter-spacing: .04em;
+            }
             .mobile-header .mob-timer {
-                position: absolute;
-                bottom: 16px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: rgba(253,248,240,.92);
+                background: linear-gradient(160deg, #fdf8f0, #f0e2cc);
                 border: 1.5px solid #c9a86c;
                 border-radius: 6px;
-                padding: 8px 20px;
+                padding: 10px 24px;
                 text-align: center;
-                box-shadow: 0 4px 14px rgba(122,37,53,.18);
-                white-space: nowrap;
-                backdrop-filter: blur(4px);
+                box-shadow: 0 4px 14px rgba(122,37,53,.12);
             }
             .mobile-header .mob-timer .label {
-                font-size: 0.6rem;
+                font-size: 0.62rem;
                 text-transform: uppercase;
                 letter-spacing: .1em;
                 color: #9a7a50;
                 font-weight: 700;
                 display: block;
-                margin-bottom: 1px;
+                margin-bottom: 2px;
             }
             .mobile-header .mob-timer .tempo {
-                font-size: 1.15rem;
+                font-size: 1.2rem;
                 font-weight: 700;
                 color: var(--marsala);
                 font-family: 'Playfair Display', serif;
             }
-
-            /* esconde título e sub que não existem mais */
-            .mobile-header .mob-titulo,
-            .mobile-header .mob-sub { display: none; }
 
             .secao { padding: 16px 10px 40px; }
             .secao-titulo-wrap { display: none; }
@@ -556,8 +558,8 @@
 
 <!-- ── HEADER MOBILE ── -->
 <div class="mobile-header">
-    <div class="mob-titulo">🎀 Lista de Presentes da Alice</div>
-    <div class="mob-sub">Uma aventura no País das Maravilhas</div>
+    <div class="mob-titulo">🎀 O Baú dos Sonhos da Alice</div>
+    <div class="mob-sub">❧ Uma aventura no País das Maravilhas ❧</div>
     <div class="mob-timer">
         <span class="label">⏳ Faltam para o grande dia</span>
         <span class="tempo" id="timer-mobile">…</span>
