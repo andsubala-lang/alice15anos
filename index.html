@@ -15,7 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,600;1,400;1,600&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
@@ -47,19 +47,111 @@
             overflow: hidden; background: transparent;
         }
         .hero-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: auto; }
-        .timer-box {
-            background: linear-gradient(160deg, rgba(253,248,240,.95), rgba(240,225,200,.92));
-            border: 2px solid #c9a86c; border-radius: 6px; padding: 14px 36px;
-            font-family: 'Playfair Display', serif; font-style: italic;
-            font-size: 1.15rem; color: var(--marsala);
-            box-shadow: 0 0 0 1px rgba(201,168,108,.3), 0 6px 28px rgba(122,37,53,.15);
-            backdrop-filter: blur(6px); position: relative; letter-spacing: .03em;
+        /* ── TIMER ELABORADO ── */
+        .timer-wrap {
+            position: relative;
+            display: inline-block;
+            padding: 4px;
         }
-        .timer-box::before, .timer-box::after { content: '✦'; position: absolute; font-size: .7rem; color: #c9a86c; opacity: .7; }
-        .timer-box::before { top: 6px; left: 10px; }
-        .timer-box::after  { bottom: 6px; right: 10px; }
-        .timer-box .label { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; opacity: .6; font-style: normal; font-family: 'Quicksand', sans-serif; display: block; margin-bottom: 2px; }
-        .timer-box .tempo { font-size: 1.5rem; font-weight: 700; font-style: normal; color: var(--marsala); letter-spacing: .05em; }
+        .timer-box {
+            background: linear-gradient(160deg, rgba(253,248,240,.97), rgba(245,232,200,.95));
+            border: 2px solid #c9a86c;
+            border-radius: 12px;
+            padding: 22px 36px 18px;
+            position: relative;
+            box-shadow:
+                0 0 0 1px rgba(201,168,108,.2),
+                0 0 0 6px rgba(253,248,240,.6),
+                0 0 0 8px rgba(201,168,108,.25),
+                0 12px 40px rgba(122,37,53,.18);
+            backdrop-filter: blur(8px);
+            min-width: 340px;
+        }
+        /* ornamentos cantos */
+        .timer-box::before {
+            content: '✦';
+            position: absolute; top: 8px; left: 12px;
+            font-size: .7rem; color: #c9a86c; opacity: .6;
+        }
+        .timer-box::after {
+            content: '✦';
+            position: absolute; bottom: 8px; right: 12px;
+            font-size: .7rem; color: #c9a86c; opacity: .6;
+        }
+        .timer-topo {
+            text-align: center;
+            margin-bottom: 14px;
+        }
+        .timer-topo-acima {
+            font-size: .72rem;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            color: var(--ouro);
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .timer-topo-abaixo {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: normal;
+            font-size: 1.3rem;
+            color: var(--marsala);
+            letter-spacing: .06em;
+        }
+        .timer-divisor {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto 14px;
+            justify-content: center;
+            opacity: .4;
+        }
+        .timer-divisor::before, .timer-divisor::after {
+            content: '';
+            width: 40px; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--ouro));
+        }
+        .timer-divisor::after { background: linear-gradient(90deg, var(--ouro), transparent); }
+        .timer-divisor span { font-size: .6rem; color: var(--ouro); }
+
+        .timer-blocos {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        .timer-bloco {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 64px;
+        }
+        .timer-num {
+            font-family: 'Cinzel', serif;
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: var(--marsala);
+            line-height: 1;
+            letter-spacing: .04em;
+        }
+        .timer-label {
+            font-size: .85rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            color: #9a7a50;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            margin-top: 6px;
+        }
+        .timer-sep {
+            font-size: 2rem;
+            color: var(--ouro);
+            opacity: .5;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 18px;
+            line-height: 1;
+        }
 
         /* ── CONTROLES (busca + filtro) ── */
         .controles {
@@ -360,8 +452,32 @@
 <div class="hero">
     <div class="hero-content">
         <div class="timer-box">
-            <span class="label">⏳ Faltam para o grande dia</span>
-            <span class="tempo" id="timer">…</span>
+            <div class="timer-topo">
+                <span class="timer-topo-acima">✦ Estamos quase lá ✦</span>
+                <span class="timer-topo-abaixo">🎀 Faltam para o grande dia</span>
+            </div>
+            <div class="timer-divisor"><span>❧</span></div>
+            <div class="timer-blocos">
+                <div class="timer-bloco">
+                    <span class="timer-num" id="t-dias">–</span>
+                    <span class="timer-label">dias</span>
+                </div>
+                <div class="timer-sep">:</div>
+                <div class="timer-bloco">
+                    <span class="timer-num" id="t-horas">–</span>
+                    <span class="timer-label">horas</span>
+                </div>
+                <div class="timer-sep">:</div>
+                <div class="timer-bloco">
+                    <span class="timer-num" id="t-min">–</span>
+                    <span class="timer-label">minutos</span>
+                </div>
+                <div class="timer-sep">:</div>
+                <div class="timer-bloco">
+                    <span class="timer-num" id="t-seg">–</span>
+                    <span class="timer-label">segundos</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -461,13 +577,28 @@
 
     // ── Timer ──
     const alvo = new Date("Aug 1, 2026 21:00:00").getTime();
+    function pad(n) { return String(n).padStart(2,'0'); }
     function tick() {
         const d = alvo - Date.now();
-        if (d <= 0) { document.getElementById('timer').textContent = '🎉 Chegou!'; return; }
-        const txt = `${Math.floor(d/86400000)}d ${Math.floor((d%86400000)/3600000)}h ${Math.floor((d%3600000)/60000)}m ${Math.floor((d%60000)/1000)}s`;
-        document.getElementById('timer').textContent = txt;
+        if (d <= 0) {
+            ['t-dias','t-horas','t-min','t-seg'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = '00';
+            });
+            return;
+        }
+        const dd = Math.floor(d/86400000);
+        const hh = Math.floor((d%86400000)/3600000);
+        const mm = Math.floor((d%3600000)/60000);
+        const ss = Math.floor((d%60000)/1000);
+        const el = (id) => document.getElementById(id);
+        if (el('t-dias'))  el('t-dias').textContent  = pad(dd);
+        if (el('t-horas')) el('t-horas').textContent = pad(hh);
+        if (el('t-min'))   el('t-min').textContent   = pad(mm);
+        if (el('t-seg'))   el('t-seg').textContent   = pad(ss);
+        // timer mobile
         const tm = document.getElementById('timer-mobile');
-        if (tm) tm.textContent = txt;
+        if (tm) tm.textContent = `${dd}d ${pad(hh)}h ${pad(mm)}m ${pad(ss)}s`;
     }
     tick(); setInterval(tick, 1000);
 
