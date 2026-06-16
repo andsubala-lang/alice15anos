@@ -922,10 +922,11 @@
         ultimaReserva = Date.now();
 
         sessionStorage.setItem(`res_${idTemp}`, '1');
-        console.log('Tentando reservar id:', idTemp, 'nome:', nomeTemp);
+        const idNum = parseInt(idTemp, 10);
+        console.log('Tentando reservar id:', idNum, 'nome:', nomeTemp);
         const { data: updData, error } = await sb.from('presentes')
             .update({ reservado: true, nome_reservante: nomeTemp, mensagem: msgTemp, reservado_em: new Date().toISOString() })
-            .eq('id', idTemp)
+            .eq('id', idNum)
             .select();
         console.log('Resultado:', updData, 'Erro:', error);
         if (!error) {
