@@ -621,6 +621,16 @@
   let todosPresentes = [];
 
   async function carregar() {
+    // Buscar visitas
+    const { data: visitas } = await sb.from('visitas').select('*');
+    if (visitas) {
+      const hoje = new Date().toISOString().slice(0, 10);
+      document.getElementById('d-visitas-total').textContent   = visitas.length;
+      document.getElementById('d-visitas-hoje').textContent    = visitas.filter(v => v.criado_em.slice(0,10) === hoje).length;
+      document.getElementById('d-visitas-mobile').textContent  = visitas.filter(v => v.dispositivo === 'mobile').length;
+      document.getElementById('d-visitas-desktop').textContent = visitas.filter(v => v.dispositivo === 'desktop').length;
+    }
+
     const { data, error } = await sb.from('presentes').select('*').order('id', { ascending:true });
     if (error) {
       ['d-total','d-res','d-disp','d-msg'].forEach(id =>
