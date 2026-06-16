@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>15 Anos da Alice 🎀</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎀</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
@@ -101,6 +102,113 @@
         .timer-box::after  { bottom: 6px; right: 10px; }
         .timer-box .label  { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; opacity: .6; font-style: normal; font-family: 'Quicksand', sans-serif; display: block; margin-bottom: 2px; }
         .timer-box .tempo  { font-size: 1.5rem; font-weight: 700; font-style: normal; color: var(--marsala); letter-spacing: .05em; }
+
+        /* ── banner de disponíveis ── */
+        .banner-disponiveis {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(253,248,240,.92), rgba(240,225,200,.88));
+            border: 1.5px solid #c9a86c;
+            border-radius: 50px;
+            padding: 10px 24px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--marsala);
+            box-shadow: 0 3px 14px rgba(122,37,53,.12);
+            margin-bottom: 20px;
+        }
+        .banner-disponiveis .num {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--marsala);
+        }
+
+        /* ── botão whatsapp ── */
+        .btn-whatsapp {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 16px rgba(37,211,102,.30);
+            transition: opacity .2s, transform .15s;
+            margin-top: 8px;
+        }
+        .btn-whatsapp:hover { opacity: .9; transform: translateY(-1px); }
+
+        .rodape {
+            text-align: center;
+            padding: 32px 20px 50px;
+        }
+
+        /* ── modal de confirmação ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.ativo { display: flex; }
+        .modal {
+            background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
+            border: 2px solid #c9a86c;
+            border-radius: 16px;
+            padding: 32px 28px;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 12px 50px rgba(0,0,0,.25);
+            text-align: center;
+        }
+        .modal h3 {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--marsala);
+            margin-bottom: 10px;
+        }
+        .modal p {
+            font-size: 0.88rem;
+            color: #6a4a30;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .modal p strong { color: var(--marsala); }
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .modal-btns button {
+            flex: 1; padding: 11px;
+            border: none; border-radius: 8px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.88rem; font-weight: 700;
+            cursor: pointer; transition: opacity .2s;
+        }
+        .modal-confirmar {
+            background: linear-gradient(135deg, var(--marsala), #5a1a26);
+            color: white;
+            box-shadow: 0 3px 12px rgba(122,37,53,.25);
+        }
+        .modal-cancelar {
+            background: transparent;
+            border: 1.5px solid #c9a86c !important;
+            color: #9a7a50;
+        }
+        .modal-btns button:hover { opacity: .88; }
 
         /* ── seção de cards ── */
         .secao {
@@ -570,6 +678,9 @@
 
 <!-- ── LISTA DE PRESENTES ── -->
 <div class="secao">
+    <div id="banner-disp" style="display:none;" class="banner-disponiveis">
+        🎁 <span id="num-disp" class="num">–</span> presentes ainda disponíveis!
+    </div>
     <div class="secao-titulo-wrap">
         <h2 class="secao-titulo">🎁 Lista de Presentes</h2>
         <div class="secao-ornamento">❧ ♥ ❧</div>
@@ -579,7 +690,29 @@
     </div>
 </div>
 
-<footer>Feito com 💙 e ♥️ para os 15 anos da Alice · 2026</footer>
+<!-- Modal de confirmação -->
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+        <h3>Confirmar reserva</h3>
+        <p>Você está reservando:</p>
+        <p><strong id="modal-presente"></strong></p>
+        <p>Em nome de: <strong id="modal-nome"></strong></p>
+        <div class="modal-btns">
+            <button class="modal-cancelar" onclick="fecharModal()">Cancelar</button>
+            <button class="modal-confirmar" onclick="confirmarReserva()">✔️ Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<div class="rodape">
+    <p style="font-size:.82rem; color:#7a5a40; margin-bottom:14px; font-weight:600;">
+        Compartilhe a lista com os convidados 💙
+    </p>
+    <a class="btn-whatsapp" id="btn-wpp" href="#" target="_blank" rel="noopener">
+        📲 Compartilhar no WhatsApp
+    </a>
+    <p style="font-size:.75rem; color:#aaa; margin-top:20px;">Feito com 💙 e ♥️ para os 15 anos da Alice · 2026</p>
+</div>
 
 <script>
     // ── timer ──
@@ -664,6 +797,22 @@
             document.getElementById('root').innerHTML = '<p style="grid-column:1/-1;color:#c97080;padding:40px;">Erro ao carregar. Tente novamente.</p>';
             return;
         }
+        const disponiveis = data.filter(g => !g.reservado);
+        const bannerDisp = document.getElementById('banner-disp');
+        const numDisp = document.getElementById('num-disp');
+        if (bannerDisp && numDisp) {
+            numDisp.textContent = disponiveis.length;
+            bannerDisp.style.display = disponiveis.length > 0 ? 'inline-flex' : 'none';
+        }
+
+        // WhatsApp share button
+        const btnWpp = document.getElementById('btn-wpp');
+        if (btnWpp) {
+            const msg = encodeURIComponent('🎀 Confira a lista de presentes dos 15 anos da Alice!
+👉 https://alice15anos-blue.vercel.app/');
+            btnWpp.href = `https://wa.me/?text=${msg}`;
+        }
+
         document.getElementById('root').innerHTML = data.map(g => {
             const meu = sessionStorage.getItem(`res_${g.id}`);
             const isPix = (g.link_compra && (g.link_compra.startsWith('pix:') || g.link_compra.startsWith('000201'))) || (g.titulo && g.titulo.toLowerCase().includes('pix'));
@@ -701,6 +850,14 @@
         }).join('');
     }
 
+    // Rate limiting — máximo 1 reserva a cada 10 segundos
+    let ultimaReserva = 0;
+
+    // Dados temporários do modal
+    let modalId = null;
+    let modalNome = '';
+    let modalMsg = '';
+
     function abrirForm(id) {
         document.getElementById(`form-${id}`).style.display = 'flex';
         document.getElementById(`btn-${id}`).style.display  = 'none';
@@ -710,16 +867,50 @@
         document.getElementById(`form-${id}`).style.display = 'none';
         document.getElementById(`btn-${id}`).style.display  = 'block';
     }
-    async function reservar(id) {
+
+    function reservar(id) {
+        // Rate limiting
+        const agora = Date.now();
+        if (agora - ultimaReserva < 10000) {
+            alert('Aguarde alguns segundos antes de fazer outra reserva.');
+            return;
+        }
+
         const nomeEl = document.getElementById(`nome-${id}`);
         const nome   = nomeEl.value.trim();
         if (!nome) { nomeEl.classList.add('erro'); nomeEl.focus(); return; }
         nomeEl.classList.remove('erro');
+
         const msg = document.getElementById(`msg-${id}`).value.trim();
-        sessionStorage.setItem(`res_${id}`, '1');
+
+        // Pega o título do presente
+        const card = document.getElementById(`card-${id}`);
+        const titulo = card ? card.querySelector('h3').textContent : 'este presente';
+
+        // Abre modal de confirmação
+        modalId   = id;
+        modalNome = nome;
+        modalMsg  = msg;
+        document.getElementById('modal-presente').textContent = titulo;
+        document.getElementById('modal-nome').textContent     = nome;
+        document.getElementById('modal-overlay').classList.add('ativo');
+    }
+
+    function fecharModal() {
+        document.getElementById('modal-overlay').classList.remove('ativo');
+        modalId = null;
+    }
+
+    async function confirmarReserva() {
+        if (!modalId) return;
+        fecharModal();
+
+        ultimaReserva = Date.now();
+
+        sessionStorage.setItem(`res_${modalId}`, '1');
         const { error } = await sb.from('presentes')
-            .update({ reservado: true, nome_reservante: nome, mensagem: msg })
-            .eq('id', id);
+            .update({ reservado: true, nome_reservante: modalNome, mensagem: modalMsg })
+            .eq('id', modalId);
         if (!error) carregar();
     }
 
