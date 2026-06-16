@@ -765,8 +765,10 @@
     (async () => {
         try {
             const dispositivo = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
-            await sb.from('visitas').insert({ dispositivo, pagina: 'index' });
-        } catch(e) { console.warn('Visita não registrada:', e); }
+            const { error } = await sb.from('visitas').insert({ dispositivo, pagina: 'index' });
+            if (error) console.error('Erro visita:', error.message, error.code, error.details);
+            else console.log('Visita registrada:', dispositivo);
+        } catch(e) { console.error('Visita exception:', e); }
     })();
 
     carregar(); return;
