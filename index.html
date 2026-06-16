@@ -13,6 +13,8 @@
     <meta property="og:type" content="website"/>
     <meta name="twitter:card" content="summary_large_image"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -347,6 +349,30 @@
     }
     tick(); setInterval(tick, 1000);
 
+
+    // ── Notificação por e-mail ──
+    // Configure com suas credenciais do EmailJS (emailjs.com)
+    const EMAILJS_SERVICE_ID  = 'service_d8uzzrl';   // ex: service_abc123
+    const EMAILJS_TEMPLATE_ID = 'template_50g8jja';  // ex: template_xyz456
+    const EMAILJS_PUBLIC_KEY  = 'NIMqO9l6qqFLmWJ8o';   // ex: abcXYZ123
+
+    async function enviarEmailReserva(nome, presente, mensagem) {
+        try {
+            emailjs.init(EMAILJS_PUBLIC_KEY);
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                to_email:       'anderson11cabral@hotmail.com',
+                nome_reservante: nome,
+                presente:        presente,
+                mensagem:        mensagem || '(sem mensagem)',
+                data:            new Date().toLocaleString('pt-BR'),
+            });
+            console.log('Email de notificação enviado!');
+        } catch(e) {
+            console.warn('Email não enviado:', e);
+            // Não bloqueia a reserva se o email falhar
+        }
+    }
+
     // ── Supabase ──
     const sb = window.supabase.createClient(
         'https://abojdhxobsyrzyiacaqf.supabase.co',
@@ -555,6 +581,8 @@
             document.getElementById('msg-obrigada').innerHTML =
                 `Você reservou <strong>${presenteTemp}</strong> para a Alice.<br>Ela vai adorar! 💙`;
             document.getElementById('overlay-obrigada').style.display = 'flex';
+            // Notificação por e-mail
+            enviarEmailReserva(nomeTemp, presenteTemp, msgTemp);
         } else {
             alert('Erro ao reservar: ' + error.message);
         }
