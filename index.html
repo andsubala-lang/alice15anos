@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -707,7 +708,7 @@
     <p style="font-size:.82rem; color:#7a5a40; margin-bottom:14px; font-weight:600;">
         Compartilhe a lista com os convidados 💙
     </p>
-    <a class="btn-whatsapp" id="btn-wpp" href="#" target="_blank" rel="noopener">
+    <a class="btn-whatsapp" href="https://wa.me/?text=🎀 Confira a lista de presentes dos 15 anos da Alice!%0A👉 https://alice15anos-blue.vercel.app/" target="_blank" rel="noopener">
         📲 Compartilhar no WhatsApp
     </a>
     <p style="font-size:.75rem; color:#aaa; margin-top:20px;">Feito com 💙 e ♥️ para os 15 anos da Alice · 2026</p>
@@ -805,13 +806,6 @@
         }
 
         // WhatsApp share button
-        const btnWpp = document.getElementById('btn-wpp');
-        if (btnWpp) {
-            const msg = encodeURIComponent('🎀 Confira a lista de presentes dos 15 anos da Alice!
-👉 https://alice15anos-blue.vercel.app/');
-            btnWpp.href = `https://wa.me/?text=${msg}`;
-        }
-
         document.getElementById('root').innerHTML = data.map(g => {
             const meu = sessionStorage.getItem(`res_${g.id}`);
             const isPix = (g.link_compra && (g.link_compra.startsWith('pix:') || g.link_compra.startsWith('000201'))) || (g.titulo && g.titulo.toLowerCase().includes('pix'));
