@@ -202,6 +202,25 @@
       .grid-ativ { grid-template-columns:1fr; }
       .pagina { padding:16px; } .topbar { padding:14px 16px; }
     }
+
+    /* ══ MODAL CONFIRM / ALERT ══ */
+    .custom-modal-ov { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:9999; align-items:center; justify-content:center; padding:20px; }
+    .custom-modal-ov.ativo { display:flex; }
+    .custom-modal-box {
+      background:linear-gradient(160deg,var(--creme),var(--creme-md));
+      border:2px solid var(--azul-cl); border-radius:16px;
+      padding:32px 28px; max-width:360px; width:100%;
+      box-shadow:0 16px 48px rgba(0,0,0,.18); text-align:center;
+    }
+    .custom-modal-icone { font-size:2.2rem; display:block; margin-bottom:10px; }
+    .custom-modal-titulo { font-family:'Playfair Display',serif; font-style:italic; font-size:1.15rem; color:var(--marsala); margin-bottom:8px; }
+    .custom-modal-msg { font-size:.88rem; color:var(--azul-dk); font-weight:600; line-height:1.5; margin-bottom:20px; }
+    .custom-modal-btns { display:flex; gap:10px; justify-content:center; }
+    .custom-modal-btns button { flex:1; padding:11px; border-radius:8px; font-family:'Quicksand',sans-serif; font-size:.88rem; font-weight:700; cursor:pointer; transition:opacity .2s,transform .15s; max-width:140px; }
+    .custom-modal-btns button:hover { opacity:.88; transform:translateY(-1px); }
+    .cm-confirmar { background:linear-gradient(135deg,var(--marsala),var(--marsala-dk)); color:white; border:none; box-shadow:0 3px 12px rgba(122,37,53,.2); }
+    .cm-cancelar  { background:transparent; border:1.5px solid var(--azul-cl); color:var(--azul-dk); }
+    .cm-ok        { background:linear-gradient(135deg,var(--azul-dk),var(--azul)); color:white; border:none; box-shadow:0 3px 12px rgba(46,126,168,.2); }
   </style>
 </head>
 <body>
@@ -299,6 +318,32 @@
   </div>
 </div>
 
+
+<!-- MODAL CONFIRM PERSONALIZADO -->
+<div class="custom-modal-ov" id="cm-confirm">
+  <div class="custom-modal-box">
+    <span class="custom-modal-icone" id="cm-confirm-icone">⚠️</span>
+    <h3 class="custom-modal-titulo" id="cm-confirm-titulo">Confirmar</h3>
+    <p class="custom-modal-msg" id="cm-confirm-msg"></p>
+    <div class="custom-modal-btns">
+      <button class="cm-cancelar" onclick="cmConfirmResposta(false)">Cancelar</button>
+      <button class="cm-confirmar" id="cm-confirm-btn-ok" onclick="cmConfirmResposta(true)">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ALERT PERSONALIZADO -->
+<div class="custom-modal-ov" id="cm-alert">
+  <div class="custom-modal-box">
+    <span class="custom-modal-icone" id="cm-alert-icone">ℹ️</span>
+    <h3 class="custom-modal-titulo" id="cm-alert-titulo">Atenção</h3>
+    <p class="custom-modal-msg" id="cm-alert-msg"></p>
+    <div class="custom-modal-btns">
+      <button class="cm-ok" onclick="cmAlertFechar()">OK</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL EDIÇÃO -->
 <div class="modal-ov" id="modal-edicao">
   <div class="modal-box">
@@ -337,7 +382,7 @@
     clearTimeout(timerInativ);
     timerInativ = setTimeout(() => {
       sessionStorage.removeItem('admin_autorizado');
-      alert('Sessão encerrada por inatividade.');
+      cmAlert('Sua sessão foi encerrada por inatividade. Faça login novamente.', {titulo:'Sessão expirada',icone:'⏱️'});
       window.location.href = 'login.html';
     }, 30*60*1000);
   }
@@ -429,15 +474,21 @@
   }
 
   async function cancelarReserva(id) {
-    if (!confirm('Cancelar a reserva deste presente?')) return;
-    const { error } = await sb.from('presentes').update({ reservado:false, nome_reservante:null, mensagem:null, reservado_em:null }).eq('id',id);
-    if (error) { alert('Erro: '+error.message); return; }
-    await carregar();
+    cmConfirm(
+      'Deseja cancelar a reserva deste presente? Ele ficará disponível novamente.',
+      async (ok) => {
+        if (!ok) return;
+        const { error } = await sb.from('presentes').update({ reservado:false, nome_reservante:null, mensagem:null, reservado_em:null }).eq('id',id);
+        if (error) { cmAlert('Erro ao cancelar: '+error.message, {titulo:'Erro',icone:'❌'}); return; }
+        await carregar();
+      },
+      { titulo:'Cancelar reserva', icone:'🎁', btnOk:'✕ Cancelar reserva' }
+    );
   }
 
   function exportarCSV() {
     const res = todosPresentes.filter(g=>g.reservado);
-    if (!res.length) { alert('Nenhum presente reservado ainda!'); return; }
+    if (!res.length) { cmAlert('Ainda não há presentes reservados para exportar.', {titulo:'Sem reservas',icone:'📋'}); return; }
     const header = ['ID','Presente','Reservado por','Mensagem','Data'];
     const linhas = res.map(g=>[g.id,`"${(g.titulo||'').replace(/"/g,'""')}"`,`"${(g.nome_reservante||'').replace(/"/g,'""')}"`,`"${(g.mensagem||'').replace(/"/g,'""')}"`,fmt(g.reservado_em)].join(','));
     const blob = new Blob(['\uFEFF'+[header.join(','),...linhas].join('\n')],{type:'text/csv;charset=utf-8;'});
@@ -484,7 +535,7 @@
   async function salvarEdicao() {
     if (!editId) return;
     const titulo = document.getElementById('e-titulo').value.trim();
-    if (!titulo) { alert('Título não pode ser vazio.'); return; }
+    if (!titulo) { cmAlert('O título não pode ficar vazio.', {titulo:'Campo obrigatório',icone:'✏️'}); return; }
     const btn = document.getElementById('btn-salvar-ed');
     btn.disabled=true; btn.textContent='⏳ Salvando…';
     const { error } = await sb.from('presentes').update({
@@ -494,8 +545,36 @@
       link_compra_3:document.getElementById('e-link3').value.trim()||null,
     }).eq('id',editId);
     btn.disabled=false; btn.textContent='✔️ Salvar';
-    if (error) { alert('Erro: '+error.message); return; }
+    if (error) { cmAlert('Erro ao salvar: '+error.message, {titulo:'Erro',icone:'❌'}); return; }
     fecharEdicao(); await carregar();
+  }
+
+  // ── Modais personalizados ──
+  let cmConfirmCallback = null;
+
+  function cmConfirm(msg, callback, opts) {
+    opts = opts || {};
+    document.getElementById('cm-confirm-msg').textContent    = msg;
+    document.getElementById('cm-confirm-titulo').textContent = opts.titulo || 'Confirmar ação';
+    document.getElementById('cm-confirm-icone').textContent  = opts.icone  || '⚠️';
+    document.getElementById('cm-confirm-btn-ok').textContent = opts.btnOk  || 'Confirmar';
+    cmConfirmCallback = callback;
+    document.getElementById('cm-confirm').classList.add('ativo');
+  }
+  function cmConfirmResposta(resp) {
+    document.getElementById('cm-confirm').classList.remove('ativo');
+    if (cmConfirmCallback) { cmConfirmCallback(resp); cmConfirmCallback = null; }
+  }
+
+  function cmAlert(msg, opts) {
+    opts = opts || {};
+    document.getElementById('cm-alert-msg').textContent    = msg;
+    document.getElementById('cm-alert-titulo').textContent = opts.titulo || 'Atenção';
+    document.getElementById('cm-alert-icone').textContent  = opts.icone  || 'ℹ️';
+    document.getElementById('cm-alert').classList.add('ativo');
+  }
+  function cmAlertFechar() {
+    document.getElementById('cm-alert').classList.remove('ativo');
   }
 </script>
 </body>
