@@ -331,23 +331,19 @@
         @media (max-width: 520px) {
             body { background: url('indexmobile.jpg') center top / cover no-repeat fixed !important; }
             .mobile-header { display: none !important; }
-            .hero { display: none; }
+            .hero { display: none !important; }
             .mob-spacer { display: block !important; }
-            .mobile-header { display: flex !important; flex-direction: column; align-items: center; padding: 28px 20px 20px; background: linear-gradient(160deg, #fdf8f0, #f5e8d4); border-bottom: 2px solid #c9a86c; box-shadow: 0 4px 16px rgba(122,37,53,.08); }
-            .mobile-header .mob-titulo { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.5rem; color: var(--marsala); text-align: center; margin-bottom: 4px; }
-            .mobile-header .mob-sub { font-size: 0.72rem; color: #9a7a50; text-align: center; margin-bottom: 14px; font-weight: 600; letter-spacing: .04em; }
-            .mobile-header .mob-timer { background: linear-gradient(160deg, #fdf8f0, #f0e2cc); border: 1.5px solid #c9a86c; border-radius: 6px; padding: 10px 24px; text-align: center; box-shadow: 0 4px 14px rgba(122,37,53,.12); }
-            .mobile-header .mob-timer .label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: .1em; color: #9a7a50; font-weight: 700; display: block; margin-bottom: 2px; }
-            .mobile-header .mob-timer .tempo { font-size: 1.2rem; font-weight: 700; color: var(--marsala); font-family: 'Playfair Display', serif; }
             .secao { padding: 16px 10px 40px; }
-            .secao > *:first-child { margin-top: 0; }
             .secao-titulo-wrap { display: none; }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .card-img-wrap { width: 80px; height: 80px; }
             .card-body h3 { font-size: 0.76rem; }
-            .busca-input { width: 160px; }
+            .busca-input { width: 100%; }
+            .controles { flex-direction: column; align-items: stretch; gap: 8px; }
+            .filtros { justify-content: center; }
         }
-        .mobile-header { display: none; }
+
+                .mobile-header { display: none; }
         @media (max-width: 340px) { .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
