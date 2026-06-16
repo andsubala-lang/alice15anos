@@ -237,29 +237,14 @@
             justify-content: center;
             font-size: 3rem;
         }
-        .pix-box-chave {
-            background: rgba(201,168,108,.1);
-            border: 1px solid rgba(201,168,108,.3);
-            border-radius: 6px;
-            padding: 6px 12px;
-            width: 100%;
-            text-align: center;
-        }
-        .pix-chave-label {
-            font-size: .65rem;
+        .pix-ou-copie {
+            font-size: .72rem;
             color: #9a7a50;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            display: block;
-            margin-bottom: 2px;
+            font-weight: 600;
+            text-align: center;
+            opacity: .7;
         }
-        .pix-chave-valor {
-            font-size: .78rem;
-            color: var(--marsala);
-            font-weight: 700;
-            word-break: break-all;
-        }
+
         .pix-btn-copiar {
             width: 100%;
             padding: 11px;
@@ -691,10 +676,7 @@
                     <span class="pix-box-sub">Fique à vontade para escolher o valor!</span>
                 </div>
                 ${qrHtml}
-                <div class="pix-box-chave">
-                    <span class="pix-chave-label">${imgSrc ? 'ou copie a chave abaixo' : 'Chave Pix'}</span>
-                    <span class="pix-chave-valor" style="filter:blur(5px);user-select:none;letter-spacing:.12em;pointer-events:none;">••••••••••••</span>
-                </div>
+                <p class="pix-ou-copie">ou copie a chave abaixo</p>
                 <button class="pix-btn-copiar" onclick="copiarPix('${link.replace(/'/g,"\'")}', this)">
                     💙 Copiar chave Pix
                 </button>
