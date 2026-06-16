@@ -483,7 +483,8 @@
       <div id="tab-presentes" style="display:none;">
         <div class="topo-tab">
           <div class="sec-titulo" style="margin-bottom:0;flex:1;"><h2>Lista completa</h2><div class="sec-linha"></div></div>
-          <div style="display:flex;gap:8px;">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn-csv" id="btn-ordenar" style="background:linear-gradient(135deg,#4a6a9e,#6b89bb);" onclick="toggleOrdem()">🔼 Ver reservados primeiro</button>
             <button class="btn-csv" style="background:linear-gradient(135deg,var(--marsala),var(--marsala-dk));" onclick="abrirNovoPresente()">＋ Novo presente</button>
             <button class="btn-csv" onclick="exportarCSV()">⬇ Exportar CSV</button>
           </div>
@@ -680,7 +681,28 @@
       : '<div class="ativ-vazio">Nenhuma mensagem ainda.</div>';
   }
 
+  let ordemReservados = false;
+
+  function toggleOrdem() {
+    ordemReservados = !ordemReservados;
+    const btn = document.getElementById('btn-ordenar');
+    if (ordemReservados) {
+      btn.textContent = '🔽 Ordem original';
+      btn.style.background = 'linear-gradient(135deg,var(--marsala),var(--marsala-dk))';
+    } else {
+      btn.textContent = '🔼 Ver reservados primeiro';
+      btn.style.background = 'linear-gradient(135deg,#4a6a9e,#6b89bb)';
+    }
+    atualizarTabela(todosPresentes);
+  }
+
   function atualizarTabela(data) {
+    // Ordenar se necessário
+    let lista = [...data];
+    if (ordemReservados) {
+      lista.sort((a, b) => (b.reservado ? 1 : 0) - (a.reservado ? 1 : 0));
+    }
+    data = lista;
     const corpo = document.getElementById('tab-corpo');
     if (!data.length) { corpo.innerHTML='<tr><td colspan="6" class="vazio">Nenhum presente.</td></tr>'; return; }
     corpo.innerHTML = data.map(g=>`
