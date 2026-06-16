@@ -6,7 +6,7 @@
     <title>15 Anos da Alice 🎀</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -71,17 +71,33 @@
         }
 
         .timer-box {
-            background: rgba(255,255,255,.85);
-            border: 2px solid var(--azul-cl);
-            border-radius: 50px;
-            padding: 10px 26px;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--azul-dk);
-            box-shadow: 0 4px 20px rgba(90,175,214,.18);
+            background: linear-gradient(160deg, rgba(253,248,240,.95), rgba(240,225,200,.92));
+            border: 2px solid #c9a86c;
+            border-radius: 6px;
+            padding: 14px 36px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--marsala);
+            box-shadow:
+                0 0 0 1px rgba(201,168,108,.3),
+                0 6px 28px rgba(122,37,53,.15);
             backdrop-filter: blur(6px);
+            position: relative;
+            letter-spacing: .03em;
         }
-        .timer-box span { color: var(--marsala); }
+        .timer-box::before,
+        .timer-box::after {
+            content: '✦';
+            position: absolute;
+            font-size: .7rem;
+            color: #c9a86c;
+            opacity: .7;
+        }
+        .timer-box::before { top: 6px; left: 10px; }
+        .timer-box::after  { bottom: 6px; right: 10px; }
+        .timer-box .label  { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; opacity: .6; font-style: normal; font-family: 'Quicksand', sans-serif; display: block; margin-bottom: 2px; }
+        .timer-box .tempo  { font-size: 1.5rem; font-weight: 700; font-style: normal; color: var(--marsala); letter-spacing: .05em; }
 
         /* ── seção de cards ── */
         .secao {
@@ -90,25 +106,41 @@
             margin: 0 auto;
         }
 
+        .secao-titulo-wrap {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
         .secao-titulo {
-            font-family: 'Cinzel Decorative', cursive;
-            font-size: 1.1rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
             color: var(--marsala);
-            margin-bottom: 24px;
+            display: inline-block;
+            position: relative;
+            padding: 0 16px;
+            text-shadow: 0 2px 8px rgba(122,37,53,.12);
+            letter-spacing: .02em;
+        }
+
+        .secao-ornamento {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            margin-top: 6px;
+            color: var(--marsala);
+            opacity: .45;
+            font-size: .85rem;
         }
-        .secao-titulo::before,
-        .secao-titulo::after {
+        .secao-ornamento::before,
+        .secao-ornamento::after {
             content: '';
-            flex: 1;
-            max-width: 120px;
-            height: 1.5px;
+            width: 80px;
+            height: 1px;
             background: linear-gradient(90deg, transparent, var(--marsala-cl));
         }
-        .secao-titulo::after { background: linear-gradient(90deg, var(--marsala-cl), transparent); }
+        .secao-ornamento::after { background: linear-gradient(90deg, var(--marsala-cl), transparent); }
 
         .grid {
             display: grid;
@@ -119,25 +151,36 @@
 
         /* ── card ── */
         .card {
-            background: var(--branco);
-            border-radius: 22px;
-            border: 2px solid var(--azul-cl);
+            background: linear-gradient(160deg, #fdf8f0 0%, #f5e8d4 100%);
+            border-radius: 4px;
+            border: 1.5px solid #c9a86c;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(90,175,214,.12);
+            box-shadow:
+                0 0 0 1px rgba(201,168,108,.2),
+                0 6px 24px rgba(122,37,53,.10);
             transition: transform .22s, box-shadow .22s;
             align-self: start;
+            position: relative;
         }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 32px rgba(90,175,214,.22); }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 0 0 1px rgba(201,168,108,.3), 0 12px 36px rgba(122,37,53,.16); }
+
+        /* cantos decorativos */
+        .card::before, .card::after {
+            content: '✦';
+            position: absolute;
+            font-size: .65rem;
+            color: #c9a86c;
+            opacity: .6;
+            z-index: 1;
+        }
+        .card::before { top: 7px; left: 9px; }
+        .card::after  { bottom: 7px; right: 9px; }
 
         .card-stripe {
-            height: 5px;
-            background: repeating-linear-gradient(
-                90deg,
-                var(--marsala) 0px, var(--marsala) 10px,
-                var(--azul) 10px, var(--azul) 20px
-            );
+            height: 4px;
+            background: linear-gradient(90deg, var(--marsala), #c9a86c, var(--marsala));
         }
 
         .card-body {
@@ -145,40 +188,60 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            padding: 16px 14px 10px;
+            padding: 18px 14px 10px;
             flex: 1;
         }
 
-        .card-body img {
+        .card-img-wrap {
             width: 120px; height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1.5px solid rgba(201,168,108,.35);
+            box-shadow: 0 3px 10px rgba(0,0,0,.08);
+            background: rgba(255,255,255,.6);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .card-body img {
+            width: 100%; height: 100%;
             object-fit: contain;
-            border-radius: 12px;
+            padding: 4px;
         }
 
         .card-body h3 {
+            font-family: 'Playfair Display', serif;
             font-size: 0.88rem;
             font-weight: 700;
-            color: var(--azul-dk);
-            line-height: 1.3;
+            color: var(--marsala);
+            line-height: 1.35;
+            text-align: center;
+        }
+
+        .card-divisor {
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #c9a86c, transparent);
+            opacity: .5;
+            margin: 2px 0;
         }
 
         /* botão ver produto */
         .btn-ver-produto {
             display: flex; align-items: center; justify-content: center; gap: 6px;
-            padding: 8px 12px; border-radius: 10px;
+            padding: 8px 12px; border-radius: 6px;
             font-size: 0.82rem; font-weight: 700;
             font-family: 'Quicksand', sans-serif; text-decoration: none;
-            color: white; border: none; cursor: pointer;
-            background: linear-gradient(135deg, var(--azul), var(--azul-dk));
-            box-shadow: 0 3px 10px rgba(90,175,214,.25);
+            color: #fdf8f0; border: none; cursor: pointer;
+            background: linear-gradient(135deg, #2e7ea8, #1a5c80);
+            box-shadow: 0 3px 10px rgba(46,126,168,.25);
             transition: background .3s, opacity .18s, transform .15s;
             margin: 0 12px 8px;
             width: calc(100% - 24px);
         }
         .btn-ver-produto:hover { opacity: .88; transform: translateY(-1px); }
         .btn-pix {
-            background: linear-gradient(135deg, #1a9ed4, #0d7ab0);
-            box-shadow: 0 3px 10px rgba(26,158,212,.30);
+            background: linear-gradient(135deg, #7a2535, #5a1a26);
+            box-shadow: 0 3px 10px rgba(122,37,53,.28);
         }
 
         /* ── botões de ação ── */
@@ -186,42 +249,48 @@
 
         .btn-reservar {
             width: 100%; padding: 10px;
-            border: none; border-radius: 50px;
-            background: linear-gradient(135deg, var(--marsala), var(--marsala-cl));
-            color: white; font-family: 'Quicksand', sans-serif;
-            font-size: 0.85rem; font-weight: 700; cursor: pointer;
-            box-shadow: 0 3px 12px rgba(155,58,74,.25);
+            border: none; border-radius: 6px;
+            background: linear-gradient(135deg, var(--marsala), #5a1a26);
+            color: #fdf8f0; font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 0.9rem; font-weight: 700; cursor: pointer;
+            box-shadow: 0 3px 14px rgba(122,37,53,.28);
             transition: opacity .18s, transform .15s;
+            letter-spacing: .02em;
         }
         .btn-reservar:hover { opacity: .9; transform: translateY(-1px); }
 
         .btn-cancelar {
-            width: 100%; padding: 8px; border: 2px solid var(--azul-cl);
-            border-radius: 50px; background: transparent;
-            color: var(--azul-dk); font-family: 'Quicksand', sans-serif;
-            font-size: 0.82rem; font-weight: 700; cursor: pointer;
+            width: 100%; padding: 8px;
+            border: 1.5px solid #c9a86c;
+            border-radius: 6px; background: transparent;
+            color: #9a7a50; font-family: 'Quicksand', sans-serif;
+            font-size: 0.8rem; font-weight: 700; cursor: pointer;
             transition: background .15s;
         }
-        .btn-cancelar:hover { background: var(--azul-bg); }
+        .btn-cancelar:hover { background: rgba(201,168,108,.12); }
 
         .form-area { display: flex; flex-direction: column; gap: 6px; }
 
         .form-area input {
             width: 100%; padding: 9px 12px;
-            border: 2px solid var(--azul-cl); border-radius: 10px;
+            border: 1.5px solid #c9a86c; border-radius: 6px;
             font-family: 'Quicksand', sans-serif; font-size: 0.85rem; font-weight: 600;
-            color: var(--texto); background: var(--azul-bg); outline: none;
-            transition: border-color .2s;
+            color: var(--texto); background: rgba(253,248,240,.8); outline: none;
+            transition: border-color .2s, box-shadow .2s;
         }
-        .form-area input:focus { border-color: var(--azul); background: white; box-shadow: 0 0 0 3px rgba(90,175,214,.15); }
-        .form-area input::placeholder { color: #a8cfe0; }
+        .form-area input:focus { border-color: var(--marsala); background: white; box-shadow: 0 0 0 3px rgba(122,37,53,.10); }
+        .form-area input::placeholder { color: #b09878; }
         .form-area input.erro { border-color: var(--marsala); }
 
         .tag-reservado {
             display: inline-block;
-            background: var(--marsala-bg); color: var(--marsala);
-            border: 1.5px solid var(--marsala-cl); border-radius: 20px;
+            background: linear-gradient(135deg, rgba(122,37,53,.08), rgba(201,168,108,.12));
+            color: var(--marsala);
+            border: 1.5px solid #c9a86c;
+            border-radius: 6px;
             padding: 8px 16px; font-size: 0.82rem; font-weight: 700;
+            font-family: 'Playfair Display', serif; font-style: italic;
         }
 
         /* ── rodapé ── */
@@ -405,13 +474,19 @@
     <div class="hero-content">
         <h1 class="hero-titulo">✨ 15 Anos da Alice ✨</h1>
         <p class="hero-sub">Uma aventura no País das Maravilhas</p>
-        <div class="timer-box">🎀 Faltam: <span id="timer">…</span></div>
+        <div class="timer-box">
+            <span class="label">⏳ Faltam para o grande dia</span>
+            <span class="tempo" id="timer">…</span>
+        </div>
     </div>
 </div>
 
 <!-- ── LISTA DE PRESENTES ── -->
 <div class="secao">
-    <h2 class="secao-titulo">🎁 Lista de Presentes</h2>
+    <div class="secao-titulo-wrap">
+        <h2 class="secao-titulo">🎁 Lista de Presentes</h2>
+        <div class="secao-ornamento">❧ ♥ ❧</div>
+    </div>
     <div id="root" class="grid">
         <p style="grid-column:1/-1;color:#aaa;padding:40px;">Carregando lista…</p>
     </div>
@@ -485,11 +560,13 @@
         }
         document.getElementById('root').innerHTML = data.map(g => {
             const meu = sessionStorage.getItem(`res_${g.id}`);
+            const isPix = (g.link_compra && (g.link_compra.startsWith('pix:') || g.link_compra.startsWith('000201'))) || (g.titulo && g.titulo.toLowerCase().includes('pix'));
             if (g.reservado) return `
                 <div class="card">
                     <div class="card-stripe"></div>
                     <div class="card-body">
-                        ${g.imagem_url ? `<img src="${g.imagem_url}" alt="${g.titulo}" loading="lazy">` : ''}
+                        ${g.imagem_url ? `<div class="card-img-wrap"><img src="${g.imagem_url}" alt="${g.titulo}" loading="lazy"></div>` : ''}
+                        <div class="card-divisor"></div>
                         <h3>${g.titulo}</h3>
                     </div>
                     <div class="card-footer">
@@ -500,12 +577,13 @@
                 <div class="card" id="card-${g.id}">
                     <div class="card-stripe"></div>
                     <div class="card-body">
-                        ${g.imagem_url ? `<img src="${g.imagem_url}" alt="${g.titulo}" loading="lazy">` : ''}
+                        ${g.imagem_url ? `<div class="card-img-wrap"><img src="${g.imagem_url}" alt="${g.titulo}" loading="lazy"></div>` : ''}
+                        <div class="card-divisor"></div>
                         <h3>${g.titulo}</h3>
                     </div>
                     ${btnVerProduto(g.link_compra, g.titulo)}
                     <div class="card-footer">
-                        <button class="btn-reservar" id="btn-${g.id}" onclick="abrirForm(${g.id})">🎁 Reservar este presente</button>
+                        ${!isPix ? `<button class="btn-reservar" id="btn-${g.id}" onclick="abrirForm(${g.id})">🎁 Reservar este presente</button>` : ''}
                         <div class="form-area" id="form-${g.id}" style="display:none;">
                             <input type="text" id="nome-${g.id}" placeholder="Seu nome" maxlength="60">
                             <input type="text" id="msg-${g.id}"  placeholder="Mensagem para a Alice (opcional)" maxlength="120">
