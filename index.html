@@ -761,7 +761,15 @@
             btn.disabled = false; btn.textContent = '✔️ Confirmar';
             fecharModal();
             alert('😢 Ops! Alguém acabou de reservar este presente. Escolha outro!');
-            carregar(); return;
+            // ── Registrar visita ──
+    (async () => {
+        try {
+            const dispositivo = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+            await sb.from('visitas').insert({ dispositivo, pagina: 'index' });
+        } catch(e) { console.warn('Visita não registrada:', e); }
+    })();
+
+    carregar(); return;
         }
 
         const idTemp = modalId, nomeTemp = modalNome, msgTemp = modalMsg;
