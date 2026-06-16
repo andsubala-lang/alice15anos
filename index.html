@@ -913,16 +913,18 @@
 
     async function confirmarReserva() {
         if (!modalId) return;
-        const nomeTemp = modalNome;
+        const idTemp       = modalId;
+        const nomeTemp     = modalNome;
+        const msgTemp      = modalMsg;
         const presenteTemp = document.getElementById('modal-presente').textContent;
         fecharModal();
 
         ultimaReserva = Date.now();
 
-        sessionStorage.setItem(`res_${modalId}`, '1');
+        sessionStorage.setItem(`res_${idTemp}`, '1');
         const { error } = await sb.from('presentes')
-            .update({ reservado: true, nome_reservante: nomeTemp, mensagem: modalMsg, reservado_em: new Date().toISOString() })
-            .eq('id', modalId);
+            .update({ reservado: true, nome_reservante: nomeTemp, mensagem: msgTemp, reservado_em: new Date().toISOString() })
+            .eq('id', idTemp);
         if (!error) {
             carregar();
             // Mostra overlay de agradecimento
