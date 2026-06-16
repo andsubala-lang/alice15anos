@@ -336,14 +336,20 @@
             .secao { padding: 16px 10px 40px; }
             .secao-titulo-wrap { display: none; }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .card-img-wrap { width: 80px; height: 80px; }
-            .card-body h3 { font-size: 0.76rem; }
+            .card-img-wrap { width: 100px; height: 100px; }
+            .card-body { padding: 14px 10px 8px; gap: 6px; }
+            .card-body h3 { font-size: 0.78rem; }
+            .card-footer { padding: 0 10px 12px; }
+            .btn-reservar { font-size: .78rem; padding: 9px; }
+            .btn-ver-produto { font-size: .78rem; padding: 8px; margin: 0 10px 6px; width: calc(100% - 20px); }
             .busca-input { width: 100%; }
-            .controles { flex-direction: column; align-items: stretch; gap: 8px; }
+            .controles { flex-direction: column; align-items: stretch; gap: 8px; margin-bottom: 14px; }
             .filtros { justify-content: center; }
+            .banner-disponiveis { font-size: .82rem; padding: 9px 18px; }
         }
 
                 .mobile-header { display: none; }
+        .mob-spacer { display: none; height: 380px; width: 100%; }
         @media (max-width: 340px) { .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
