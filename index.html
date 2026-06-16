@@ -32,7 +32,7 @@
             text-align: center;
             position: relative;
             overflow-x: hidden;
-            background: url('fundo.jpg') center top / cover fixed;
+            background: url('fundo.jpg') center top / cover;
         }
 
         /* Hero banner ilustrado */
@@ -323,12 +323,18 @@
 
         /* ── mobile ── */
         @media (max-width: 520px) {
-            .hero { min-height: 420px; }
-            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .card-body img { width: 90px; height: 90px; }
-            .card-body h3 { font-size: 0.78rem; }
-            .btn-loja { font-size: 0.64rem; padding: 5px 3px; }
-            .lojas-grid { gap: 4px; }
+            .hero {
+                min-height: 340px;
+                padding-top: 220px;
+                padding-bottom: 20px;
+            }
+            .timer-box { padding: 10px 20px; font-size: .95rem; }
+            .timer-box .tempo { font-size: 1.2rem; }
+            .secao { padding: 20px 10px 40px; }
+            .secao-titulo { font-size: 1.3rem; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .card-img-wrap { width: 80px; height: 80px; }
+            .card-body h3 { font-size: 0.76rem; }
         }
         @media (max-width: 340px) {
             .grid { grid-template-columns: 1fr; }
