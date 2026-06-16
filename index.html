@@ -43,7 +43,7 @@
             width: 100%; min-height: 500px; position: relative;
             display: flex; flex-direction: column;
             align-items: center; justify-content: flex-end;
-            padding-bottom: 24px; padding-top: 280px;
+            padding-bottom: 24px; padding-top: 380px;
             overflow: hidden; background: transparent;
         }
         .hero-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: auto; }
@@ -259,18 +259,8 @@
         #confete-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 99999; display: none; }
 
 
-        /* ── PIX CARD ── */
-        .pix-card {
-            grid-column: 1 / -1;
-            max-width: 360px;
-            margin: 0 auto;
-            width: 100%;
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-        }
-        .pix-card .card-stripe { display: none; }
-        .pix-box { margin: 0; border-radius: 12px; }
+        /* ── PIX RODAPÉ ── */
+        #pix-rodape .pix-box { margin: 0; border-radius: 12px; }
 
         /* ── PIX BOX ── */
         .pix-box {
@@ -553,6 +543,9 @@
     <img id="modal-img-src" src="" alt=""/>
 </div>
 
+<!-- PIX RODAPÉ -->
+<div id="pix-rodape" style="display:none; max-width:380px; margin:0 auto 28px; padding:0 16px;"></div>
+
 <div class="rodape">
     <p style="font-size:.82rem; color:#7a5a40; margin-bottom:14px; font-weight:600;">Compartilhe a lista com os convidados 💙</p>
     <a class="btn-whatsapp" href="https://wa.me/?text=Confira+a+lista+de+presentes+dos+15+anos+da+Alice%21%0Ahttps%3A%2F%2Falice15anos.vercel.app%2F" target="_blank" rel="noopener">📲 Compartilhar no WhatsApp</a>
@@ -725,6 +718,7 @@
             return;
         }
 
+        window._pixData = null;
         document.getElementById('root').innerHTML = lista.map(g => {
             const meu = sessionStorage.getItem(`res_${g.id}`);
             const isPix = (g.link_compra && (g.link_compra.startsWith('pix:') || g.link_compra.startsWith('000201') || g.link_compra.startsWith('data:image') || g.link_compra.startsWith('iVBOR') || g.link_compra.startsWith('/9j/'))) || (g.titulo && g.titulo.toLowerCase().includes('pix'));
@@ -745,12 +739,12 @@
                     </div>
                 </div>`;
 
-            // Card especial para Pix
-            if (isPix) return `
-                <div class="card pix-card" id="card-${g.id}">
-                    <div class="card-stripe"></div>
-                    ${btnVerProduto(g.link_compra, g.titulo, g.link_compra_2, g.link_compra_3)}
-                </div>`;
+            // Card especial para Pix — renderizado separadamente no rodapé
+            if (isPix) {
+                // Salvar dados do pix para renderizar fora da grid
+                window._pixData = { link: g.link_compra, titulo: g.titulo };
+                return ''; // não renderiza na grid
+            }
 
             return `
                 <div class="card" id="card-${g.id}">
@@ -772,6 +766,17 @@
                     </div>
                 </div>`;
         }).join('');
+
+        // Renderizar pix box fora da grid
+        const pixContainer = document.getElementById('pix-rodape');
+        if (pixContainer) {
+            if (window._pixData) {
+                pixContainer.innerHTML = btnVerProduto(window._pixData.link, window._pixData.titulo, null, null);
+                pixContainer.style.display = 'block';
+            } else {
+                pixContainer.style.display = 'none';
+            }
+        }
     }
 
     function btnVerProduto(link, titulo, link2, link3) {
