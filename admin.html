@@ -897,8 +897,7 @@
   // ── Proteção ──
   (async () => {
     const autorizado = sessionStorage.getItem('admin_autorizado');
-    const { data: { session } } = await sb.auth.getSession();
-    if (!autorizado || !session) {
+    if (!autorizado) {
       document.getElementById('acesso-negado').style.display = 'flex';
       document.body.style.display = 'flex';
       return;
