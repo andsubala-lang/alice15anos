@@ -171,10 +171,15 @@
             color: white; border: none; cursor: pointer;
             background: linear-gradient(135deg, var(--azul), var(--azul-dk));
             box-shadow: 0 3px 10px rgba(90,175,214,.25);
-            transition: opacity .18s, transform .15s;
+            transition: background .3s, opacity .18s, transform .15s;
             margin: 0 12px 8px;
+            width: calc(100% - 24px);
         }
         .btn-ver-produto:hover { opacity: .88; transform: translateY(-1px); }
+        .btn-pix {
+            background: linear-gradient(135deg, #1a9ed4, #0d7ab0);
+            box-shadow: 0 3px 10px rgba(26,158,212,.30);
+        }
 
         /* ── botões de ação ── */
         .card-footer { padding: 0 12px 14px; display: flex; flex-direction: column; gap: 6px; }
@@ -434,9 +439,42 @@
         'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
     );
 
-    function btnVerProduto(link) {
+    function btnVerProduto(link, titulo) {
         if (!link) return '';
+        const isPix = link.startsWith('pix:') || link.startsWith('000201') || (titulo && titulo.toLowerCase().includes('pix'));
+        if (isPix) {
+            const chave = link.startsWith('pix:') ? link.slice(4) : link;
+            return `<button class="btn-ver-produto btn-pix" onclick="copiarPix('${chave.replace(/'/g, "\'")}', this)">💙 Copiar Pix</button>`;
+        }
         return `<a class="btn-ver-produto" href="${link}" target="_blank" rel="noopener">🛒 Ver Produto</a>`;
+    }
+
+    async function copiarPix(codigo, btn) {
+        try {
+            await navigator.clipboard.writeText(codigo);
+            const original = btn.innerHTML;
+            btn.innerHTML = '✅ Pix copiado!';
+            btn.style.background = 'linear-gradient(135deg, #2e7ea8, #1a5c80)';
+            setTimeout(() => {
+                btn.innerHTML = original;
+                btn.style.background = '';
+            }, 2500);
+        } catch (e) {
+            // fallback para navegadores mais antigos
+            const el = document.createElement('textarea');
+            el.value = codigo;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            const original = btn.innerHTML;
+            btn.innerHTML = '✅ Pix copiado!';
+            btn.style.background = 'linear-gradient(135deg, #2e7ea8, #1a5c80)';
+            setTimeout(() => {
+                btn.innerHTML = original;
+                btn.style.background = '';
+            }, 2500);
+        }
     }
 
     async function carregar() {
@@ -465,7 +503,7 @@
                         ${g.imagem_url ? `<img src="${g.imagem_url}" alt="${g.titulo}" loading="lazy">` : ''}
                         <h3>${g.titulo}</h3>
                     </div>
-                    ${btnVerProduto(g.link_compra)}
+                    ${btnVerProduto(g.link_compra, g.titulo)}
                     <div class="card-footer">
                         <button class="btn-reservar" id="btn-${g.id}" onclick="abrirForm(${g.id})">🎁 Reservar este presente</button>
                         <div class="form-area" id="form-${g.id}" style="display:none;">
