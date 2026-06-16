@@ -4,181 +4,212 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Painel Admin · 15 Anos da Alice</title>
+  <title>Acesso Admin · 15 Anos da Alice</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
     :root {
-      --marsala:#7a2535; --marsala-md:#9b3a4a; --marsala-cl:#c97080;
-      --azul:#5aafd6; --azul-cl:#a8d8ea; --azul-dk:#2e7ea8;
-      --creme:#faf3e8; --creme-dk:#e8d8c0; --texto:#3a2820; --sidebar-w:220px;
+      --marsala:    #7a2535;
+      --marsala-md: #9b3a4a;
+      --creme:      #faf3e8;
+      --creme-dk:   #e8d8c0;
+      --texto:      #3a1a20;
     }
-    body { font-family:'Quicksand',sans-serif; min-height:100vh; background:url('fundo.jpg') center top/cover fixed; color:var(--texto); display:flex; }
-    body::before { content:''; position:fixed; inset:0; background:rgba(240,228,210,.50); backdrop-filter:blur(2px); pointer-events:none; z-index:0; }
-    .sidebar { position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w); background:linear-gradient(180deg,var(--marsala) 0%,#5a1a26 100%); display:flex; flex-direction:column; z-index:10; box-shadow:4px 0 24px rgba(0,0,0,.22); }
-    .sidebar-logo { padding:22px 18px 18px; border-bottom:1px solid rgba(255,255,255,.12); text-align:center; }
-    .sidebar-logo .moldura { display:inline-block; border:2px solid rgba(255,255,255,.35); border-radius:50%; padding:5px 11px; font-size:1.1rem; margin-bottom:8px; }
-    .sidebar-logo .nome { font-family:'Playfair Display',serif; font-style:italic; font-size:.88rem; color:rgba(255,255,255,.85); line-height:1.3; }
-    .sidebar-logo .nome span { font-size:1.15rem; display:block; color:white; }
-    nav { flex:1; padding:14px 0; }
-    .nav-item { display:flex; align-items:center; gap:11px; padding:12px 20px; color:rgba(255,255,255,.72); font-size:.86rem; font-weight:600; cursor:pointer; border-left:3px solid transparent; transition:background .15s, color .15s; }
-    .nav-item:hover { background:rgba(255,255,255,.08); color:white; }
-    .nav-item.ativo { background:rgba(255,255,255,.13); color:white; border-left-color:var(--creme); }
-    .sidebar-sair { padding:14px 18px; border-top:1px solid rgba(255,255,255,.12); }
-    .btn-sair { width:100%; padding:9px; background:rgba(255,255,255,.1); border:1.5px solid rgba(255,255,255,.22); border-radius:8px; color:rgba(255,255,255,.78); font-family:'Quicksand',sans-serif; font-size:.82rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:background .2s; }
-    .btn-sair:hover { background:rgba(255,255,255,.18); color:white; }
-    .main { margin-left:var(--sidebar-w); flex:1; position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; }
-    .topbar { background:rgba(250,243,232,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--creme-dk); padding:13px 26px; display:flex; align-items:center; justify-content:flex-end; gap:14px; box-shadow:0 2px 10px rgba(0,0,0,.05); }
-    .topbar-user { display:flex; align-items:center; gap:10px; font-size:.82rem; }
-    .topbar-user strong { color:var(--marsala); font-weight:700; display:block; }
-    .topbar-user small { color:#999; font-size:.72rem; }
-    .topbar-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--marsala-md),var(--marsala)); display:flex; align-items:center; justify-content:center; font-size:1.1rem; border:2px solid var(--creme-dk); }
-    .conteudo { padding:26px; flex:1; }
-    .abas { display:flex; gap:6px; margin-bottom:22px; border-bottom:2px solid var(--creme-dk); }
-    .aba { padding:9px 20px; font-size:.84rem; font-weight:700; color:#9a7a60; cursor:pointer; border-radius:8px 8px 0 0; border:none; background:none; font-family:'Quicksand',sans-serif; border-bottom:2px solid transparent; margin-bottom:-2px; transition:color .15s, background .15s; }
-    .aba:hover { color:var(--marsala); background:rgba(122,37,53,.05); }
-    .aba.ativa { color:var(--marsala); border-bottom-color:var(--marsala); background:rgba(250,243,232,.8); }
-    .tela { display:none; }
-    .tela.ativa { display:block; }
-    .auto-update { font-size:.72rem; color:#b0a090; display:flex; align-items:center; gap:6px; margin-bottom:16px; }
-    .dot-verde { width:7px; height:7px; border-radius:50%; background:#25D366; animation:pulsar 1.5s infinite; flex-shrink:0; }
-    @keyframes pulsar { 0%,100%{opacity:1} 50%{opacity:.35} }
-    .prog-wrap { margin-bottom:22px; }
-    .prog-bar { height:10px; border-radius:50px; background:var(--creme-dk); overflow:hidden; margin:6px 0; }
-    .prog-fill { height:100%; border-radius:50px; background:linear-gradient(90deg,var(--marsala-md),var(--marsala)); transition:width .5s; }
-    .prog-info { display:flex; justify-content:space-between; font-size:.75rem; color:#9a7a60; }
-    .banner { background:linear-gradient(135deg,rgba(253,248,240,.95),rgba(240,225,200,.95)); border:1.5px solid var(--creme-dk); border-radius:14px; padding:22px 26px; margin-bottom:22px; box-shadow:0 3px 16px rgba(0,0,0,.06); }
-    .banner h2 { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--marsala); margin-bottom:5px; }
-    .banner p { font-size:.83rem; color:#8a6a50; line-height:1.5; }
-    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:22px; }
-    .stat { background:rgba(250,243,232,.92); border:1.5px solid var(--creme-dk); border-radius:13px; padding:18px 14px; text-align:center; box-shadow:0 3px 12px rgba(0,0,0,.05); }
-    .stat-icone { font-size:1.5rem; margin-bottom:7px; display:block; }
-    .stat-label { font-size:.7rem; color:#9a7a60; text-transform:uppercase; letter-spacing:.06em; font-weight:700; margin-bottom:3px; }
-    .stat-num { font-size:1.9rem; font-weight:700; color:var(--marsala); line-height:1; }
-    .ultimo { background:rgba(250,243,232,.92); border:1.5px solid var(--creme-dk); border-radius:13px; padding:18px 22px; box-shadow:0 3px 12px rgba(0,0,0,.05); }
-    .ultimo-titulo { font-family:'Playfair Display',serif; font-style:italic; font-size:.95rem; color:var(--marsala); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
-    .ultimo-titulo::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--marsala-cl),transparent); }
-    .ultimo-info { display:flex; gap:20px; flex-wrap:wrap; }
-    .ultimo-campo label { font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:#9a7a60; font-weight:700; display:block; margin-bottom:3px; }
-    .ultimo-campo strong { font-size:.92rem; color:var(--texto); font-weight:700; }
-    .ultimo-vazio { color:#ccc; font-size:.85rem; font-style:italic; }
-    .btn-exportar { display:inline-flex; align-items:center; gap:6px; background:rgba(46,126,168,.1); border:1.5px solid var(--azul-cl); color:var(--azul-dk); border-radius:8px; padding:8px 16px; font-family:'Quicksand',sans-serif; font-size:.82rem; font-weight:700; cursor:pointer; transition:background .18s; margin-bottom:16px; }
-    .btn-exportar:hover { background:rgba(46,126,168,.18); }
-    .painel { background:rgba(250,243,232,.92); border:1.5px solid var(--creme-dk); border-radius:14px; overflow:hidden; box-shadow:0 3px 14px rgba(0,0,0,.05); }
-    .painel-header { padding:13px 18px; border-bottom:1px solid var(--creme-dk); font-weight:700; font-size:.85rem; color:var(--marsala); display:flex; align-items:center; gap:7px; }
-    table { width:100%; border-collapse:collapse; }
-    thead th { background:linear-gradient(135deg,rgba(122,37,53,.88),rgba(90,30,40,.88)); color:white; padding:10px 16px; text-align:left; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; }
-    tbody tr { border-bottom:1px solid var(--creme-dk); transition:background .12s; }
-    tbody tr:last-child { border-bottom:none; }
-    tbody tr:hover { background:rgba(232,216,192,.3); }
-    tbody td { padding:11px 16px; font-size:.83rem; vertical-align:middle; }
-    .tag-presente { background:var(--azul-cl); color:var(--azul-dk); border-radius:20px; padding:3px 11px; font-size:.74rem; font-weight:700; display:inline-block; }
-    .nome-res { color:var(--marsala); font-weight:700; }
-    .msg-col { color:#aaa; font-style:italic; font-size:.8rem; }
-    .btn-cancelar-res { background:rgba(122,37,53,.07); border:1px solid var(--marsala-cl); color:var(--marsala); border-radius:6px; padding:5px 10px; font-family:'Quicksand',sans-serif; font-size:.75rem; font-weight:700; cursor:pointer; transition:background .15s; white-space:nowrap; }
-    .btn-cancelar-res:hover { background:rgba(122,37,53,.14); }
-    .msg-item { display:flex; gap:12px; padding:14px 18px; border-bottom:1px solid var(--creme-dk); transition:background .12s; }
-    .msg-item:last-child { border-bottom:none; }
-    .msg-item:hover { background:rgba(232,216,192,.3); }
-    .msg-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--marsala-md),var(--marsala)); display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; color:white; }
-    .msg-corpo { flex:1; }
-    .msg-nome { font-weight:700; font-size:.85rem; color:var(--marsala); margin-bottom:2px; }
-    .msg-presente { font-size:.72rem; color:#9a7a60; margin-bottom:4px; }
-    .msg-texto { font-size:.82rem; color:var(--texto); line-height:1.4; }
-    .estado { text-align:center; padding:40px 20px; color:#ccc; }
-    .estado span { font-size:2.4rem; display:block; margin-bottom:8px; }
-    #load { display:flex; position:fixed; inset:0; background:rgba(250,243,232,.88); backdrop-filter:blur(6px); z-index:999; align-items:center; justify-content:center; flex-direction:column; gap:14px; }
-    #load .s { width:44px; height:44px; border:4px solid var(--creme-dk); border-top-color:var(--marsala); border-radius:50%; animation:girar .8s linear infinite; }
-    #load p { font-family:'Playfair Display',serif; font-style:italic; color:var(--marsala); }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      min-height: 100vh;
+      background: url('fundo.jpg') center top / cover no-repeat fixed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    /* espaço para mostrar o topo da imagem */
+    .espacador { height: 360px; width: 100%; flex-shrink: 0; }
+
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 370px;
+      background: linear-gradient(160deg, #fdf8f0 0%, #f5e8d0 100%);
+      border-radius: 6px;
+      padding: 36px 34px 30px;
+      box-shadow:
+        0 0 0 2px var(--marsala),
+        0 0 0 7px #f5e8d0,
+        0 0 0 9px var(--marsala),
+        0 12px 50px rgba(0,0,0,.38);
+      margin-bottom: 40px;
+    }
+
+    /* cantos decorativos */
+    .card::before { content:'✦'; position:absolute; top:12px; left:16px; font-size:.9rem; color:var(--marsala); opacity:.4; }
+    .card::after  { content:'✦'; position:absolute; bottom:12px; right:16px; font-size:.9rem; color:var(--marsala); opacity:.4; }
+
+    .logo-wrap { text-align:center; margin-bottom:4px; }
+    .logo-moldura {
+      display:inline-block; border:2px solid var(--marsala);
+      border-radius:50%; padding:6px 12px;
+      font-size:1.3rem; color:var(--marsala); opacity:.8;
+    }
+
+    .titulo {
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:1.5rem; color:var(--marsala);
+      text-align:center; margin:10px 0 4px; line-height:1.2;
+    }
+
+    .divisor {
+      display:flex; align-items:center; gap:8px;
+      margin:8px 0 16px; color:var(--marsala); opacity:.4; font-size:.78rem;
+    }
+    .divisor::before,.divisor::after { content:''; flex:1; height:1px; background:var(--marsala); }
+
+    .subtitulo { font-size:.78rem; color:#8a6a50; text-align:center; margin-bottom:22px; line-height:1.5; }
+
+    .campo { position:relative; margin-bottom:10px; }
+    .icone-campo {
+      position:absolute; left:12px; top:50%;
+      transform:translateY(-50%); font-size:.82rem; opacity:.45; pointer-events:none;
+    }
+    .campo input {
+      width:100%; padding:11px 38px;
+      border:1.5px solid var(--creme-dk); border-radius:8px;
+      background:rgba(255,255,255,.75);
+      font-family:'Quicksand',sans-serif; font-size:.88rem; font-weight:600;
+      color:var(--texto); outline:none;
+      transition:border-color .2s, box-shadow .2s, background .2s;
+    }
+    .campo input:focus {
+      border-color:var(--marsala); background:rgba(255,255,255,.95);
+      box-shadow:0 0 0 3px rgba(122,37,53,.10);
+    }
+    .campo input::placeholder { color:#b09878; font-weight:500; }
+
+    .olho {
+      position:absolute; right:11px; top:50%;
+      transform:translateY(-50%);
+      background:none; border:none; cursor:pointer;
+      font-size:.88rem; opacity:.4; transition:opacity .2s;
+    }
+    .olho:hover { opacity:.7; }
+
+    .btn-entrar {
+      width:100%; padding:12px; margin-top:10px;
+      border:none; border-radius:8px;
+      background:linear-gradient(135deg, var(--marsala-md), var(--marsala));
+      color:white; font-family:'Playfair Display',serif;
+      font-style:italic; font-size:1rem; letter-spacing:.05em;
+      cursor:pointer; box-shadow:0 4px 16px rgba(122,37,53,.28);
+      transition:opacity .2s, transform .15s;
+    }
+    .btn-entrar:hover:not(:disabled) { opacity:.9; transform:translateY(-1px); }
+    .btn-entrar:disabled { opacity:.6; cursor:not-allowed; }
+
+    .spin {
+      display:inline-block; width:13px; height:13px;
+      border:2px solid rgba(255,255,255,.35);
+      border-top-color:white; border-radius:50%;
+      animation:girar .7s linear infinite;
+      vertical-align:middle; margin-right:5px;
+    }
     @keyframes girar { to { transform:rotate(360deg); } }
-    @media (max-width:680px) { .sidebar{width:180px;} .main{margin-left:180px;} .stats{grid-template-columns:repeat(3,1fr);gap:10px;} .conteudo{padding:16px;} }
-    @media (max-width:500px) { .sidebar{display:none;} .main{margin-left:0;} }
+
+    /* esqueci senha — agora é clicável */
+    .esqueci {
+      display:block; text-align:center; margin-top:12px;
+      font-size:.76rem; color:var(--marsala);
+      cursor:pointer; opacity:.65;
+      text-decoration:underline; background:none; border:none;
+      font-family:'Quicksand',sans-serif; font-weight:600;
+      width:100%;
+      transition:opacity .2s;
+    }
+    .esqueci:hover { opacity:1; }
+
+    .msg {
+      margin-top:10px; padding:9px 12px; border-radius:7px;
+      font-size:.8rem; font-weight:600; text-align:center; display:none;
+      background:rgba(122,37,53,.07); color:var(--marsala);
+      border:1px solid rgba(122,37,53,.18);
+    }
+    .msg.ativo { display:block; }
+    .msg.ok { background:rgba(46,126,168,.07); color:#2e7ea8; border-color:rgba(46,126,168,.2); }
+
+    /* tela de recuperação */
+    #tela-recuperar { display:none; }
+
+    #overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(250,243,232,.88); backdrop-filter:blur(4px);
+      z-index:999; align-items:center; justify-content:center;
+      flex-direction:column; gap:14px;
+    }
+    #overlay.ativo { display:flex; }
+    #overlay .grande {
+      width:44px; height:44px; border:4px solid var(--creme-dk);
+      border-top-color:var(--marsala); border-radius:50%;
+      animation:girar .8s linear infinite;
+    }
+    #overlay p { font-family:'Playfair Display',serif; font-style:italic; font-size:.95rem; color:var(--marsala); }
+
+    @media (max-width:440px) {
+      .espacador { height:160px; }
+      .card { padding:28px 18px 24px; }
+      .titulo { font-size:1.25rem; }
+    }
   </style>
 </head>
 <body>
 
-<div id="load"><div class="s"></div><p>Verificando acesso…</p></div>
+<div id="overlay">
+  <div class="grande"></div>
+  <p>Entrando no País das Maravilhas…</p>
+</div>
 
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="moldura">🎀</div>
-    <div class="nome">Lista de Presentes<span>da Alice</span></div>
+<!-- espaço para mostrar o topo da imagem -->
+<div class="espacador"></div>
+
+<div class="card">
+  <div class="logo-wrap"><span class="logo-moldura">🎀</span></div>
+  <h1 class="titulo">Bem-vinda de volta!</h1>
+  <div class="divisor">❧ ♥ ❧</div>
+  <p class="subtitulo">Faça login para acessar o painel da Alice.</p>
+
+  <!-- tela de login -->
+  <div id="tela-login">
+    <div class="campo">
+      <span class="icone-campo">👤</span>
+      <input type="email" id="email" placeholder="E-mail" autocomplete="username"/>
+    </div>
+    <div class="campo">
+      <span class="icone-campo">🔒</span>
+      <input type="password" id="senha" placeholder="Senha" autocomplete="current-password"/>
+      <button class="olho" id="olho" type="button">👁</button>
+    </div>
+    <button class="btn-entrar" id="btn-login" onclick="entrar()">Entrar</button>
+    <button class="esqueci" onclick="mostrarRecuperar()">Esqueci minha senha</button>
   </div>
-  <nav>
-    <div class="nav-item ativo" onclick="mudarAba('dashboard',this)">🏠 Dashboard</div>
-    <div class="nav-item" onclick="mudarAba('presentes',this)">🎁 Presentes</div>
-    <div class="nav-item" onclick="mudarAba('mensagens',this)">✉️ Mensagens</div>
-  </nav>
-  <div class="sidebar-sair">
-    <button class="btn-sair" onclick="sair()">↩ Sair</button>
-  </div>
-</aside>
 
-<div class="main" id="conteudo" style="display:none;">
-  <div class="topbar">
-    <div class="topbar-user">
-      <div><strong>Olá, Administrador!</strong><small>Bem-vindo(a) de volta</small></div>
-      <div class="topbar-avatar">👸</div>
+  <!-- tela de recuperação de senha -->
+  <div id="tela-recuperar">
+    <p class="subtitulo" style="margin-bottom:14px;">Digite seu e-mail e enviaremos um link para redefinir sua senha.</p>
+    <div class="campo">
+      <span class="icone-campo">👤</span>
+      <input type="email" id="email-recuperar" placeholder="Seu e-mail"/>
     </div>
+    <button class="btn-entrar" id="btn-recuperar" onclick="enviarRecuperacao()">Enviar link de recuperação</button>
+    <button class="esqueci" onclick="mostrarLogin()">← Voltar para o login</button>
   </div>
 
-  <div class="conteudo">
-    <div class="abas">
-      <button class="aba ativa" onclick="mudarAba('dashboard',this)">🏠 Dashboard</button>
-      <button class="aba" onclick="mudarAba('presentes',this)">🎁 Presentes</button>
-      <button class="aba" onclick="mudarAba('mensagens',this)">✉️ Mensagens</button>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div class="tela ativa" id="tela-dashboard">
-      <div class="auto-update"><div class="dot-verde"></div> Atualizando a cada 30 segundos</div>
-      <div class="prog-wrap">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
-          <span style="font-size:.85rem;font-weight:700;color:var(--marsala);">Progresso das reservas</span>
-          <span id="prog-texto" style="font-size:.78rem;color:#9a7a60;">–</span>
-        </div>
-        <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-        <div class="prog-info"><span id="prog-pct">0%</span><span id="prog-resto">–</span></div>
-      </div>
-      <div class="banner">
-        <h2>Bem-vindo ao painel administrativo!</h2>
-        <p>Gerencie sua lista de presentes da melhor forma.</p>
-      </div>
-      <div class="stats">
-        <div class="stat"><span class="stat-icone">🎁</span><div class="stat-label">Total</div><div class="stat-num" id="s-total">–</div></div>
-        <div class="stat"><span class="stat-icone">♥</span><div class="stat-label">Reservados</div><div class="stat-num" id="s-res">–</div></div>
-        <div class="stat"><span class="stat-icone">✨</span><div class="stat-label">Disponíveis</div><div class="stat-num" id="s-disp">–</div></div>
-      </div>
-      <div class="ultimo">
-        <div class="ultimo-titulo">🎁 Último presente reservado</div>
-        <div id="ultimo-conteudo"><span class="ultimo-vazio">Nenhum presente reservado ainda.</span></div>
-      </div>
-    </div>
-
-    <!-- PRESENTES -->
-    <div class="tela" id="tela-presentes">
-      <button class="btn-exportar" onclick="exportarCSV()">⬇️ Exportar lista em CSV</button>
-      <div class="painel">
-        <div class="painel-header">🎁 Todos os presentes reservados</div>
-        <table>
-          <thead><tr><th>Presente</th><th>Reservado por</th><th>Mensagem</th><th>Quando</th><th></th></tr></thead>
-          <tbody id="tbody-presentes">
-            <tr><td colspan="5"><div class="estado"><span>⏳</span>Carregando…</div></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- MENSAGENS -->
-    <div class="tela" id="tela-mensagens">
-      <div class="painel">
-        <div class="painel-header">✉️ Mensagens dos convidados</div>
-        <div id="lista-msgs"><div class="estado"><span>⏳</span>Carregando…</div></div>
-      </div>
-    </div>
-  </div>
+  <div class="msg" id="msg"></div>
 </div>
 
 <script>
@@ -188,130 +219,97 @@
   );
 
   (async () => {
-    console.log('Verificando sessao...');
-    let session = null;
-    for (let i = 0; i < 5; i++) {
-      const { data, error } = await sb.auth.getSession();
-      console.log('Tentativa', i+1, ':', data.session ? 'SESSAO OK' : 'SEM SESSAO', error);
-      if (data.session) { session = data.session; break; }
-      await new Promise(r => setTimeout(r, 800));
-    }
-    if (!session) {
-      console.log('Redirecionando para login...');
-      window.location.href = 'login.html';
-      return;
-    }
-    console.log('Sessao encontrada! Carregando painel...');
-    document.getElementById('load').style.display = 'none';
-    document.getElementById('conteudo').style.display = 'flex';
-    carregar();
+    sessionStorage.removeItem('admin_autorizado');
+    await sb.auth.signOut();
   })();
 
-  async function sair() {
-    await sb.auth.signOut();
-    window.location.href = 'login.html';
+  const emailEl  = document.getElementById('email');
+  const senhaEl  = document.getElementById('senha');
+  const btnEl    = document.getElementById('btn-login');
+  const msgEl    = document.getElementById('msg');
+  const olhoEl   = document.getElementById('olho');
+
+  olhoEl.addEventListener('click', () => {
+    const v = senhaEl.type === 'text';
+    senhaEl.type = v ? 'password' : 'text';
+    olhoEl.textContent = v ? '👁' : '🙈';
+  });
+
+  [emailEl, senhaEl].forEach(el =>
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') entrar(); })
+  );
+
+  function mostrarMsg(txt, tipo='erro') {
+    msgEl.textContent = txt;
+    msgEl.className = 'msg ativo' + (tipo === 'ok' ? ' ok' : '');
   }
 
-  function mudarAba(nome, el) {
-    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-    document.querySelectorAll('.aba, .nav-item').forEach(a => a.classList.remove('ativo', 'ativa'));
-    document.getElementById('tela-' + nome).classList.add('ativa');
-    if (el) { el.classList.add('ativo'); el.classList.add('ativa'); }
+  function mostrarRecuperar() {
+    document.getElementById('tela-login').style.display = 'none';
+    document.getElementById('tela-recuperar').style.display = 'block';
+    msgEl.className = 'msg';
   }
 
-  let todosOsDados = [];
+  function mostrarLogin() {
+    document.getElementById('tela-recuperar').style.display = 'none';
+    document.getElementById('tela-login').style.display = 'block';
+    msgEl.className = 'msg';
+  }
 
-  async function carregar() {
-    const { data, error } = await sb.from('presentes').select('*').order('id', { ascending: true });
-    if (error || !data) return;
-    todosOsDados = data;
+  function ir() {
+    sessionStorage.setItem('admin_autorizado', '1');
+    document.getElementById('overlay').classList.add('ativo');
+    setTimeout(() => { window.location.href = 'admin.html'; }, 900);
+  }
 
-    const reservados  = data.filter(g => g.reservado);
-    const disponiveis = data.filter(g => !g.reservado);
-    const comMensagem = reservados.filter(g => g.mensagem && g.mensagem.trim());
+  async function entrar() {
+    msgEl.className = 'msg';
+    const email = emailEl.value.trim();
+    const senha = senhaEl.value;
+    if (!email) { mostrarMsg('Informe seu e-mail.'); emailEl.focus(); return; }
+    if (!senha)  { mostrarMsg('Informe sua senha.');  senhaEl.focus(); return; }
 
-    document.getElementById('s-total').textContent = data.length;
-    document.getElementById('s-res').textContent   = reservados.length;
-    document.getElementById('s-disp').textContent  = disponiveis.length;
+    btnEl.disabled = true;
+    btnEl.innerHTML = '<span class="spin"></span> Verificando…';
 
-    const pct = data.length ? Math.round((reservados.length / data.length) * 100) : 0;
-    document.getElementById('prog-fill').style.width  = pct + '%';
-    document.getElementById('prog-pct').textContent   = pct + '% concluido';
-    document.getElementById('prog-texto').textContent = reservados.length + ' de ' + data.length + ' reservados';
-    document.getElementById('prog-resto').textContent = disponiveis.length + ' disponiveis';
+    const { error } = await sb.auth.signInWithPassword({ email, password: senha });
 
-    if (reservados.length) {
-      const ult = reservados[reservados.length - 1];
-      document.getElementById('ultimo-conteudo').innerHTML =
-        '<div class="ultimo-info">' +
-        '<div class="ultimo-campo"><label>Presente</label><strong>' + ult.titulo + '</strong></div>' +
-        '<div class="ultimo-campo"><label>Reservado por</label><strong>' + (ult.nome_reservante || 'Anonimo') + '</strong></div>' +
-        (ult.mensagem ? '<div class="ultimo-campo"><label>Mensagem</label><strong>' + ult.mensagem + '</strong></div>' : '') +
-        '</div>';
+    btnEl.disabled = false;
+    btnEl.innerHTML = 'Entrar';
+
+    if (error) {
+      const erros = {
+        'Invalid login credentials': 'E-mail ou senha incorretos.',
+        'Email not confirmed':        'Confirme seu e-mail antes de entrar.',
+        'Too many requests':          'Muitas tentativas. Aguarde um momento.',
+      };
+      mostrarMsg(erros[error.message] ?? 'Algo deu errado. Tente novamente.');
+      senhaEl.value = ''; senhaEl.focus();
+      return;
     }
-
-    const tbody = document.getElementById('tbody-presentes');
-    if (!reservados.length) {
-      tbody.innerHTML = '<tr><td colspan="5"><div class="estado"><span>🎈</span>Nenhum presente reservado ainda.</div></td></tr>';
-    } else {
-      tbody.innerHTML = reservados.map(function(g) {
-        var quando = g.reservado_em
-          ? new Date(g.reservado_em).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' })
-          : '—';
-        return '<tr>' +
-          '<td><span class="tag-presente">' + g.titulo + '</span></td>' +
-          '<td><span class="nome-res">' + (g.nome_reservante || 'Anonimo') + '</span></td>' +
-          '<td><span class="msg-col">' + (g.mensagem || '—') + '</span></td>' +
-          '<td style="color:#b0a090;font-size:.78rem;white-space:nowrap;">' + quando + '</td>' +
-          '<td><button class="btn-cancelar-res" onclick="cancelar(' + g.id + ')">Cancelar</button></td>' +
-          '</tr>';
-      }).join('');
-    }
-
-    const listaMsgs = document.getElementById('lista-msgs');
-    if (!comMensagem.length) {
-      listaMsgs.innerHTML = '<div class="estado"><span>💬</span>Nenhuma mensagem ainda.</div>';
-    } else {
-      listaMsgs.innerHTML = comMensagem.map(function(g) {
-        return '<div class="msg-item">' +
-          '<div class="msg-avatar">👤</div>' +
-          '<div class="msg-corpo">' +
-          '<div class="msg-nome">' + (g.nome_reservante || 'Anonimo') + '</div>' +
-          '<div class="msg-presente">🎁 ' + g.titulo + '</div>' +
-          '<div class="msg-texto">"' + g.mensagem + '"</div>' +
-          '</div></div>';
-      }).join('');
-    }
+    ir();
   }
 
-  setInterval(carregar, 30000);
+  async function enviarRecuperacao() {
+    const email = document.getElementById('email-recuperar').value.trim();
+    if (!email) { mostrarMsg('Informe seu e-mail.'); return; }
 
-  async function cancelar(id) {
-    if (!confirm('Cancelar esta reserva?')) return;
-    await sb.from('presentes').update({ reservado: false, nome_reservante: null, mensagem: null, reservado_em: null }).eq('id', id);
-    carregar();
-  }
+    const btn = document.getElementById('btn-recuperar');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span> Enviando…';
 
-  function exportarCSV() {
-    var reservados = todosOsDados.filter(function(g) { return g.reservado; });
-    if (!reservados.length) { alert('Nenhum presente reservado ainda.'); return; }
-    var linhas = ['Presente,Reservado por,Mensagem,Data'];
-    reservados.forEach(function(g) {
-      var quando = g.reservado_em ? new Date(g.reservado_em).toLocaleString('pt-BR') : '';
-      linhas.push(
-        '"' + (g.titulo || '').replace(/"/g, '""') + '",' +
-        '"' + (g.nome_reservante || '').replace(/"/g, '""') + '",' +
-        '"' + (g.mensagem || '').replace(/"/g, '""') + '",' +
-        '"' + quando + '"'
-      );
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/login.html'
     });
-    var blob = new Blob([linhas.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'reservas-alice.csv';
-    a.click();
-    URL.revokeObjectURL(url);
+
+    btn.disabled = false;
+    btn.innerHTML = 'Enviar link de recuperação';
+
+    if (error) {
+      mostrarMsg('Erro ao enviar. Verifique o e-mail informado.');
+    } else {
+      mostrarMsg('✅ Link enviado! Verifique sua caixa de entrada.', 'ok');
+    }
   }
 </script>
 </body>
