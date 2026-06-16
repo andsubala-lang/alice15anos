@@ -228,6 +228,22 @@
             margin: 2px 0;
         }
 
+        /* múltiplos botões de volume */
+        .volumes-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin: 0 12px 8px;
+        }
+        .volumes-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: #9a7a50;
+            font-weight: 700;
+            text-align: center;
+        }
+
         /* botão ver produto */
         .btn-ver-produto {
             display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -517,12 +533,29 @@
         'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
     );
 
-    function btnVerProduto(link, titulo) {
+    function btnVerProduto(link, titulo, link2, link3) {
         if (!link) return '';
         const isPix = link.startsWith('pix:') || link.startsWith('000201') || (titulo && titulo.toLowerCase().includes('pix'));
         if (isPix) {
             const chave = link.startsWith('pix:') ? link.slice(4) : link;
             return `<button class="btn-ver-produto btn-pix" onclick="copiarPix('${chave.replace(/'/g, "\'")}', this)">💙 Copiar Pix</button>`;
+        }
+        // Se tiver múltiplos links (mangás com volumes)
+        if (link2 || link3) {
+            const titulo_lower = titulo ? titulo.toLowerCase() : '';
+            // Detecta os volumes pelo título
+            const vols = titulo_lower.match(/vols?\.?\s*([\d,\s]+e[\d\s]+|[\d\s,]+)/i);
+            let labels = ['Vol. 1', 'Vol. 2', 'Vol. 3'];
+            if (vols) {
+                const nums = vols[0].replace(/vols?\.?\s*/i,'').trim().replace(' e ', ', ').split(/[,\s]+/).filter(n => n.match(/\d/));
+                labels = nums.map(n => `Vol. ${n.trim()}`);
+            }
+            return `<div class="volumes-wrap">
+                <span class="volumes-label">🛒 Comprar por volume:</span>
+                ${link  ? `<a class="btn-ver-produto" href="${link}"  target="_blank" rel="noopener">🛒 ${labels[0] || 'Vol. 1'}</a>` : ''}
+                ${link2 ? `<a class="btn-ver-produto" href="${link2}" target="_blank" rel="noopener">🛒 ${labels[1] || 'Vol. 2'}</a>` : ''}
+                ${link3 ? `<a class="btn-ver-produto" href="${link3}" target="_blank" rel="noopener">🛒 ${labels[2] || 'Vol. 3'}</a>` : ''}
+            </div>`;
         }
         return `<a class="btn-ver-produto" href="${link}" target="_blank" rel="noopener">🛒 Ver Produto</a>`;
     }
@@ -584,7 +617,7 @@
                         <div class="card-divisor"></div>
                         <h3>${g.titulo}</h3>
                     </div>
-                    ${btnVerProduto(g.link_compra, g.titulo)}
+                    ${btnVerProduto(g.link_compra, g.titulo, g.link_compra_2, g.link_compra_3)}
                     <div class="card-footer">
                         ${!isPix ? `<button class="btn-reservar" id="btn-${g.id}" onclick="abrirForm(${g.id})">🎁 Reservar este presente</button>` : ''}
                         <div class="form-area" id="form-${g.id}" style="display:none;">
