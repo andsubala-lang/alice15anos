@@ -670,8 +670,10 @@
                 chaveTexto = 'Escaneie o QR Code acima';
             } else if (link.startsWith('pix:')) {
                 chaveTexto = link.slice(4);
+                imgSrc = 'qrcode-pix.jpg'; // QR code local
             } else {
                 chaveTexto = link;
+                imgSrc = 'qrcode-pix.jpg'; // QR code local
             }
 
             const qrHtml = imgSrc
