@@ -750,7 +750,8 @@
     // ── supabase ──
     const sb = window.supabase.createClient(
         'https://abojdhxobsyrzyiacaqf.supabase.co',
-        'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t'
+        'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t',
+        { auth: { persistSession: false } }
     );
 
     function btnVerProduto(link, titulo, link2, link3) {
@@ -923,12 +924,9 @@
 
         sessionStorage.setItem(`res_${idTemp}`, '1');
         const idNum = parseInt(idTemp, 10);
-        console.log('Tentando reservar id:', idNum, 'nome:', nomeTemp);
-        const { data: updData, error } = await sb.from('presentes')
+        const { error } = await sb.from('presentes')
             .update({ reservado: true, nome_reservante: nomeTemp, mensagem: msgTemp, reservado_em: new Date().toISOString() })
-            .eq('id', idNum)
-            .select();
-        console.log('Resultado:', updData, 'Erro:', error);
+            .eq('id', idNum);
         if (!error) {
             carregar();
             const overlay = document.getElementById('overlay-obrigada');
