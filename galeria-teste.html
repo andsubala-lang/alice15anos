@@ -1,219 +1,124 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Galeria ao Vivo · Alice 15 Anos</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    body {
-      font-family: 'Quicksand', sans-serif;
-      min-height: 100vh;
-      background: #0a0608;
-      color: white;
-      overflow: hidden;
-    }
-
-    /* Header */
-    .header {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 28px;
-      background: linear-gradient(180deg, rgba(10,6,8,.95), transparent);
-    }
-    .header-left { display: flex; align-items: center; gap: 12px; }
+    body { font-family:'Quicksand',sans-serif; min-height:100vh; background:#0a0608; color:white; overflow:hidden; }
+    .header { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:16px 28px; background:linear-gradient(180deg,rgba(10,6,8,.95),transparent); }
+    .header-left { display:flex; align-items:center; gap:12px; }
     .header-titulo { font-family:'Playfair Display',serif; font-style:italic; font-size:1.3rem; color:#f0dda0; }
-    .badge-live {
-      display: flex; align-items: center; gap: 6px;
-      background: rgba(155,58,74,.85); border-radius: 50px;
-      padding: 5px 12px; font-size: .75rem; font-weight: 700;
-    }
-    .dot-live {
-      width: 8px; height: 8px; border-radius: 50%; background: #ff6b6b;
-      animation: pulsar 1s infinite;
-    }
+    .badge-live { display:flex; align-items:center; gap:6px; background:rgba(155,58,74,.85); border-radius:50px; padding:5px 12px; font-size:.75rem; font-weight:700; }
+    .dot-live { width:8px; height:8px; border-radius:50%; background:#ff6b6b; animation:pulsar 1s infinite; }
     @keyframes pulsar { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
-
-    .header-right { display: flex; align-items: center; gap: 16px; }
     .contador-fotos { font-size:.82rem; color:#c9a84c; font-weight:700; }
-
-    /* Grade de fotos */
-    .galeria {
-      position: fixed; inset: 0;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-auto-rows: 25vh;
-      gap: 3px;
-      padding: 0;
-    }
-    .foto-item {
-      position: relative; overflow: hidden;
-      background: #1a0a0e;
-      animation: aparecer .6s ease;
-    }
+    .galeria { position:fixed; inset:0; display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:25vh; gap:3px; }
+    .foto-item { position:relative; overflow:hidden; background:#1a0a0e; animation:aparecer .6s ease; }
     @keyframes aparecer { from{opacity:0;transform:scale(.95)} to{opacity:1;transform:scale(1)} }
-    .foto-item img, .foto-item video {
-      width: 100%; height: 100%;
-      object-fit: cover;
-    }
-    .foto-overlay {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,.7));
-      padding: 20px 10px 8px;
-      opacity: 0; transition: opacity .3s;
-    }
-    .foto-item:hover .foto-overlay { opacity: 1; }
-    .foto-nome { font-size: .75rem; color: #f0dda0; font-weight: 700; }
-
-    /* Foto nova em destaque */
-    .foto-nova {
-      position: fixed; bottom: 24px; right: 24px; z-index: 200;
-      background: linear-gradient(135deg, #9b3a4a, #7a2535);
-      border-radius: 12px; padding: 12px 16px;
-      display: flex; align-items: center; gap: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,.4);
-      animation: slideIn .4s ease;
-      display: none;
-    }
+    .foto-item img { width:100%; height:100%; object-fit:cover; }
+    .foto-overlay { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(0,0,0,.7)); padding:20px 10px 8px; opacity:0; transition:opacity .3s; }
+    .foto-item:hover .foto-overlay { opacity:1; }
+    .foto-nome { font-size:.75rem; color:#f0dda0; font-weight:700; }
+    .notif { position:fixed; bottom:24px; right:24px; z-index:200; background:linear-gradient(135deg,#9b3a4a,#7a2535); border-radius:12px; padding:12px 16px; display:none; align-items:center; gap:12px; box-shadow:0 8px 32px rgba(0,0,0,.4); animation:slideIn .4s ease; }
     @keyframes slideIn { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
-    .foto-nova img { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; }
-    .foto-nova-info { display: flex; flex-direction: column; gap: 2px; }
-    .foto-nova-titulo { font-size: .78rem; font-weight: 700; color: #f0dda0; }
-    .foto-nova-sub { font-size: .7rem; color: rgba(255,255,255,.6); }
-
-    /* Tela vazia */
-    .vazio {
-      position: fixed; inset: 0;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 16px; text-align: center;
-    }
-    .vazio .icone { font-size: 4rem; opacity: .3; }
+    .notif img { width:52px; height:52px; border-radius:8px; object-fit:cover; }
+    .notif-titulo { font-size:.78rem; font-weight:700; color:#f0dda0; }
+    .notif-sub { font-size:.7rem; color:rgba(255,255,255,.6); }
+    .vazio { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; }
+    .vazio .icone { font-size:4rem; opacity:.3; }
     .vazio h2 { font-family:'Playfair Display',serif; font-style:italic; font-size:1.5rem; color:#f0dda0; opacity:.5; }
     .vazio p { font-size:.85rem; color:rgba(255,255,255,.3); font-weight:600; }
-
-    /* Footer */
-    .footer {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: linear-gradient(0deg, rgba(10,6,8,.95), transparent);
-      padding: 20px 28px 16px;
-      display: flex; align-items: center; justify-content: center;
-    }
+    .footer { position:fixed; bottom:0; left:0; right:0; background:linear-gradient(0deg,rgba(10,6,8,.95),transparent); padding:20px 28px 16px; display:flex; align-items:center; justify-content:center; }
     .footer-url { font-size:.78rem; color:rgba(201,168,108,.5); letter-spacing:.08em; }
   </style>
 </head>
 <body>
-
-<!-- Header -->
 <div class="header">
   <div class="header-left">
     <span style="font-size:1.5rem;">🎀</span>
     <div class="header-titulo">Alice 15 Anos</div>
     <div class="badge-live"><div class="dot-live"></div> AO VIVO</div>
   </div>
-  <div class="header-right">
-    <div class="contador-fotos" id="contador">0 fotos</div>
-  </div>
+  <div class="contador-fotos" id="contador">0 fotos</div>
 </div>
-
-<!-- Galeria -->
 <div class="galeria" id="galeria"></div>
-
-<!-- Tela vazia -->
 <div class="vazio" id="vazio">
   <div class="icone">📸</div>
   <h2>Aguardando fotos…</h2>
   <p>Escaneie o QR code e envie suas fotos da festa!</p>
 </div>
-
-<!-- Notificação nova foto -->
-<div class="foto-nova" id="notif-nova">
+<div class="notif" id="notif">
   <img id="notif-img" src="" alt="">
-  <div class="foto-nova-info">
-    <div class="foto-nova-titulo">Nova foto chegou! 🎉</div>
-    <div class="foto-nova-sub" id="notif-nome"></div>
+  <div>
+    <div class="notif-titulo">Nova foto chegou! 🎉</div>
+    <div class="notif-sub" id="notif-nome"></div>
   </div>
 </div>
-
-<!-- Footer -->
 <div class="footer">
-  <div class="footer-url">alice15anos.vercel.app/fotos · Envie suas fotos da festa!</div>
+  <div class="footer-url">alice15anos.vercel.app/fotos-teste.html · Envie suas fotos!</div>
 </div>
-
 <script>
-  const CLOUD = 'dzsbf3ifv';
-  const API_KEY_SEARCH = ''; // deixar vazio para busca pública
-  let fotosConhecidas = new Set();
+  const sb = window.supabase.createClient(
+    'https://abojdhxobsyrzyiacaqf.supabase.co',
+    'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t',
+    { auth: { persistSession: false } }
+  );
+
+  let ultimoId = 0;
   let todasFotos = [];
 
   async function buscarFotos() {
-    try {
-      const res = await fetch(
-        `https://res.cloudinary.com/${CLOUD}/image/list/alice-festa.json`
-      );
-      if (!res.ok) return;
-      const data = await res.json();
-      const recursos = data.resources || [];
+    const { data, error } = await sb
+      .from('fotos_festa')
+      .select('*')
+      .order('criado_em', { ascending: false })
+      .limit(16);
+    if (error || !data) return;
 
-      let novas = [];
-      recursos.forEach(r => {
-        if (!fotosConhecidas.has(r.public_id)) {
-          fotosConhecidas.add(r.public_id);
-          novas.push(r);
-          todasFotos.unshift(r);
-        }
-      });
-
-      if (novas.length) {
-        renderizarGaleria();
-        novas.forEach(f => mostrarNotificacao(f));
-      }
-
-      document.getElementById('contador').textContent = `${todasFotos.length} foto${todasFotos.length !== 1 ? 's' : ''}`;
-    } catch(e) {
-      console.warn('Erro ao buscar fotos:', e);
+    // Detectar novas
+    const novas = data.filter(f => f.id > ultimoId);
+    if (novas.length) {
+      ultimoId = Math.max(...data.map(f => f.id));
+      todasFotos = data;
+      renderizarGaleria();
+      novas.forEach(f => mostrarNotificacao(f));
+    } else if (!todasFotos.length && data.length) {
+      ultimoId = Math.max(...data.map(f => f.id));
+      todasFotos = data;
+      renderizarGaleria();
     }
+
+    document.getElementById('contador').textContent = `${data.length} foto${data.length!==1?'s':''}`;
   }
 
   function renderizarGaleria() {
     const galeria = document.getElementById('galeria');
     const vazio = document.getElementById('vazio');
-
-    if (!todasFotos.length) {
-      vazio.style.display = 'flex';
-      galeria.innerHTML = '';
-      return;
-    }
+    if (!todasFotos.length) { vazio.style.display='flex'; galeria.innerHTML=''; return; }
     vazio.style.display = 'none';
-
-    galeria.innerHTML = todasFotos.slice(0, 16).map(f => {
-      const url = `https://res.cloudinary.com/${CLOUD}/image/upload/w_600,h_400,c_fill/${f.public_id}`;
-      const nome = f.context?.custom?.nome || 'Convidado';
-      return `
-        <div class="foto-item">
-          <img src="${url}" alt="Foto da festa" loading="lazy">
-          <div class="foto-overlay">
-            <div class="foto-nome">📸 ${nome}</div>
-          </div>
-        </div>`;
-    }).join('');
+    galeria.innerHTML = todasFotos.map(f => `
+      <div class="foto-item">
+        <img src="${f.url}" alt="Foto da festa" loading="lazy">
+        <div class="foto-overlay"><div class="foto-nome">📸 ${f.nome||'Convidado'}</div></div>
+      </div>`).join('');
   }
 
   function mostrarNotificacao(foto) {
-    const notif = document.getElementById('notif-nova');
-    const img = document.getElementById('notif-img');
-    const nomeEl = document.getElementById('notif-nome');
-
-    img.src = `https://res.cloudinary.com/${CLOUD}/image/upload/w_100,h_100,c_fill/${foto.public_id}`;
-    nomeEl.textContent = foto.context?.custom?.nome || 'Um convidado enviou uma foto!';
+    const notif = document.getElementById('notif');
+    document.getElementById('notif-img').src = foto.url;
+    document.getElementById('notif-nome').textContent = foto.nome || 'Um convidado enviou uma foto!';
     notif.style.display = 'flex';
     setTimeout(() => { notif.style.display = 'none'; }, 4000);
   }
 
-  // Buscar a cada 5 segundos
   buscarFotos();
-  setInterval(buscarFotos, 5000);
+  setInterval(buscarFotos, 3000);
 </script>
 </body>
 </html>
