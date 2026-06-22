@@ -10,61 +10,161 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    :root { --marsala:#9b3a4a; --marsala-dk:#7a2535; --ouro:#c9a84c; --azul:#92A8D1; }
-    body { font-family:'Quicksand',sans-serif; min-height:100vh; background:url('fundo.jpg') center/cover fixed; color:white; overflow:hidden; }
-    body::before { content:''; position:fixed; inset:0; background:rgba(10,4,8,.55); z-index:0; }
-    .header { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:16px 28px; background:linear-gradient(180deg,rgba(10,4,8,.9),transparent); }
+    body { font-family:'Quicksand',sans-serif; background:#000; color:white; overflow:hidden; width:100vw; height:100vh; }
+
+    /* Foto de fundo desfocada */
+    #bg {
+      position:fixed; inset:0; z-index:0;
+      background-size:cover; background-position:center;
+      filter:blur(20px) brightness(.4);
+      transform:scale(1.1);
+      transition:background-image .8s ease;
+    }
+
+    /* Header */
+    .header {
+      position:fixed; top:0; left:0; right:0; z-index:10;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:18px 32px;
+      background:linear-gradient(180deg,rgba(0,0,0,.7),transparent);
+    }
     .header-left { display:flex; align-items:center; gap:12px; }
-    .header-titulo { font-family:'Playfair Display',serif; font-style:italic; font-size:1.4rem; color:#f0dda0; }
-    .badge-live { display:flex; align-items:center; gap:6px; background:rgba(155,58,74,.9); border-radius:50px; padding:5px 14px; font-size:.75rem; font-weight:700; border:1px solid rgba(201,168,108,.3); }
-    .dot-live { width:8px; height:8px; border-radius:50%; background:#ff6b6b; animation:pulsar 1s infinite; }
-    @keyframes pulsar { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
-    .contador-fotos { font-size:.85rem; color:#f0dda0; font-weight:700; background:rgba(201,168,108,.2); border:1px solid rgba(201,168,108,.3); border-radius:50px; padding:5px 16px; }
-    .galeria { position:fixed; inset:0; z-index:1; display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:25vh; gap:4px; padding:70px 4px 50px; }
-    .foto-item { position:relative; overflow:hidden; background:rgba(155,58,74,.15); border-radius:6px; animation:aparecer .6s ease; border:1px solid rgba(201,168,108,.2); }
-    @keyframes aparecer { from{opacity:0;transform:scale(.9)} to{opacity:1;transform:scale(1)} }
-    .foto-item img { width:100%; height:100%; object-fit:cover; }
-    .foto-overlay { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(122,37,53,.85)); padding:20px 10px 8px; opacity:0; transition:opacity .3s; }
-    .foto-item:hover .foto-overlay { opacity:1; }
-    .foto-nome { font-size:.75rem; color:#f0dda0; font-weight:700; font-family:'Playfair Display',serif; font-style:italic; }
-    .notif { position:fixed; bottom:24px; right:24px; z-index:200; background:linear-gradient(135deg,rgba(122,37,53,.95),rgba(90,26,38,.95)); border-radius:12px; padding:12px 16px; display:none; align-items:center; gap:12px; box-shadow:0 8px 32px rgba(0,0,0,.5); border:1px solid rgba(201,168,108,.3); animation:slideIn .4s ease; }
-    @keyframes slideIn { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
-    .notif img { width:52px; height:52px; border-radius:8px; object-fit:cover; border:1.5px solid rgba(201,168,108,.4); }
-    .notif-titulo { font-size:.82rem; font-weight:700; color:#f0dda0; font-family:'Playfair Display',serif; font-style:italic; }
-    .notif-sub { font-size:.72rem; color:rgba(240,221,160,.7); margin-top:2px; }
-    .vazio { position:fixed; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; }
-    .vazio .icone { font-size:4rem; opacity:.4; }
-    .vazio h2 { font-family:'Playfair Display',serif; font-style:italic; font-size:1.8rem; color:#f0dda0; opacity:.6; }
-    .vazio p { font-size:.88rem; color:rgba(240,221,160,.4); font-weight:600; }
-    .footer { position:fixed; bottom:0; left:0; right:0; z-index:100; background:linear-gradient(0deg,rgba(10,4,8,.9),transparent); padding:16px 28px; display:flex; align-items:center; justify-content:center; }
-    .footer-url { font-size:.78rem; color:rgba(201,168,108,.5); letter-spacing:.08em; font-family:'Playfair Display',serif; font-style:italic; }
+    .logo { font-size:1.6rem; }
+    .titulo { font-family:'Playfair Display',serif; font-style:italic; font-size:1.3rem; color:#f0dda0; letter-spacing:.03em; }
+    .badge-live { display:flex; align-items:center; gap:6px; background:rgba(155,58,74,.85); border-radius:50px; padding:5px 14px; font-size:.75rem; font-weight:700; border:1px solid rgba(201,168,108,.3); }
+    .dot { width:8px; height:8px; border-radius:50%; background:#ff6b6b; animation:p 1s infinite; }
+    @keyframes p { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .badge-count { font-size:.8rem; color:#C5D5E8; font-weight:700; background:rgba(146,168,209,.15); border:1px solid rgba(146,168,209,.3); border-radius:50px; padding:5px 16px; }
+
+    /* Foto principal — slideshow */
+    .slide-wrap {
+      position:fixed; inset:0; z-index:1;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .slide-img {
+      max-width:80vw; max-height:80vh;
+      object-fit:contain;
+      border-radius:12px;
+      box-shadow:0 20px 80px rgba(0,0,0,.8);
+      border:2px solid rgba(201,168,108,.3);
+      transition:opacity .6s ease;
+      opacity:1;
+    }
+    .slide-img.saindo { opacity:0; }
+
+    /* Info do convidado */
+    .slide-info {
+      position:fixed; bottom:80px; left:0; right:0; z-index:10;
+      text-align:center;
+      transition:opacity .6s ease;
+    }
+    .slide-nome {
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:1.4rem; color:#f0dda0;
+      text-shadow:0 2px 12px rgba(0,0,0,.8);
+      margin-bottom:4px;
+    }
+    .slide-data { font-size:.78rem; color:rgba(197,213,232,.6); font-weight:600; }
+
+    /* Miniaturas na parte inferior */
+    .thumbs {
+      position:fixed; bottom:0; left:0; right:0; z-index:10;
+      display:flex; gap:6px; padding:10px 20px;
+      background:linear-gradient(0deg,rgba(0,0,0,.8),transparent);
+      overflow-x:auto; justify-content:center;
+    }
+    .thumbs::-webkit-scrollbar { display:none; }
+    .thumb {
+      width:48px; height:48px; border-radius:6px; overflow:hidden; flex-shrink:0;
+      border:2px solid transparent; cursor:pointer; transition:border-color .2s,transform .2s;
+      opacity:.6;
+    }
+    .thumb.ativo { border-color:#c9a84c; opacity:1; transform:scale(1.1); }
+    .thumb img { width:100%; height:100%; object-fit:cover; }
+
+    /* Notificação */
+    .notif {
+      position:fixed; top:80px; right:24px; z-index:20;
+      background:rgba(122,37,53,.92); border-radius:12px;
+      padding:12px 16px; display:none; align-items:center; gap:12px;
+      box-shadow:0 8px 32px rgba(0,0,0,.5); border:1px solid rgba(201,168,108,.3);
+      animation:si .4s ease; max-width:280px;
+    }
+    @keyframes si { from{transform:translateX(20px);opacity:0} to{transform:translateX(0);opacity:1} }
+    .notif img { width:48px; height:48px; border-radius:8px; object-fit:cover; flex-shrink:0; border:1px solid rgba(201,168,108,.4); }
+    .notif-t { font-family:'Playfair Display',serif; font-style:italic; font-size:.85rem; color:#f0dda0; }
+    .notif-s { font-size:.72rem; color:rgba(240,221,160,.65); margin-top:3px; }
+
+    /* Vazio */
+    .vazio { position:fixed; inset:0; z-index:5; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; background:linear-gradient(160deg,#0a0608,#1a0510); }
+    .vazio .ic { font-size:4rem; opacity:.3; }
+    .vazio h2 { font-family:'Playfair Display',serif; font-style:italic; font-size:1.8rem; color:#f0dda0; opacity:.5; }
+    .vazio p { font-size:.88rem; color:rgba(197,213,232,.4); font-weight:600; }
+
+    /* Setas de navegação */
+    .seta {
+      position:fixed; top:50%; z-index:10; transform:translateY(-50%);
+      background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.1);
+      color:white; border-radius:50%; width:46px; height:46px;
+      font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:background .2s; backdrop-filter:blur(4px);
+    }
+    .seta:hover { background:rgba(155,58,74,.6); }
+    .seta-esq { left:20px; }
+    .seta-dir { right:20px; }
+
+    /* Barra de progresso do slide */
+    .prog-slide {
+      position:fixed; bottom:70px; left:50%; transform:translateX(-50%);
+      z-index:10; display:flex; gap:6px;
+    }
+    .prog-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.3); transition:background .3s,transform .3s; }
+    .prog-dot.ativo { background:#c9a84c; transform:scale(1.3); }
   </style>
 </head>
 <body>
+
+<div id="bg"></div>
+
 <div class="header">
   <div class="header-left">
-    <span style="font-size:1.5rem;">🎀</span>
-    <div class="header-titulo">Alice 15 Anos</div>
-    <div class="badge-live"><div class="dot-live"></div> AO VIVO</div>
+    <span class="logo">🎀</span>
+    <div class="titulo">Alice 15 Anos</div>
+    <div class="badge-live"><div class="dot"></div> AO VIVO</div>
   </div>
-  <div class="contador-fotos" id="contador">0 fotos</div>
+  <div class="badge-count" id="contador">0 fotos</div>
 </div>
-<div class="galeria" id="galeria"></div>
-<div class="vazio" id="vazio">
-  <div class="icone">📸</div>
-  <h2>Aguardando fotos…</h2>
-  <p>Escaneie o QR code e envie suas fotos da festa!</p>
+
+<div class="slide-wrap" id="slide-wrap">
+  <img class="slide-img" id="slide-img" src="" alt="Foto da festa">
 </div>
+
+<div class="slide-info" id="slide-info">
+  <div class="slide-nome" id="slide-nome"></div>
+  <div class="slide-data" id="slide-data"></div>
+</div>
+
+<button class="seta seta-esq" onclick="anterior()">‹</button>
+<button class="seta seta-dir" onclick="proximo()">›</button>
+
+<div class="prog-slide" id="prog-slide"></div>
+
+<div class="thumbs" id="thumbs"></div>
+
 <div class="notif" id="notif">
   <img id="notif-img" src="" alt="">
   <div>
-    <div class="notif-titulo">Nova foto chegou! 🎉</div>
-    <div class="notif-sub" id="notif-nome"></div>
+    <div class="notif-t">Nova foto chegou! 🎉</div>
+    <div class="notif-s" id="notif-s"></div>
   </div>
 </div>
-<div class="footer">
-  <div class="footer-url">alice15anos.vercel.app/fotos-teste.html · Envie suas fotos!</div>
+
+<div class="vazio" id="vazio">
+  <div class="ic">📸</div>
+  <h2>Aguardando fotos…</h2>
+  <p>Escaneie o QR code e envie suas fotos da festa!</p>
 </div>
+
 <script>
   const sb = window.supabase.createClient(
     'https://abojdhxobsyrzyiacaqf.supabase.co',
@@ -72,55 +172,121 @@
     { auth: { persistSession: false } }
   );
 
+  let fotos = [];
+  let idx = 0;
   let ultimoId = 0;
-  let todasFotos = [];
+  let autoTimer = null;
 
-  async function buscarFotos() {
-    const { data, error } = await sb
-      .from('fotos_festa')
-      .select('*')
-      .order('criado_em', { ascending: false })
-      .limit(16);
-    if (error || !data) return;
+  function fmt(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('pt-BR') + ' · ' + d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+  }
 
-    // Detectar novas
-    const novas = data.filter(f => f.id > ultimoId);
-    if (novas.length) {
-      ultimoId = Math.max(...data.map(f => f.id));
-      todasFotos = data;
-      renderizarGaleria();
-      novas.forEach(f => mostrarNotificacao(f));
-    } else if (!todasFotos.length && data.length) {
-      ultimoId = Math.max(...data.map(f => f.id));
-      todasFotos = data;
-      renderizarGaleria();
+  function mostrarSlide(i, animado) {
+    if (!fotos.length) return;
+    idx = ((i % fotos.length) + fotos.length) % fotos.length;
+    const foto = fotos[idx];
+
+    const img = document.getElementById('slide-img');
+    const bg  = document.getElementById('bg');
+
+    if (animado) {
+      img.classList.add('saindo');
+      setTimeout(() => {
+        img.src = foto.url;
+        bg.style.backgroundImage = `url('${foto.url}')`;
+        img.classList.remove('saindo');
+      }, 600);
+    } else {
+      img.src = foto.url;
+      bg.style.backgroundImage = `url('${foto.url}')`;
     }
 
-    document.getElementById('contador').textContent = `${data.length} foto${data.length!==1?'s':''}`;
+    document.getElementById('slide-nome').textContent = '📸 ' + (foto.nome || 'Convidado');
+    document.getElementById('slide-data').textContent = fmt(foto.criado_em);
+
+    // Pontos de progresso
+    const dots = document.querySelectorAll('.prog-dot');
+    dots.forEach((d, di) => d.classList.toggle('ativo', di === idx));
+
+    // Miniaturas
+    document.querySelectorAll('.thumb').forEach((t, ti) => t.classList.toggle('ativo', ti === idx));
+
+    reiniciarAuto();
   }
 
-  function renderizarGaleria() {
-    const galeria = document.getElementById('galeria');
+  function proximo() { mostrarSlide(idx + 1, true); }
+  function anterior() { mostrarSlide(idx - 1, true); }
+
+  function reiniciarAuto() {
+    clearInterval(autoTimer);
+    if (fotos.length > 1) autoTimer = setInterval(() => mostrarSlide(idx + 1, true), 5000);
+  }
+
+  function renderizar() {
     const vazio = document.getElementById('vazio');
-    if (!todasFotos.length) { vazio.style.display='flex'; galeria.innerHTML=''; return; }
+    const slideWrap = document.getElementById('slide-wrap');
+    const info = document.getElementById('slide-info');
+
+    if (!fotos.length) {
+      vazio.style.display = 'flex';
+      slideWrap.style.display = 'none';
+      info.style.display = 'none';
+      return;
+    }
     vazio.style.display = 'none';
-    galeria.innerHTML = todasFotos.map(f => `
-      <div class="foto-item">
-        <img src="${f.url}" alt="Foto da festa" loading="lazy">
-        <div class="foto-overlay"><div class="foto-nome">📸 ${f.nome||'Convidado'}</div></div>
-      </div>`).join('');
+    slideWrap.style.display = 'flex';
+    info.style.display = 'block';
+
+    // Miniaturas
+    const thumbs = document.getElementById('thumbs');
+    thumbs.innerHTML = fotos.map((f, i) =>
+      `<div class="thumb ${i===idx?'ativo':''}" onclick="mostrarSlide(${i},true)"><img src="${f.url}" alt=""></div>`
+    ).join('');
+
+    // Pontos
+    const prog = document.getElementById('prog-slide');
+    const max = Math.min(fotos.length, 10);
+    prog.innerHTML = Array.from({length: max}, (_, i) =>
+      `<div class="prog-dot ${i===idx?'ativo':''}"></div>`
+    ).join('');
+
+    document.getElementById('contador').textContent = `${fotos.length} foto${fotos.length!==1?'s':''}`;
   }
 
-  function mostrarNotificacao(foto) {
-    const notif = document.getElementById('notif');
-    document.getElementById('notif-img').src = foto.url;
-    document.getElementById('notif-nome').textContent = foto.nome || 'Um convidado enviou uma foto!';
-    notif.style.display = 'flex';
-    setTimeout(() => { notif.style.display = 'none'; }, 4000);
+  async function buscarFotos() {
+    const { data } = await sb.from('fotos_festa').select('*').order('criado_em', { ascending: false }).limit(50);
+    if (!data) return;
+
+    const novas = data.filter(f => f.id > ultimoId);
+    if (novas.length || !fotos.length) {
+      if (data.length) ultimoId = Math.max(...data.map(f => f.id));
+
+      if (novas.length && fotos.length > 0) {
+        // Mostrar notificação da mais recente
+        const nova = novas[0];
+        const notif = document.getElementById('notif');
+        document.getElementById('notif-img').src = nova.url;
+        document.getElementById('notif-s').textContent = nova.nome || 'Um convidado enviou!';
+        notif.style.display = 'flex';
+        setTimeout(() => notif.style.display = 'none', 4000);
+      }
+
+      fotos = data;
+      renderizar();
+      if (!autoTimer) mostrarSlide(0, false);
+    }
   }
 
   buscarFotos();
   setInterval(buscarFotos, 3000);
+
+  // Teclado
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') proximo();
+    if (e.key === 'ArrowLeft') anterior();
+  });
 </script>
 </body>
 </html>
