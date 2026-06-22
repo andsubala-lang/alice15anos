@@ -11,53 +11,82 @@
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     :root {
-      --marsala: #9b3a4a; --marsala-dk: #7a2535;
-      --ouro: #c9a84c; --creme: #fdf8f0; --creme-md: #f5e8d4; --texto: #2c3e50;
+      --azul:      #92A8D1;
+      --azul-dk:   #6B89BB;
+      --azul-dkk:  #4A6A9E;
+      --azul-cl:   #C5D5E8;
+      --azul-pale: #f0f3f9;
+      --marsala:   #9b3a4a;
+      --marsala-dk:#7a2535;
+      --ouro:      #c9a84c;
+      --creme:     #fdf8f0;
+      --texto:     #2c3e50;
     }
     body {
       font-family: 'Quicksand', sans-serif;
       min-height: 100vh;
-      background: linear-gradient(160deg, #fdf8f0, #f5e8d4);
+      background: linear-gradient(160deg, #f0f3f9, #e8eef6);
       display: flex; flex-direction: column; align-items: center;
       padding: 40px 20px 60px; color: var(--texto);
     }
     .header { text-align: center; margin-bottom: 32px; }
     .header .icone { font-size: 2.5rem; margin-bottom: 10px; display: block; }
-    .header h1 { font-family:'Playfair Display',serif; font-style:italic; font-size:1.8rem; color:var(--marsala); margin-bottom:6px; }
-    .header p { font-size:.88rem; color:#9a7a50; font-weight:600; max-width:320px; line-height:1.6; }
-    .divisor { display:flex; align-items:center; gap:8px; margin:12px auto 0; width:200px; color:var(--marsala); opacity:.4; font-size:.75rem; }
-    .divisor::before, .divisor::after { content:''; flex:1; height:1px; background:var(--marsala); }
-    .card { background:white; border:1.5px solid rgba(201,168,108,.4); border-radius:16px; padding:28px 24px; width:100%; max-width:440px; box-shadow:0 8px 32px rgba(122,37,53,.08); display:flex; flex-direction:column; gap:20px; }
-    .drop-area { border:2px dashed rgba(201,168,108,.6); border-radius:12px; padding:36px 20px; text-align:center; cursor:pointer; transition:all .2s; background:var(--creme); position:relative; }
-    .drop-area:hover, .drop-area.drag { border-color:var(--marsala); background:#fdf0f2; }
+    .header h1 {
+      font-family:'Playfair Display',serif;
+      font-size: 1.8rem; color: var(--azul-dkk); margin-bottom: 6px;
+    }
+    .header p { font-size:.88rem; color:var(--azul-dk); font-weight:600; max-width:320px; line-height:1.6; }
+    .divisor { display:flex; align-items:center; gap:8px; margin:12px auto 0; width:200px; color:var(--azul); opacity:.5; font-size:.75rem; }
+    .divisor::before, .divisor::after { content:''; flex:1; height:1px; background:var(--azul); }
+
+    .card {
+      background: white;
+      border: 1.5px solid var(--azul-cl);
+      border-radius: 16px; padding: 28px 24px;
+      width: 100%; max-width: 440px;
+      box-shadow: 0 8px 32px rgba(74,106,158,.1);
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .drop-area {
+      border: 2px dashed var(--azul-cl); border-radius: 12px;
+      padding: 36px 20px; text-align: center; cursor: pointer;
+      transition: all .2s; background: var(--azul-pale); position: relative;
+    }
+    .drop-area:hover, .drop-area.drag { border-color: var(--azul-dk); background: #e3eaf5; }
     .drop-area input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
-    .drop-icon { font-size:2.5rem; margin-bottom:10px; display:block; }
-    .drop-titulo { font-family:'Playfair Display',serif; font-style:italic; font-size:1.05rem; color:var(--marsala); margin-bottom:4px; }
-    .drop-sub { font-size:.8rem; color:#9a7a50; font-weight:600; }
-    #preview-grid { display:none; grid-template-columns:repeat(auto-fill, minmax(80px,1fr)); gap:8px; }
-    .preview-item { position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; border:1.5px solid rgba(201,168,108,.3); }
+    .drop-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
+    .drop-titulo { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--azul-dkk); margin-bottom:4px; }
+    .drop-sub { font-size:.8rem; color:var(--azul-dk); font-weight:600; }
+
+    #preview-grid { display:none; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:8px; }
+    .preview-item { position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; border:1.5px solid var(--azul-cl); }
     .preview-item img { width:100%; height:100%; object-fit:cover; }
     .preview-item .video-icon { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.4); font-size:1.5rem; }
     .preview-item .remover { position:absolute; top:3px; right:3px; background:rgba(155,58,74,.9); color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:.65rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-    .campo label { font-size:.78rem; font-weight:700; color:#9a7a50; text-transform:uppercase; letter-spacing:.07em; display:block; margin-bottom:6px; }
-    .campo input { width:100%; padding:11px 14px; border:1.5px solid rgba(201,168,108,.4); border-radius:8px; font-family:'Quicksand',sans-serif; font-size:.9rem; font-weight:600; color:var(--texto); outline:none; background:var(--creme); transition:border-color .2s; }
-    .campo input:focus { border-color:var(--marsala); background:white; }
-    .campo input::placeholder { color:#b09878; }
-    .btn-enviar { width:100%; padding:13px; border:none; border-radius:10px; background:linear-gradient(135deg,var(--marsala),var(--marsala-dk)); color:white; font-family:'Quicksand',sans-serif; font-size:.95rem; font-weight:700; cursor:pointer; box-shadow:0 4px 16px rgba(122,37,53,.25); transition:opacity .2s,transform .15s; display:flex; align-items:center; justify-content:center; gap:8px; }
+
+    .campo label { font-size:.78rem; font-weight:700; color:var(--azul-dkk); text-transform:uppercase; letter-spacing:.07em; display:block; margin-bottom:6px; }
+    .campo input { width:100%; padding:11px 14px; border:1.5px solid var(--azul-cl); border-radius:8px; font-family:'Quicksand',sans-serif; font-size:.9rem; font-weight:600; color:var(--texto); outline:none; background:var(--azul-pale); transition:border-color .2s; }
+    .campo input:focus { border-color:var(--azul-dk); background:white; }
+    .campo input::placeholder { color:#a0b4cc; }
+
+    .btn-enviar { width:100%; padding:13px; border:none; border-radius:10px; background:linear-gradient(135deg,var(--azul-dk),var(--azul-dkk)); color:white; font-family:'Quicksand',sans-serif; font-size:.95rem; font-weight:700; cursor:pointer; box-shadow:0 4px 16px rgba(74,106,158,.25); transition:opacity .2s,transform .15s; display:flex; align-items:center; justify-content:center; gap:8px; }
     .btn-enviar:hover:not(:disabled) { opacity:.9; transform:translateY(-1px); }
     .btn-enviar:disabled { opacity:.5; cursor:not-allowed; }
+
     #progresso-wrap { display:none; flex-direction:column; gap:8px; }
-    .prog-label { font-size:.82rem; color:#9a7a50; font-weight:700; text-align:center; }
-    .prog-bg { background:rgba(201,168,108,.2); border-radius:50px; height:10px; overflow:hidden; }
-    .prog-fill { height:100%; border-radius:50px; background:linear-gradient(90deg,var(--marsala),var(--ouro)); transition:width .3s ease; width:0%; }
+    .prog-label { font-size:.82rem; color:var(--azul-dk); font-weight:700; text-align:center; }
+    .prog-bg { background:var(--azul-cl); border-radius:50px; height:10px; overflow:hidden; }
+    .prog-fill { height:100%; border-radius:50px; background:linear-gradient(90deg,var(--azul-dkk),var(--azul)); transition:width .3s ease; width:0%; }
+
     #sucesso { display:none; text-align:center; padding:20px 0; }
     #sucesso .s-icone { font-size:3rem; margin-bottom:10px; display:block; }
-    #sucesso h2 { font-family:'Playfair Display',serif; font-style:italic; font-size:1.3rem; color:var(--marsala); margin-bottom:6px; }
-    #sucesso p { font-size:.85rem; color:#9a7a50; font-weight:600; }
+    #sucesso h2 { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--azul-dkk); margin-bottom:6px; }
+    #sucesso p { font-size:.85rem; color:var(--azul-dk); font-weight:600; }
     .btn-mais { margin-top:16px; padding:10px 24px; border:1.5px solid var(--marsala); border-radius:50px; background:transparent; color:var(--marsala); font-family:'Quicksand',sans-serif; font-size:.85rem; font-weight:700; cursor:pointer; transition:all .2s; }
     .btn-mais:hover { background:var(--marsala); color:white; }
-    .contador { text-align:center; font-size:.78rem; color:#9a7a50; font-weight:600; }
+    .contador { text-align:center; font-size:.78rem; color:var(--azul-dk); font-weight:600; }
     .contador span { color:var(--marsala); font-weight:700; }
+
     @media (max-width:480px) { body { padding:24px 14px 40px; } .header h1 { font-size:1.5rem; } .card { padding:22px 16px; } }
   </style>
 </head>
@@ -98,94 +127,72 @@
   </div>
 </div>
 <script>
-  const CLOUD = 'dzsbf3ifv';
-  const PRESET = 'alice_festa';
+  const CLOUD='dzsbf3ifv', PRESET='alice_festa';
   const sb = window.supabase.createClient(
     'https://abojdhxobsyrzyiacaqf.supabase.co',
     'sb_publishable_RUJYFhofTbBt1CtW1ZtbtA_b_s83A4t',
     { auth: { persistSession: false } }
   );
+  let arquivos = [];
+  const dropArea=document.getElementById('drop-area');
+  const inputArq=document.getElementById('arquivo');
+  const previewGrid=document.getElementById('preview-grid');
+  const btnEnviar=document.getElementById('btn-enviar');
+  const contadorEl=document.getElementById('contador');
 
-  let arquivosSelecionados = [];
-  const dropArea = document.getElementById('drop-area');
-  const inputArq = document.getElementById('arquivo');
-  const previewGrid = document.getElementById('preview-grid');
-  const btnEnviar = document.getElementById('btn-enviar');
-  const contadorEl = document.getElementById('contador');
+  ['dragenter','dragover'].forEach(ev=>dropArea.addEventListener(ev,e=>{e.preventDefault();dropArea.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>dropArea.addEventListener(ev,e=>{e.preventDefault();dropArea.classList.remove('drag');}));
+  dropArea.addEventListener('drop',e=>adicionar(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')||f.type.startsWith('video/'))));
+  inputArq.addEventListener('change',()=>{adicionar(Array.from(inputArq.files));inputArq.value='';});
 
-  ['dragenter','dragover'].forEach(ev => dropArea.addEventListener(ev, e => { e.preventDefault(); dropArea.classList.add('drag'); }));
-  ['dragleave','drop'].forEach(ev => dropArea.addEventListener(ev, e => { e.preventDefault(); dropArea.classList.remove('drag'); }));
-  dropArea.addEventListener('drop', e => adicionarArquivos(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/') || f.type.startsWith('video/'))));
-  inputArq.addEventListener('change', () => { adicionarArquivos(Array.from(inputArq.files)); inputArq.value = ''; });
-
-  function adicionarArquivos(files) {
-    files.forEach(f => { if (!arquivosSelecionados.find(x => x.name === f.name && x.size === f.size)) arquivosSelecionados.push(f); });
-    renderizarPreview();
+  function adicionar(files) {
+    files.forEach(f=>{if(!arquivos.find(x=>x.name===f.name&&x.size===f.size))arquivos.push(f);});
+    renderizar();
   }
-
-  function renderizarPreview() {
-    if (!arquivosSelecionados.length) { previewGrid.style.display='none'; btnEnviar.disabled=true; contadorEl.innerHTML=''; return; }
-    previewGrid.style.display = 'grid';
-    btnEnviar.disabled = false;
-    contadorEl.innerHTML = `<span>${arquivosSelecionados.length}</span> arquivo${arquivosSelecionados.length>1?'s':''} selecionado${arquivosSelecionados.length>1?'s':''}`;
-    previewGrid.innerHTML = '';
-    arquivosSelecionados.forEach((f, i) => {
-      const div = document.createElement('div');
-      div.className = 'preview-item';
-      if (f.type.startsWith('image/')) { const img = document.createElement('img'); img.src = URL.createObjectURL(f); div.appendChild(img); }
-      else { div.innerHTML = '<div class="video-icon">🎥</div>'; }
-      const btn = document.createElement('button');
-      btn.className = 'remover'; btn.innerHTML = '✕';
-      btn.onclick = () => { arquivosSelecionados.splice(i,1); renderizarPreview(); };
-      div.appendChild(btn);
-      previewGrid.appendChild(div);
+  function renderizar() {
+    if(!arquivos.length){previewGrid.style.display='none';btnEnviar.disabled=true;contadorEl.innerHTML='';return;}
+    previewGrid.style.display='grid';btnEnviar.disabled=false;
+    contadorEl.innerHTML=`<span>${arquivos.length}</span> arquivo${arquivos.length>1?'s':''} selecionado${arquivos.length>1?'s':''}`;
+    previewGrid.innerHTML='';
+    arquivos.forEach((f,i)=>{
+      const div=document.createElement('div');div.className='preview-item';
+      if(f.type.startsWith('image/')){const img=document.createElement('img');img.src=URL.createObjectURL(f);div.appendChild(img);}
+      else{div.innerHTML='<div class="video-icon">🎥</div>';}
+      const btn=document.createElement('button');btn.className='remover';btn.innerHTML='✕';
+      btn.onclick=()=>{arquivos.splice(i,1);renderizar();};
+      div.appendChild(btn);previewGrid.appendChild(div);
     });
   }
-
   async function enviar() {
-    if (!arquivosSelecionados.length) return;
-    const nome = document.getElementById('nome').value.trim() || 'Convidado';
-    const progWrap = document.getElementById('progresso-wrap');
-    const progFill = document.getElementById('prog-fill');
-    const progLabel = document.getElementById('prog-label');
-    btnEnviar.disabled = true;
-    progWrap.style.display = 'flex';
-    let enviados = 0;
-    const total = arquivosSelecionados.length;
-
-    for (const arquivo of arquivosSelecionados) {
-      progLabel.textContent = `Enviando ${enviados+1} de ${total}…`;
-      progFill.style.width = ((enviados/total)*100)+'%';
-      const form = new FormData();
-      form.append('file', arquivo);
-      form.append('upload_preset', PRESET);
-      form.append('folder', 'alice-festa');
-      const tipo = arquivo.type.startsWith('video/') ? 'video' : 'image';
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/${tipo}/upload`, { method:'POST', body:form });
-      const data = await res.json();
-      if (data.secure_url) {
-        await sb.from('fotos_festa').insert({ url: data.secure_url, nome });
-      }
+    if(!arquivos.length)return;
+    const nome=document.getElementById('nome').value.trim()||'Convidado';
+    const progWrap=document.getElementById('progresso-wrap');
+    const progFill=document.getElementById('prog-fill');
+    const progLabel=document.getElementById('prog-label');
+    btnEnviar.disabled=true;progWrap.style.display='flex';
+    let enviados=0;const total=arquivos.length;
+    for(const arquivo of arquivos){
+      progLabel.textContent=`Enviando ${enviados+1} de ${total}…`;
+      progFill.style.width=((enviados/total)*100)+'%';
+      const form=new FormData();
+      form.append('file',arquivo);form.append('upload_preset',PRESET);form.append('folder','alice-festa');
+      const tipo=arquivo.type.startsWith('video/')?'video':'image';
+      const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/${tipo}/upload`,{method:'POST',body:form});
+      const data=await res.json();
+      if(data.secure_url)await sb.from('fotos_festa').insert({url:data.secure_url,nome});
       enviados++;
     }
-
-    progFill.style.width = '100%';
-    progLabel.textContent = 'Concluído!';
-    setTimeout(() => {
-      document.getElementById('form-area').style.display = 'none';
-      document.getElementById('sucesso').style.display = 'block';
-    }, 800);
+    progFill.style.width='100%';progLabel.textContent='Concluído!';
+    setTimeout(()=>{document.getElementById('form-area').style.display='none';document.getElementById('sucesso').style.display='block';},800);
   }
-
-  function novosArquivos() {
-    arquivosSelecionados = [];
-    renderizarPreview();
-    document.getElementById('nome').value = '';
-    document.getElementById('progresso-wrap').style.display = 'none';
-    document.getElementById('prog-fill').style.width = '0%';
-    document.getElementById('form-area').style.display = 'flex';
-    document.getElementById('sucesso').style.display = 'none';
-    btnEnviar.disabled = true;
+  function novosArquivos(){
+    arquivos=[];renderizar();
+    document.getElementById('nome').value='';
+    document.getElementById('progresso-wrap').style.display='none';
+    document.getElementById('prog-fill').style.width='0%';
+    document.getElementById('form-area').style.display='flex';
+    document.getElementById('sucesso').style.display='none';
+    btnEnviar.disabled=true;
   }
 </script>
 </body>
