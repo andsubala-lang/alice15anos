@@ -10,32 +10,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:'Quicksand',sans-serif; min-height:100vh; background:#0a0608; color:white; overflow:hidden; }
-    .header { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:16px 28px; background:linear-gradient(180deg,rgba(10,6,8,.95),transparent); }
+    :root { --marsala:#9b3a4a; --marsala-dk:#7a2535; --ouro:#c9a84c; --azul:#92A8D1; }
+    body { font-family:'Quicksand',sans-serif; min-height:100vh; background:url('fundo.jpg') center/cover fixed; color:white; overflow:hidden; }
+    body::before { content:''; position:fixed; inset:0; background:rgba(10,4,8,.55); z-index:0; }
+    .header { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:16px 28px; background:linear-gradient(180deg,rgba(10,4,8,.9),transparent); }
     .header-left { display:flex; align-items:center; gap:12px; }
-    .header-titulo { font-family:'Playfair Display',serif; font-style:italic; font-size:1.3rem; color:#f0dda0; }
-    .badge-live { display:flex; align-items:center; gap:6px; background:rgba(155,58,74,.85); border-radius:50px; padding:5px 12px; font-size:.75rem; font-weight:700; }
+    .header-titulo { font-family:'Playfair Display',serif; font-style:italic; font-size:1.4rem; color:#f0dda0; }
+    .badge-live { display:flex; align-items:center; gap:6px; background:rgba(155,58,74,.9); border-radius:50px; padding:5px 14px; font-size:.75rem; font-weight:700; border:1px solid rgba(201,168,108,.3); }
     .dot-live { width:8px; height:8px; border-radius:50%; background:#ff6b6b; animation:pulsar 1s infinite; }
     @keyframes pulsar { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
-    .contador-fotos { font-size:.82rem; color:#c9a84c; font-weight:700; }
-    .galeria { position:fixed; inset:0; display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:25vh; gap:3px; }
-    .foto-item { position:relative; overflow:hidden; background:#1a0a0e; animation:aparecer .6s ease; }
-    @keyframes aparecer { from{opacity:0;transform:scale(.95)} to{opacity:1;transform:scale(1)} }
+    .contador-fotos { font-size:.85rem; color:#f0dda0; font-weight:700; background:rgba(201,168,108,.2); border:1px solid rgba(201,168,108,.3); border-radius:50px; padding:5px 16px; }
+    .galeria { position:fixed; inset:0; z-index:1; display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:25vh; gap:4px; padding:70px 4px 50px; }
+    .foto-item { position:relative; overflow:hidden; background:rgba(155,58,74,.15); border-radius:6px; animation:aparecer .6s ease; border:1px solid rgba(201,168,108,.2); }
+    @keyframes aparecer { from{opacity:0;transform:scale(.9)} to{opacity:1;transform:scale(1)} }
     .foto-item img { width:100%; height:100%; object-fit:cover; }
-    .foto-overlay { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(0,0,0,.7)); padding:20px 10px 8px; opacity:0; transition:opacity .3s; }
+    .foto-overlay { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(122,37,53,.85)); padding:20px 10px 8px; opacity:0; transition:opacity .3s; }
     .foto-item:hover .foto-overlay { opacity:1; }
-    .foto-nome { font-size:.75rem; color:#f0dda0; font-weight:700; }
-    .notif { position:fixed; bottom:24px; right:24px; z-index:200; background:linear-gradient(135deg,#9b3a4a,#7a2535); border-radius:12px; padding:12px 16px; display:none; align-items:center; gap:12px; box-shadow:0 8px 32px rgba(0,0,0,.4); animation:slideIn .4s ease; }
+    .foto-nome { font-size:.75rem; color:#f0dda0; font-weight:700; font-family:'Playfair Display',serif; font-style:italic; }
+    .notif { position:fixed; bottom:24px; right:24px; z-index:200; background:linear-gradient(135deg,rgba(122,37,53,.95),rgba(90,26,38,.95)); border-radius:12px; padding:12px 16px; display:none; align-items:center; gap:12px; box-shadow:0 8px 32px rgba(0,0,0,.5); border:1px solid rgba(201,168,108,.3); animation:slideIn .4s ease; }
     @keyframes slideIn { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
-    .notif img { width:52px; height:52px; border-radius:8px; object-fit:cover; }
-    .notif-titulo { font-size:.78rem; font-weight:700; color:#f0dda0; }
-    .notif-sub { font-size:.7rem; color:rgba(255,255,255,.6); }
-    .vazio { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; }
-    .vazio .icone { font-size:4rem; opacity:.3; }
-    .vazio h2 { font-family:'Playfair Display',serif; font-style:italic; font-size:1.5rem; color:#f0dda0; opacity:.5; }
-    .vazio p { font-size:.85rem; color:rgba(255,255,255,.3); font-weight:600; }
-    .footer { position:fixed; bottom:0; left:0; right:0; background:linear-gradient(0deg,rgba(10,6,8,.95),transparent); padding:20px 28px 16px; display:flex; align-items:center; justify-content:center; }
-    .footer-url { font-size:.78rem; color:rgba(201,168,108,.5); letter-spacing:.08em; }
+    .notif img { width:52px; height:52px; border-radius:8px; object-fit:cover; border:1.5px solid rgba(201,168,108,.4); }
+    .notif-titulo { font-size:.82rem; font-weight:700; color:#f0dda0; font-family:'Playfair Display',serif; font-style:italic; }
+    .notif-sub { font-size:.72rem; color:rgba(240,221,160,.7); margin-top:2px; }
+    .vazio { position:fixed; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; }
+    .vazio .icone { font-size:4rem; opacity:.4; }
+    .vazio h2 { font-family:'Playfair Display',serif; font-style:italic; font-size:1.8rem; color:#f0dda0; opacity:.6; }
+    .vazio p { font-size:.88rem; color:rgba(240,221,160,.4); font-weight:600; }
+    .footer { position:fixed; bottom:0; left:0; right:0; z-index:100; background:linear-gradient(0deg,rgba(10,4,8,.9),transparent); padding:16px 28px; display:flex; align-items:center; justify-content:center; }
+    .footer-url { font-size:.78rem; color:rgba(201,168,108,.5); letter-spacing:.08em; font-family:'Playfair Display',serif; font-style:italic; }
   </style>
 </head>
 <body>
