@@ -844,12 +844,16 @@
   const abaLabel = { dash:'Dashboard', presentes:'Presentes', mensagens:'Mensagens', fotos:'Fotos da Festa' };
   const abaSub   = { dash:'VISÃO GERAL', presentes:'GESTÃO', mensagens:'MENSAGENS', fotos:'GALERIA' };
   function trocarAba(aba) {
-    ['dash','presentes','mensagens'].forEach(a=>{
-      document.getElementById('tab-'+a).style.display = a===aba?'block':'none';
-      document.getElementById('nav-'+a).classList.toggle('ativa',a===aba);
+    ['dash','presentes','mensagens','fotos'].forEach(a=>{
+      const tabEl = document.getElementById('tab-'+a);
+      if (tabEl) tabEl.style.display = a===aba?'block':'none';
+      const navEl = document.getElementById('nav-'+a);
+      if (navEl) navEl.classList.toggle('ativa',a===aba);
     });
-    document.getElementById('top-nome').textContent = abaLabel[aba];
-    document.getElementById('top-sub').textContent  = abaSub[aba];
+    document.getElementById('top-nome').textContent = abaLabel[aba] || aba;
+    document.getElementById('top-sub').textContent  = abaSub[aba]  || '';
+    if (aba === 'fotos') carregarFotos();
+    atualizarMobNav(aba);
   }
 
   let contador=30;
