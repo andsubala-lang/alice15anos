@@ -35,7 +35,7 @@
       font-family:'Playfair Display',serif;
       font-size: 1.8rem; color: var(--marsala); margin-bottom: 6px;
     }
-    .header p { font-size:.88rem; color:var(--azul-dk); font-weight:600; max-width:320px; line-height:1.6; }
+    .header p { font-size:.88rem; color:var(--marsala); font-weight:600; max-width:320px; line-height:1.6; opacity:.8; }
     .divisor { display:flex; align-items:center; gap:8px; margin:12px auto 0; width:200px; color:var(--azul); opacity:.5; font-size:.75rem; }
     .divisor::before, .divisor::after { content:''; flex:1; height:1px; background:var(--azul); }
 
@@ -55,8 +55,8 @@
     .drop-area:hover, .drop-area.drag { border-color: var(--azul-dk); background: #e3eaf5; }
     .drop-area input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
     .drop-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
-    .drop-titulo { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--azul-dkk); margin-bottom:4px; }
-    .drop-sub { font-size:.8rem; color:var(--azul-dk); font-weight:600; }
+    .drop-titulo { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--marsala); margin-bottom:4px; }
+    .drop-sub { font-size:.8rem; color:var(--marsala); font-weight:600; opacity:.7; }
 
     #preview-grid { display:none; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:8px; }
     .preview-item { position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; border:1.5px solid var(--azul-cl); }
@@ -64,7 +64,7 @@
     .preview-item .video-icon { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.4); font-size:1.5rem; }
     .preview-item .remover { position:absolute; top:3px; right:3px; background:rgba(155,58,74,.9); color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:.65rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 
-    .campo label { font-size:.78rem; font-weight:700; color:var(--azul-dkk); text-transform:uppercase; letter-spacing:.07em; display:block; margin-bottom:6px; }
+    .campo label { font-size:.78rem; font-weight:700; color:var(--marsala); text-transform:uppercase; letter-spacing:.07em; display:block; margin-bottom:6px; }
     .campo input { width:100%; padding:11px 14px; border:1.5px solid var(--azul-cl); border-radius:8px; font-family:'Quicksand',sans-serif; font-size:.9rem; font-weight:600; color:var(--texto); outline:none; background:var(--azul-pale); transition:border-color .2s; }
     .campo input:focus { border-color:var(--azul-dk); background:white; }
     .campo input::placeholder { color:#a0b4cc; }
@@ -74,17 +74,17 @@
     .btn-enviar:disabled { opacity:.5; cursor:not-allowed; }
 
     #progresso-wrap { display:none; flex-direction:column; gap:8px; }
-    .prog-label { font-size:.82rem; color:var(--azul-dk); font-weight:700; text-align:center; }
+    .prog-label { font-size:.82rem; color:var(--marsala); font-weight:700; text-align:center; }
     .prog-bg { background:var(--azul-cl); border-radius:50px; height:10px; overflow:hidden; }
     .prog-fill { height:100%; border-radius:50px; background:linear-gradient(90deg,var(--azul-dkk),var(--azul)); transition:width .3s ease; width:0%; }
 
     #sucesso { display:none; text-align:center; padding:20px 0; }
     #sucesso .s-icone { font-size:3rem; margin-bottom:10px; display:block; }
-    #sucesso h2 { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--azul-dkk); margin-bottom:6px; }
-    #sucesso p { font-size:.85rem; color:var(--azul-dk); font-weight:600; }
+    #sucesso h2 { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--marsala); margin-bottom:6px; }
+    #sucesso p { font-size:.85rem; color:var(--marsala); font-weight:600; opacity:.8; }
     .btn-mais { margin-top:16px; padding:10px 24px; border:1.5px solid var(--marsala); border-radius:50px; background:transparent; color:var(--marsala); font-family:'Quicksand',sans-serif; font-size:.85rem; font-weight:700; cursor:pointer; transition:all .2s; }
     .btn-mais:hover { background:var(--marsala); color:white; }
-    .contador { text-align:center; font-size:.78rem; color:var(--azul-dk); font-weight:600; }
+    .contador { text-align:center; font-size:.78rem; color:var(--marsala); font-weight:600; }
     .contador span { color:var(--marsala); font-weight:700; }
 
     @media (max-width:480px) { body { padding:24px 14px 40px; } .header h1 { font-size:1.5rem; } .card { padding:22px 16px; } }
