@@ -434,6 +434,27 @@
       .pagina { padding-bottom: 80px !important; }
     }
     .mob-nav-bar { display: none; }
+    .foto-admin-card {
+      background: linear-gradient(160deg, var(--creme), var(--creme-md));
+      border: 1.5px solid var(--azul-cl);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .foto-admin-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(46,126,168,.12); }
+    .foto-admin-card img { width:100%; height:140px; object-fit:cover; display:block; }
+    .foto-admin-info { padding:8px 10px; }
+    .foto-admin-nome { font-size:.78rem; font-weight:700; color:var(--marsala); }
+    .foto-admin-data { font-size:.68rem; color:var(--azul-dk); margin-top:2px; }
+    .btn-deletar {
+      width:100%; padding:6px; margin-top:6px;
+      border:1px solid rgba(155,58,74,.3); border-radius:5px;
+      background:transparent; color:var(--marsala);
+      font-family:'Quicksand',sans-serif; font-size:.72rem; font-weight:700;
+      cursor:pointer; transition:all .15s;
+    }
+    .btn-deletar:hover { background:var(--marsala); color:white; }
 
   </style>
 </head>
@@ -461,6 +482,7 @@
       <div class="nav-item ativa" id="nav-dash"      onclick="trocarAba('dash')"><span class="nav-icone">📊</span> Dashboard</div>
       <div class="nav-item"       id="nav-presentes" onclick="trocarAba('presentes')"><span class="nav-icone">🎁</span> Presentes</div>
       <div class="nav-item"       id="nav-mensagens" onclick="trocarAba('mensagens')"><span class="nav-icone">💌</span> Mensagens</div>
+      <div class="nav-item"       id="nav-fotos"     onclick="trocarAba('fotos')"><span class="nav-icone">📸</span> Fotos da Festa</div>
     </nav>
     <div class="sidebar-footer">
       <div class="refresh-badge" id="refresh-info">↻ Atualiza em 30s</div>
@@ -623,6 +645,9 @@
   </button>
   <button class="mob-nav-btn" id="mob-nav-mensagens" onclick="trocarAba('mensagens');atualizarMobNav('mensagens')">
     <span class="mob-nav-icon">💌</span>Mensagens
+  </button>
+  <button class="mob-nav-btn" id="mob-nav-fotos" onclick="trocarAba('fotos');atualizarMobNav('fotos')">
+    <span class="mob-nav-icon">📸</span>Fotos
   </button>
 </div>
 
@@ -810,14 +835,14 @@
   }
 
   function atualizarMobNav(aba) {
-    ['dash','presentes','mensagens'].forEach(a => {
+    ['dash','presentes','mensagens','fotos'].forEach(a => {
       const btn = document.getElementById('mob-nav-' + a);
       if (btn) btn.classList.toggle('ativo', a === aba);
     });
   }
 
-  const abaLabel = { dash:'Dashboard', presentes:'Presentes', mensagens:'Mensagens' };
-  const abaSub   = { dash:'VISÃO GERAL', presentes:'GESTÃO', mensagens:'MENSAGENS' };
+  const abaLabel = { dash:'Dashboard', presentes:'Presentes', mensagens:'Mensagens', fotos:'Fotos da Festa' };
+  const abaSub   = { dash:'VISÃO GERAL', presentes:'GESTÃO', mensagens:'MENSAGENS', fotos:'GALERIA' };
   function trocarAba(aba) {
     ['dash','presentes','mensagens'].forEach(a=>{
       document.getElementById('tab-'+a).style.display = a===aba?'block':'none';
@@ -835,6 +860,40 @@
       if (contador<=0) { contador=30; await carregar(); el.textContent='✅ Atualizado!'; setTimeout(()=>el.textContent='↻ Atualiza em 30s',2000); }
       else el.textContent=`↻ Atualiza em ${contador}s`;
     },1000);
+  }
+
+  // ── Fotos da Festa ──
+  async function carregarFotos() {
+    const grid = document.getElementById('fotos-grid');
+    grid.innerHTML = '<div class="vazio"><span class="spin"></span></div>';
+    const { data, error } = await sb.from('fotos_festa').select('*').order('criado_em', { ascending: false });
+    if (error || !data || !data.length) {
+      grid.innerHTML = '<div class="vazio" style="grid-column:1/-1;">Nenhuma foto enviada ainda. 📸</div>';
+      return;
+    }
+    grid.innerHTML = data.map(f => `
+      <div class="foto-admin-card">
+        <img src="${f.url}" alt="Foto" loading="lazy">
+        <div class="foto-admin-info">
+          <div class="foto-admin-nome">📸 ${f.nome || 'Convidado'}</div>
+          <div class="foto-admin-data">${fmt(f.criado_em)}</div>
+          <button class="btn-deletar" onclick="deletarFoto(${f.id}, '${f.url}')">🗑️ Excluir foto</button>
+        </div>
+      </div>`).join('');
+  }
+
+  async function deletarFoto(id, url) {
+    cmConfirm(
+      'Deseja excluir esta foto? Ela será removida da galeria permanentemente.',
+      async (ok) => {
+        if (!ok) return;
+        const { error } = await sb.from('fotos_festa').delete().eq('id', id);
+        if (error) { cmAlert('Erro ao excluir: ' + error.message, {titulo:'Erro',icone:'❌'}); return; }
+        carregarFotos();
+        cmAlert('Foto excluída com sucesso!', {titulo:'Pronto!',icone:'✅'});
+      },
+      { titulo:'Excluir foto', icone:'🗑️', btnOk:'Sim, excluir' }
+    );
   }
 
   // ── Zerar visitas ──
