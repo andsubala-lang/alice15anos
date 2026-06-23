@@ -585,7 +585,10 @@
         <!-- Barra de ações -->
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
           <div style="font-size:.82rem;color:var(--azul-dk);font-weight:600;" id="fotos-subtitulo">Carregando…</div>
-          <button onclick="carregarFotos()" style="background:transparent;border:1.5px solid var(--azul-cl);color:var(--azul-dk);border-radius:6px;padding:6px 14px;font-family:'Quicksand',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;">🔄 Atualizar</button>
+          <div style="display:flex;gap:8px;">
+            <button onclick="carregarFotos()" style="background:transparent;border:1.5px solid var(--azul-cl);color:var(--azul-dk);border-radius:6px;padding:6px 14px;font-family:'Quicksand',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;">🔄 Atualizar</button>
+            <button onclick="zerarFotos()" style="background:transparent;border:1.5px solid rgba(155,58,74,.3);color:var(--marsala);border-radius:6px;padding:6px 14px;font-family:'Quicksand',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;">🗑️ Zerar fotos de teste</button>
+          </div>
         </div>
 
         <!-- Grid de fotos -->
@@ -939,6 +942,20 @@
           </div>
         </div>
       </div>`).join('');
+  }
+
+  async function zerarFotos() {
+    cmConfirm(
+      'Isso vai apagar TODAS as fotos da galeria. Use antes da festa para limpar os testes!',
+      async (ok) => {
+        if (!ok) return;
+        const { error } = await sb.from('fotos_festa').delete().neq('id', 0);
+        if (error) { cmAlert('Erro ao zerar: ' + error.message, {titulo:'Erro',icone:'❌'}); return; }
+        carregarFotos();
+        cmAlert('Todas as fotos foram removidas! A galeria está limpa para a festa. 🎉', {titulo:'Pronto!',icone:'✅'});
+      },
+      { titulo:'Zerar fotos de teste', icone:'🗑️', btnOk:'Sim, apagar tudo' }
+    );
   }
 
   function baixarFoto(url, nome) {
