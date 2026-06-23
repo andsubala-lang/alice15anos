@@ -435,26 +435,32 @@
     }
     .mob-nav-bar { display: none; }
     .foto-admin-card {
-      background: linear-gradient(160deg, var(--creme), var(--creme-md));
+      background: linear-gradient(160deg, var(--creme), #fff);
       border: 1.5px solid var(--azul-cl);
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
       position: relative;
       transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 2px 10px rgba(74,106,158,.07);
     }
-    .foto-admin-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(46,126,168,.12); }
-    .foto-admin-card img { width:100%; height:140px; object-fit:cover; display:block; }
-    .foto-admin-info { padding:8px 10px; }
-    .foto-admin-nome { font-size:.78rem; font-weight:700; color:var(--marsala); }
-    .foto-admin-data { font-size:.68rem; color:var(--azul-dk); margin-top:2px; }
-    .btn-deletar {
-      width:100%; padding:6px; margin-top:6px;
-      border:1px solid rgba(155,58,74,.3); border-radius:5px;
-      background:transparent; color:var(--marsala);
-      font-family:'Quicksand',sans-serif; font-size:.72rem; font-weight:700;
-      cursor:pointer; transition:all .15s;
-    }
-    .btn-deletar:hover { background:var(--marsala); color:white; }
+    .foto-admin-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--azul-dk),var(--azul)); }
+    .foto-admin-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(74,106,158,.15); }
+    .foto-admin-card img { width:100%; height:180px; object-fit:cover; display:block; cursor:pointer; }
+    .foto-admin-info { padding:12px 14px; }
+    .foto-admin-nome { font-family:'Playfair Display',serif; font-style:italic; font-size:.88rem; font-weight:700; color:var(--marsala); margin-bottom:3px; }
+    .foto-admin-data { font-size:.70rem; color:var(--azul-dk); margin-bottom:10px; }
+    .foto-admin-acoes { display:flex; gap:6px; }
+    .btn-ver-foto { flex:1; padding:7px; border:1.5px solid var(--azul-cl); border-radius:6px; background:transparent; color:var(--azul-dk); font-family:'Quicksand',sans-serif; font-size:.72rem; font-weight:700; cursor:pointer; transition:all .15s; }
+    .btn-ver-foto:hover { background:var(--azul-pale); }
+    .btn-deletar { flex:1; padding:7px; border:1.5px solid rgba(155,58,74,.3); border-radius:6px; background:transparent; color:var(--marsala); font-family:'Quicksand',sans-serif; font-size:.72rem; font-weight:700; cursor:pointer; transition:all .15s; }
+    .btn-deletar:hover { background:var(--marsala); color:white; border-color:var(--marsala); }
+
+    /* Dark mode fotos */
+    body.dark .foto-admin-card { background:linear-gradient(160deg,#1e2030,#252840) !important; border-color:#2e3550 !important; }
+    body.dark .foto-admin-nome { color:#e07080 !important; }
+    body.dark .foto-admin-data { color:#92A8D1 !important; }
+    body.dark .btn-ver-foto { border-color:#2e3550 !important; color:#92A8D1 !important; }
+    body.dark .btn-deletar { border-color:rgba(224,112,128,.3) !important; color:#e07080 !important; }
 
   </style>
 </head>
@@ -563,6 +569,29 @@
       </div>
 
       <!-- MENSAGENS -->
+      <!-- ── ABA FOTOS DA FESTA ── -->
+      <div id="tab-fotos" style="display:none;">
+        <div class="sec-titulo" style="margin-bottom:20px;">
+          <h2>Fotos da Festa</h2><div class="sec-linha"></div><div class="sec-orn">📸</div>
+        </div>
+
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;" id="fotos-stats">
+          <div class="card-dash t1"><div class="num" id="stat-total">–</div><div class="label">Total de fotos</div></div>
+          <div class="card-dash t2"><div class="num" id="stat-hoje">–</div><div class="label">Enviadas hoje</div></div>
+          <div class="card-dash t3"><div class="num" id="stat-pessoas">–</div><div class="label">Convidados</div></div>
+        </div>
+
+        <!-- Barra de ações -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+          <div style="font-size:.82rem;color:var(--azul-dk);font-weight:600;" id="fotos-subtitulo">Carregando…</div>
+          <button onclick="carregarFotos()" style="background:transparent;border:1.5px solid var(--azul-cl);color:var(--azul-dk);border-radius:6px;padding:6px 14px;font-family:'Quicksand',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;">🔄 Atualizar</button>
+        </div>
+
+        <!-- Grid de fotos -->
+        <div id="fotos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;"></div>
+      </div>
+
       <div id="tab-mensagens" style="display:none;">
         <div class="sec-titulo"><h2>Mensagens para a Alice</h2><div class="sec-linha"></div><div class="sec-orn">💌</div></div>
         <div class="msg-grid" id="msg-grid"><div class="vazio"><span class="spin"></span></div></div>
@@ -869,24 +898,49 @@
   // ── Fotos da Festa ──
   async function carregarFotos() {
     const grid = document.getElementById('fotos-grid');
-    grid.innerHTML = '<div class="vazio"><span class="spin"></span></div>';
+    const sub  = document.getElementById('fotos-subtitulo');
+    if (sub) sub.textContent = 'Carregando fotos…';
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--azul-dk);">⏳ Carregando…</div>';
+
     const { data, error } = await sb.from('fotos_festa').select('*').order('criado_em', { ascending: false });
-    if (error || !data || !data.length) {
-      grid.innerHTML = '<div class="vazio" style="grid-column:1/-1;">Nenhuma foto enviada ainda. 📸</div>';
+
+    if (error) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--marsala);">Erro: ${error.message}</div>`;
       return;
     }
+    if (!data || !data.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--azul-dk);"><div style="font-size:3rem;margin-bottom:12px;">📸</div><div style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;">Nenhuma foto enviada ainda</div><div style="font-size:.82rem;margin-top:6px;opacity:.6;">As fotos dos convidados aparecerão aqui</div></div>';
+      if (sub) sub.textContent = '0 fotos enviadas';
+      document.getElementById('stat-total').textContent = '0';
+      document.getElementById('stat-hoje').textContent = '0';
+      document.getElementById('stat-pessoas').textContent = '0';
+      return;
+    }
+
+    // Stats
+    const hoje = new Date().toISOString().slice(0,10);
+    const qtdHoje = data.filter(f => f.criado_em && f.criado_em.slice(0,10) === hoje).length;
+    const pessoas = new Set(data.map(f => f.nome || 'Convidado')).size;
+    document.getElementById('stat-total').textContent = data.length;
+    document.getElementById('stat-hoje').textContent = qtdHoje;
+    document.getElementById('stat-pessoas').textContent = pessoas;
+    if (sub) sub.textContent = `${data.length} foto${data.length!==1?'s':''} enviada${data.length!==1?'s':''}`;
+
     grid.innerHTML = data.map(f => `
       <div class="foto-admin-card">
-        <img src="${f.url}" alt="Foto" loading="lazy">
+        <img src="${f.url}" alt="Foto" loading="lazy" onclick="window.open('${f.url}','_blank')">
         <div class="foto-admin-info">
           <div class="foto-admin-nome">📸 ${f.nome || 'Convidado'}</div>
-          <div class="foto-admin-data">${fmt(f.criado_em)}</div>
-          <button class="btn-deletar" onclick="deletarFoto(${f.id}, '${f.url}')">🗑️ Excluir foto</button>
+          <div class="foto-admin-data">📅 ${fmt(f.criado_em)}</div>
+          <div class="foto-admin-acoes">
+            <button class="btn-ver-foto" onclick="window.open('${f.url}','_blank')">🔍 Ver foto</button>
+            <button class="btn-deletar" onclick="deletarFoto(${f.id})">🗑️ Excluir</button>
+          </div>
         </div>
       </div>`).join('');
   }
 
-  async function deletarFoto(id, url) {
+  async function deletarFoto(id) {
     cmConfirm(
       'Deseja excluir esta foto? Ela será removida da galeria permanentemente.',
       async (ok) => {
