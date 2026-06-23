@@ -422,6 +422,9 @@
         <div class="prog-bg"><div class="prog-fill" id="prog-fill"></div></div>
       </div>
 
+      <!-- Aviso limite -->
+      <div id="aviso-limite" style="display:none;background:rgba(155,58,74,.08);border:1px solid rgba(155,58,74,.2);border-radius:8px;padding:10px 14px;font-size:.8rem;color:var(--marsala);font-weight:600;text-align:center;"></div>
+
       <!-- Botão -->
       <button class="btn-enviar" id="btn-enviar" onclick="abrirModal()" disabled>
         📤 Enviar para a Alice
@@ -480,12 +483,29 @@
     inputArq.value = '';
   });
 
+  const LIMITE = 10;
   function adicionar(files) {
-    files.forEach(f => {
+    const disponiveis = LIMITE - arquivos.length;
+    if (disponiveis <= 0) {
+      mostrarAviso(`Limite de ${LIMITE} fotos por envio atingido!`);
+      return;
+    }
+    const permitidos = files.slice(0, disponiveis);
+    if (files.length > disponiveis) {
+      mostrarAviso(`Você pode enviar no máximo ${LIMITE} fotos por vez. Selecionamos as primeiras ${disponiveis}.`);
+    }
+    permitidos.forEach(f => {
       if (!arquivos.find(x => x.name === f.name && x.size === f.size))
         arquivos.push(f);
     });
     renderizar();
+  }
+
+  function mostrarAviso(msg) {
+    const aviso = document.getElementById('aviso-limite');
+    aviso.textContent = msg;
+    aviso.style.display = 'block';
+    setTimeout(() => aviso.style.display = 'none', 4000);
   }
 
   function renderizar() {
@@ -559,6 +579,7 @@
     const progFill = document.getElementById('prog-fill');
     const progLabel= document.getElementById('prog-label');
     const progPct  = document.getElementById('prog-pct');
+    const inicio = Date.now();
 
     btnEnviar.disabled = true;
     progWrap.style.display = 'flex';
@@ -567,10 +588,17 @@
     const total = arquivos.length;
 
     for (const arquivo of arquivos) {
-      progLabel.textContent = `Enviando ${enviados + 1} de ${total}…`;
       const pct = Math.round((enviados / total) * 100);
       progFill.style.width = pct + '%';
       progPct.textContent = pct + '%';
+      if (enviados > 0) {
+        const decorrido = (Date.now() - inicio) / 1000;
+        const porArq = decorrido / enviados;
+        const restante = Math.round(porArq * (total - enviados));
+        progLabel.textContent = `Enviando ${enviados + 1} de ${total} · ~${restante}s restantes`;
+      } else {
+        progLabel.textContent = `Enviando ${enviados + 1} de ${total}…`;
+      }
 
       const form = new FormData();
       form.append('file', arquivo);
