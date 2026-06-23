@@ -449,7 +449,7 @@
     .foto-admin-info { padding:12px 14px; }
     .foto-admin-nome { font-family:'Playfair Display',serif; font-style:italic; font-size:.88rem; font-weight:700; color:var(--marsala); margin-bottom:3px; }
     .foto-admin-data { font-size:.70rem; color:var(--azul-dk); margin-bottom:10px; }
-    .foto-admin-acoes { display:flex; gap:6px; }
+    .foto-admin-acoes { display:flex; gap:5px; }
     .btn-ver-foto { flex:1; padding:7px; border:1.5px solid var(--azul-cl); border-radius:6px; background:transparent; color:var(--azul-dk); font-family:'Quicksand',sans-serif; font-size:.72rem; font-weight:700; cursor:pointer; transition:all .15s; }
     .btn-ver-foto:hover { background:var(--azul-pale); }
     .btn-deletar { flex:1; padding:7px; border:1.5px solid rgba(155,58,74,.3); border-radius:6px; background:transparent; color:var(--marsala); font-family:'Quicksand',sans-serif; font-size:.72rem; font-weight:700; cursor:pointer; transition:all .15s; }
@@ -933,11 +933,27 @@
           <div class="foto-admin-nome">📸 ${f.nome || 'Convidado'}</div>
           <div class="foto-admin-data">📅 ${fmt(f.criado_em)}</div>
           <div class="foto-admin-acoes">
-            <button class="btn-ver-foto" onclick="window.open('${f.url}','_blank')">🔍 Ver foto</button>
-            <button class="btn-deletar" onclick="deletarFoto(${f.id})">🗑️ Excluir</button>
+            <button class="btn-ver-foto" onclick="window.open('${f.url}','_blank')">🔍 Ver</button>
+            <button class="btn-ver-foto" onclick="baixarFoto('${f.url}','${(f.nome||'foto').replace(/'/g,'')}')">⬇️ Baixar</button>
+            <button class="btn-deletar" onclick="deletarFoto(${f.id})">🗑️</button>
           </div>
         </div>
       </div>`).join('');
+  }
+
+  function baixarFoto(url, nome) {
+    const a = document.createElement('a');
+    // Usar fetch para forçar download sem abrir nova aba
+    fetch(url)
+      .then(r => r.blob())
+      .then(blob => {
+        const burl = URL.createObjectURL(blob);
+        a.href = burl; a.download = nome + '.jpg';
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(burl);
+      })
+      .catch(() => { a.href = url; a.download = nome + '.jpg'; a.target='_blank'; a.click(); });
   }
 
   async function deletarFoto(id) {
