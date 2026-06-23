@@ -274,6 +274,90 @@
       font-size: .72rem; color: var(--azul-dk); font-weight: 600; opacity: .6;
     }
 
+
+    /* ── MODAL CONFIRMAÇÃO ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(44,62,80,.55);
+      backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.ativo { display: flex; }
+    .modal-box {
+      background: linear-gradient(160deg, var(--creme), #fff);
+      border: 1.5px solid var(--azul-cl);
+      border-radius: 16px;
+      width: 100%; max-width: 480px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(44,62,80,.2);
+      position: relative;
+      animation: modalIn .3s ease;
+    }
+    @keyframes modalIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .modal-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--marsala), var(--ouro), var(--azul-dk));
+    }
+    .modal-header {
+      padding: 24px 24px 16px;
+      border-bottom: 1px solid var(--azul-cl);
+    }
+    .modal-titulo {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 1.2rem; color: var(--marsala); margin-bottom: 4px;
+    }
+    .modal-sub { font-size: .82rem; color: var(--azul-dk); font-weight: 600; }
+    .modal-grid {
+      padding: 16px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    .modal-thumb {
+      aspect-ratio: 1; border-radius: 8px; overflow: hidden;
+      border: 1.5px solid var(--azul-cl);
+      position: relative;
+    }
+    .modal-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .modal-thumb .video-tag {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.4); font-size: 1.4rem;
+    }
+    .modal-nome-wrap {
+      padding: 0 24px 16px;
+      font-size: .85rem; color: var(--azul-dk); font-weight: 600;
+    }
+    .modal-nome-wrap span { color: var(--marsala); font-weight: 700; }
+    .modal-footer {
+      padding: 16px 24px 20px;
+      display: flex; gap: 10px;
+      border-top: 1px solid var(--azul-cl);
+    }
+    .btn-cancelar-modal {
+      flex: 1; padding: 11px;
+      border: 1.5px solid var(--azul-cl); border-radius: 10px;
+      background: transparent; color: var(--azul-dk);
+      font-family: 'Quicksand', sans-serif; font-size: .88rem; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-cancelar-modal:hover { background: var(--azul-pale); }
+    .btn-confirmar-modal {
+      flex: 2; padding: 11px;
+      border: none; border-radius: 10px;
+      background: linear-gradient(135deg, var(--marsala-dk), var(--marsala));
+      color: white;
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 1rem; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(122,37,53,.25);
+      transition: opacity .2s, transform .15s;
+    }
+    .btn-confirmar-modal:hover { opacity: .9; transform: translateY(-1px); }
+
     @media (max-width: 480px) {
       .header h1 { font-size: 1.5rem; }
       .card-body { padding: 22px 16px; }
@@ -334,7 +418,7 @@
       </div>
 
       <!-- Botão -->
-      <button class="btn-enviar" id="btn-enviar" onclick="enviar()" disabled>
+      <button class="btn-enviar" id="btn-enviar" onclick="abrirModal()" disabled>
         📤 Enviar para a Alice
       </button>
 
@@ -431,7 +515,39 @@
     });
   }
 
-  async function enviar() {
+  function abrirModal() {
+    if (!arquivos.length) return;
+    const nome = document.getElementById('nome').value.trim() || 'Convidado';
+    const grid = document.getElementById('modal-grid');
+    const sub  = document.getElementById('modal-sub');
+    const nomeWrap = document.getElementById('modal-nome-wrap');
+
+    sub.textContent = `${arquivos.length} arquivo${arquivos.length>1?'s':''} prontos para enviar`;
+    nomeWrap.innerHTML = `Enviando como: <span>${nome}</span>`;
+
+    grid.innerHTML = '';
+    arquivos.forEach(f => {
+      const div = document.createElement('div');
+      div.className = 'modal-thumb';
+      if (f.type.startsWith('image/')) {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(f);
+        div.appendChild(img);
+      } else {
+        div.innerHTML = '<div class="video-tag">🎥</div>';
+      }
+      grid.appendChild(div);
+    });
+
+    document.getElementById('modal-confirmacao').classList.add('ativo');
+  }
+
+  function fecharModal() {
+    document.getElementById('modal-confirmacao').classList.remove('ativo');
+  }
+
+  async function confirmarEnvio() {
+    fecharModal();
     if (!arquivos.length) return;
     const nome = document.getElementById('nome').value.trim() || 'Convidado';
     const progWrap = document.getElementById('progresso-wrap');
@@ -489,5 +605,22 @@
     btnEnviar.disabled = true;
   }
 </script>
+
+<!-- MODAL CONFIRMAÇÃO -->
+<div class="modal-overlay" id="modal-confirmacao">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-titulo">📸 Confirmar envio</div>
+      <div class="modal-sub" id="modal-sub">Verifique as fotos antes de enviar</div>
+    </div>
+    <div class="modal-grid" id="modal-grid"></div>
+    <div class="modal-nome-wrap" id="modal-nome-wrap"></div>
+    <div class="modal-footer">
+      <button class="btn-cancelar-modal" onclick="fecharModal()">← Voltar</button>
+      <button class="btn-confirmar-modal" onclick="confirmarEnvio()">📤 Enviar para a Alice</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
