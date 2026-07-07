@@ -535,7 +535,7 @@
         <div class="timer-box">
             <div class="timer-topo">
                 <span class="timer-topo-acima">✦ Estamos quase lá ✦</span>
-                <span class="timer-topo-abaixo">🎀 Faltam para o grande dia</span>
+                <span class="timer-topo-abaixo" id="timer-label">🎀 Faltam para o grande dia</span>
             </div>
             <div class="timer-divisor"><span>❧</span></div>
             <div class="timer-blocos">
@@ -696,6 +696,9 @@
         if (el('t-horas')) el('t-horas').textContent = pad(hh);
         if (el('t-min'))   el('t-min').textContent   = pad(mm);
         if (el('t-seg'))   el('t-seg').textContent   = pad(ss);
+        // Singular/plural
+        const label = el('timer-label');
+        if (label) label.textContent = dd === 1 && hh === 0 ? '🎀 Falta para o grande dia' : '🎀 Faltam para o grande dia';
         // timer mobile
         const tm = document.getElementById('timer-mobile');
         if (tm) tm.textContent = `${dd}d ${pad(hh)}h ${pad(mm)}m ${pad(ss)}s`;
@@ -780,8 +783,15 @@
         renderizar();
     }
 
+    function isPix(link, titulo) {
+        if (!link && !titulo) return false;
+        if (link && (link.startsWith('pix:') || link.startsWith('000201') || link.startsWith('data:image') || link.startsWith('iVBOR'))) return true;
+        if (titulo && titulo.toLowerCase().includes('pix')) return true;
+        return false;
+    }
+
     function atualizarContador(data, animar) {
-        const disponiveis = data.filter(g => !g.reservado).length;
+        const disponiveis = data.filter(g => !g.reservado && !isPix(g.link_compra, g.titulo)).length;
         const numEl = document.getElementById('num-disp');
         const bannerEl = document.getElementById('banner-disp');
         if (!numEl || !bannerEl) return;
