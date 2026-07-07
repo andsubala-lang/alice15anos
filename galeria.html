@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -202,7 +203,7 @@
     }
     .footer-url { font-size:.72rem; color:rgba(201,168,108,.35); letter-spacing:.1em; }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -254,9 +255,7 @@
   <h2>Aguardando fotos…</h2>
   <p>Escaneie o QR code e envie suas fotos da festa!</p>
   <div class="qr-overlay">
-    <div class="qr-box">
-      <canvas class="qr-canvas" id="qr-canvas"></canvas>
-    </div>
+    <div class="qr-box" id="qr-box"></div>
     <div class="qr-label">Aponte a câmera para enviar suas fotos</div>
     <div class="qr-url">alice15anos.vercel.app/fotos.html</div>
   </div>
@@ -467,10 +466,14 @@
 
   // Gerar QR code
   try {
-    QRCode.toCanvas(document.getElementById('qr-canvas'),
-      'https://alice15anos.vercel.app/fotos.html',
-      { width: 180, margin: 1, color: { dark: '#7a2535', light: '#ffffff' } }
-    );
+    new QRCode(document.getElementById('qr-box'), {
+      text: 'https://alice15anos.vercel.app/fotos.html',
+      width: 180,
+      height: 180,
+      colorDark: '#7a2535',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
   } catch(e) { console.warn('QR:', e); }
 
   buscarFotos();
