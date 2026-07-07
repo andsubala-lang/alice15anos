@@ -163,6 +163,37 @@
     .vazio p { font-size:.9rem; color:rgba(197,213,232,.35); font-weight:600; }
     .vazio-url { margin-top:12px; font-size:.82rem; color:rgba(201,168,108,.4); font-family:'Playfair Display',serif; font-style:italic; }
 
+
+    /* QR Code overlay na tela vazia */
+    .qr-overlay {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .qr-box {
+      background: white;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      border: 2px solid rgba(201,168,108,.4);
+    }
+    .qr-canvas { display: block; }
+    .qr-label {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: .9rem;
+      color: rgba(240,221,160,.6);
+      text-align: center;
+    }
+    .qr-url {
+      font-size: .75rem;
+      color: rgba(201,168,108,.5);
+      letter-spacing: .06em;
+      text-align: center;
+    }
+
     /* Footer */
     .footer {
       position:fixed; bottom:0; left:0; right:0; z-index:9;
@@ -172,6 +203,7 @@
     }
     .footer-url { font-size:.72rem; color:rgba(201,168,108,.35); letter-spacing:.1em; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -222,7 +254,13 @@
   <div class="ic">📸</div>
   <h2>Aguardando fotos…</h2>
   <p>Escaneie o QR code e envie suas fotos da festa!</p>
-  <div class="vazio-url">alice15anos.vercel.app/fotos-teste.html</div>
+  <div class="qr-overlay">
+    <div class="qr-box">
+      <canvas class="qr-canvas" id="qr-canvas"></canvas>
+    </div>
+    <div class="qr-label">Aponte a câmera para enviar suas fotos</div>
+    <div class="qr-url">alice15anos.vercel.app/fotos-teste.html</div>
+  </div>
 </div>
 
 <div class="footer">
@@ -427,6 +465,14 @@
       });
     }
   }
+
+  // Gerar QR code
+  try {
+    QRCode.toCanvas(document.getElementById('qr-canvas'),
+      'https://alice15anos.vercel.app/fotos-teste.html',
+      { width: 180, margin: 1, color: { dark: '#7a2535', light: '#ffffff' } }
+    );
+  } catch(e) { console.warn('QR:', e); }
 
   buscarFotos();
   setInterval(buscarFotos, 3000);
