@@ -356,6 +356,37 @@
             .pix-qr-img, .pix-qr-placeholder { width: 110px; height: 110px; }
         }
 
+
+        /* ── AVISO PRESENCIAL ── */
+        .aviso-presencial {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(253,248,240,.85);
+            border: 1px solid rgba(201,168,108,.35);
+            border-radius: 50px;
+            padding: 9px 18px;
+            margin: 0 auto 18px;
+            max-width: 480px;
+            backdrop-filter: blur(4px);
+        }
+        .aviso-presencial-icone { font-size: 1rem; flex-shrink: 0; }
+        .aviso-presencial p {
+            font-size: .8rem;
+            color: var(--marsala);
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.5;
+            opacity: .85;
+        }
+        @media (max-width: 520px) {
+            .aviso-presencial {
+                border-radius: 10px;
+                margin: 0 8px 16px;
+                padding: 8px 14px;
+            }
+        }
+
         /* ── ERRO ── */
         .erro-amigavel { display: none; flex-direction: column; align-items: center; gap: 14px; padding: 60px 20px; text-align: center; grid-column: 1/-1; }
         .erro-amigavel.ativo { display: flex; }
@@ -405,6 +436,66 @@
         .form-area input::placeholder { color: #b09878; }
         .form-area input.erro { border-color: var(--marsala); }
         .tag-reservado { display: inline-block; background: linear-gradient(135deg, rgba(122,37,53,.08), rgba(201,168,108,.12)); color: var(--marsala); border: 1.5px solid #c9a86c; border-radius: 6px; padding: 8px 16px; font-size: 0.82rem; font-weight: 700; font-family: 'Quicksand', sans-serif; font-style: normal; }
+
+
+        /* ── BOTÕES FLUTUANTES ── */
+        .float-btns {
+            position: fixed;
+            bottom: 28px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            z-index: 500;
+        }
+        .float-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .float-label {
+            background: rgba(30,10,15,.82);
+            color: white;
+            font-size: .78rem;
+            font-weight: 700;
+            font-family: 'Quicksand', sans-serif;
+            padding: 5px 13px;
+            border-radius: 50px;
+            white-space: nowrap;
+            backdrop-filter: blur(6px);
+            opacity: 0;
+            transform: translateX(10px);
+            transition: opacity .2s, transform .2s;
+            pointer-events: none;
+        }
+        .float-item:hover .float-label {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .float-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,.2);
+            transition: transform .2s, box-shadow .2s;
+            flex-shrink: 0;
+            border: none;
+            cursor: pointer;
+        }
+        .float-btn:hover { transform: scale(1.08); box-shadow: 0 6px 22px rgba(0,0,0,.28); }
+        .float-btn-presenca { background: #9b3a4a; }
+        .float-btn-wpp      { background: #25D366; }
+
+        @media (max-width: 520px) {
+            .float-btns { bottom: 20px; right: 14px; }
+            .float-btn { width: 46px; height: 46px; font-size: 1.15rem; }
+        }
 
         /* ── OVERLAY OBRIGADA ── */
         #overlay-obrigada { display:none; position:fixed; inset:0; background:rgba(253,248,240,.96); z-index:9998; align-items:center; justify-content:center; flex-direction:column; gap:16px; text-align:center; padding:20px; }
@@ -498,6 +589,12 @@
         <div class="secao-ornamento">❧ ♥ ❧</div>
     </div>
 
+    <!-- AVISO COMPRA PRESENCIAL -->
+    <div class="aviso-presencial">
+      <span class="aviso-presencial-icone">🎁</span>
+      <p>Vai comprar pessoalmente? Reserve aqui para que ninguém escolha o mesmo presente. 🎀</p>
+    </div>
+
     <!-- CONTROLES -->
     <div class="controles">
         <div class="busca-wrap">
@@ -547,9 +644,19 @@
 <div id="pix-rodape" style="display:none; max-width:380px; margin:40px auto 28px; padding:0 16px;"></div>
 
 <div class="rodape">
-    <p style="font-size:.82rem; color:#7a5a40; margin-bottom:14px; font-weight:600;">Compartilhe a lista com os convidados 💙</p>
-    <a class="btn-whatsapp" href="https://wa.me/?text=Confira+a+lista+de+presentes+dos+15+anos+da+Alice%21%0Ahttps%3A%2F%2Falice15anos.vercel.app%2F" target="_blank" rel="noopener">📲 Compartilhar no WhatsApp</a>
     <p style="font-size:.75rem; color:#aaa; margin-top:20px;">Feito com 💙 e ♥️ para os 15 anos da Alice · 2026</p>
+</div>
+
+<!-- BOTÕES FLUTUANTES -->
+<div class="float-btns">
+    <div class="float-item">
+        <span class="float-label">Confirmar presença</span>
+        <a class="float-btn float-btn-presenca" href="https://formulario-presenca.com.br/evento/ffb17a7b-e51a-48cd-b87b-5e2f3be5c607" target="_blank" rel="noopener" title="Confirmar presença">🎀</a>
+    </div>
+    <div class="float-item">
+        <span class="float-label">Compartilhar no WhatsApp</span>
+        <a class="float-btn float-btn-wpp" href="https://wa.me/?text=Confira+a+lista+de+presentes+dos+15+anos+da+Alice%21%0Ahttps%3A%2F%2Falice15anos.vercel.app%2F" target="_blank" rel="noopener" title="Compartilhar no WhatsApp">📲</a>
+    </div>
 </div>
 
 <script>
