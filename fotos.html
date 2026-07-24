@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -295,11 +294,17 @@
       position: relative;
       width: 100%;
       aspect-ratio: 9/16;
-      max-height: 65vh;
+      max-height: 72vh;
       border-radius: 16px;
       overflow: hidden;
       background: #000;
       box-shadow: 0 8px 32px rgba(0,0,0,.3);
+    }
+    @media (max-width: 520px) {
+      .camera-wrap {
+        border-radius: 12px;
+        max-height: 68vh;
+      }
     }
     #camera-video {
       position: absolute; inset: 0;
@@ -612,8 +617,24 @@
 
       <!-- SEÇÃO: CÂMERA COM FILTRO -->
       <div id="secao-filtro">
-        <!-- Câmera ao vivo -->
-        <div id="camera-ativa">
+
+        <!-- Tela inicial — antes de abrir câmera -->
+        <div id="camera-inicio" style="text-align:center;padding:28px 16px;display:flex;flex-direction:column;align-items:center;gap:14px;">
+          <div style="font-size:3.5rem;filter:drop-shadow(0 4px 12px rgba(201,168,76,.3));">📸</div>
+          <div>
+            <div style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--marsala);margin-bottom:6px;font-weight:700;">Tirar foto com filtro</div>
+            <div style="font-size:.82rem;color:var(--azul-dk);font-weight:600;line-height:1.6;max-width:260px;">A câmera abrirá com o filtro exclusivo da Alice já aplicado em tempo real</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;width:100%;margin-top:4px;">
+            <button onclick="abrirCamera()" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--marsala-dk),var(--marsala));color:white;font-family:'Quicksand',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(122,37,53,.3);display:flex;align-items:center;justify-content:center;gap:8px;">
+              📷 Abrir câmera com filtro
+            </button>
+            <div style="font-size:.72rem;color:var(--azul-dk);opacity:.6;font-weight:600;">O navegador pedirá permissão para acessar sua câmera</div>
+          </div>
+        </div>
+
+        <!-- Câmera ao vivo — aparece após clicar -->
+        <div id="camera-ativa" style="display:none;">
           <div class="camera-wrap">
             <video id="camera-video" autoplay playsinline muted></video>
             <canvas id="camera-canvas" style="display:none;"></canvas>
@@ -672,6 +693,8 @@
             <button class="btn-usar" onclick="usarFoto()">✔ Usar esta foto</button>
           </div>
         </div>
+
+        </div><!-- /camera-ativa -->
 
         <!-- Erro câmera -->
         <div class="camera-erro" id="camera-erro">
@@ -882,8 +905,21 @@
     document.getElementById('secao-upload').style.display  = secao === 'upload'  ? 'block' : 'none';
     document.getElementById('btn-filtro').classList.toggle('ativo', secao === 'filtro');
     document.getElementById('btn-upload').classList.toggle('ativo', secao === 'upload');
-    if (secao === 'filtro') iniciarCamera();
-    else pararCamera();
+    if (secao !== 'filtro') {
+      pararCamera();
+    } else {
+      // Mostrar tela inicial, não a câmera diretamente
+      document.getElementById('camera-inicio').style.display = 'flex';
+      document.getElementById('camera-ativa').style.display = 'none';
+      document.getElementById('preview-captura').style.display = 'none';
+      document.getElementById('camera-erro').style.display = 'none';
+    }
+  }
+
+  function abrirCamera() {
+    document.getElementById('camera-inicio').style.display = 'none';
+    document.getElementById('camera-ativa').style.display = 'block';
+    iniciarCamera();
   }
 
   async function iniciarCamera() {
@@ -926,13 +962,16 @@
 
     const ctx = canvas.getContext('2d');
 
-    // Se câmera frontal, espelhar
+    // Espelhar apenas câmera frontal
     if (facingMode === 'user') {
+      ctx.save();
       ctx.translate(canvas.width, 0);
       ctx.scale(-1, 1);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    } else {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     }
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    if (facingMode === 'user') ctx.setTransform(1,0,0,1,0,0);
 
     // Desenhar overlay do filtro
     desenharFiltro(ctx, canvas.width, canvas.height);
@@ -1006,7 +1045,7 @@
     // Data
     ctx.font = `700 ${h*.018}px 'Quicksand',sans-serif`;
     ctx.fillStyle = 'rgba(197,213,232,.8)';
-    ctx.fillText('01 · 08 · 2026', w/2, h*.16);
+    ctx.fillText('01  08  2026', w/2, h*.16);
 
     // Ornamento
     ctx.font = `${h*.018}px serif`;
@@ -1048,6 +1087,7 @@
     fotoCapturada = null;
     document.getElementById('preview-captura').style.display = 'none';
     document.getElementById('camera-ativa').style.display = 'block';
+    document.getElementById('camera-inicio').style.display = 'none';
     iniciarCamera();
   }
 
@@ -1064,8 +1104,6 @@
       });
   }
 
-  // Iniciar câmera ao carregar
-  window.addEventListener('load', () => iniciarCamera());
   window.addEventListener('beforeunload', () => pararCamera());
 
   function novosArquivos() {
