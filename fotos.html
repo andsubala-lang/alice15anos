@@ -74,7 +74,7 @@
     .header-icone { font-size: 2.6rem; display: block; margin-bottom: 10px; }
     .header h1 {
       font-family: 'Playfair Display', serif;
-      font-style: italic; font-size: 2rem;
+      font-style: normal; font-size: 2rem;
       color: var(--marsala);
       margin-bottom: 8px; line-height: 1.2;
       text-shadow: 0 1px 4px rgba(255,255,255,.4);
@@ -102,18 +102,23 @@
 
     /* ── CARD ── */
     .card {
-      background: linear-gradient(160deg, #fdf8f0 0%, #fff 50%, #f5f8fd 100%);
+      background: linear-gradient(160deg, var(--creme) 0%, #fff 50%, #f0f5fc 100%);
       border: 1.5px solid var(--azul-cl);
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 16px 56px rgba(74,106,158,.16), 0 4px 12px rgba(122,37,53,.08);
+      box-shadow:
+        0 20px 60px rgba(74,106,158,.18),
+        0 4px 16px rgba(122,37,53,.1),
+        inset 0 1px 0 rgba(255,255,255,.9);
       position: relative;
     }
     .card::after {
       content: '';
       position: absolute;
-      bottom: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, var(--azul-dk), var(--marsala), var(--ouro));
+      bottom: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--marsala-dk), var(--marsala), var(--ouro), var(--azul-dk), var(--marsala-dk));
+      background-size: 300% 100%;
+      animation: gradMove 5s linear infinite;
     }
     .card-topo {
       height: 6px;
@@ -122,6 +127,10 @@
       animation: gradMove 5s linear infinite;
     }
     @keyframes gradMove { 0%{background-position:0%} 100%{background-position:200%} }
+    @keyframes pulseIcon {
+      0%,100% { transform:scale(1); box-shadow:0 0 0 0 rgba(155,58,74,.2); }
+      50% { transform:scale(1.05); box-shadow:0 0 0 12px rgba(155,58,74,0); }
+    }
     .card-body { padding: 32px 28px; display: flex; flex-direction: column; gap: 22px; }
 
     /* ── DROP ── */
@@ -277,16 +286,19 @@
       display: flex; gap: 10px; margin-bottom: 20px;
     }
     .btn-secao {
-      flex: 1; padding: 11px;
-      border-radius: 10px; border: 1.5px solid var(--azul-cl);
-      background: transparent; color: var(--azul-dk);
-      font-family: 'Quicksand', sans-serif; font-size: .85rem; font-weight: 700;
-      cursor: pointer; transition: all .2s; text-align: center;
+      flex: 1; padding: 12px 8px;
+      border-radius: 12px; border: 1.5px solid var(--azul-cl);
+      background: rgba(240,243,249,.8); color: var(--azul-dk);
+      font-family: 'Quicksand', sans-serif; font-size: .84rem; font-weight: 700;
+      cursor: pointer; transition: all .25s; text-align: center;
+      box-shadow: 0 2px 8px rgba(74,106,158,.06);
     }
+    .btn-secao:hover { background: rgba(197,213,232,.3); }
     .btn-secao.ativo {
       background: linear-gradient(135deg, var(--marsala-dk), var(--marsala));
       color: white; border-color: var(--marsala);
-      box-shadow: 0 4px 14px rgba(122,37,53,.25);
+      box-shadow: 0 6px 18px rgba(122,37,53,.28);
+      transform: translateY(-1px);
     }
 
     /* ── CÂMERA COM FILTRO ── */
@@ -310,7 +322,7 @@
       position: absolute; inset: 0;
       width: 100%; height: 100%;
       object-fit: cover;
-      transform: scaleX(-1); /* espelho */
+      /* espelhamento controlado via JS */
     }
 
     /* Overlay do filtro */
@@ -619,18 +631,29 @@
       <div id="secao-filtro">
 
         <!-- Tela inicial — antes de abrir câmera -->
-        <div id="camera-inicio" style="text-align:center;padding:28px 16px;display:flex;flex-direction:column;align-items:center;gap:14px;">
-          <div style="font-size:3.5rem;filter:drop-shadow(0 4px 12px rgba(201,168,76,.3));">📸</div>
+        <div id="camera-inicio" style="text-align:center;padding:32px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;">
+          <!-- Ícone animado -->
+          <div style="position:relative;width:90px;height:90px;">
+            <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,rgba(146,168,209,.15),rgba(155,58,74,.1));border:1.5px solid var(--azul-cl);display:flex;align-items:center;justify-content:center;font-size:2.8rem;animation:pulseIcon 2s ease-in-out infinite;">📸</div>
+          </div>
+          <!-- Texto -->
           <div>
-            <div style="font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--marsala);margin-bottom:6px;font-weight:700;">Tirar foto com filtro</div>
-            <div style="font-size:.82rem;color:var(--azul-dk);font-weight:600;line-height:1.6;max-width:260px;">A câmera abrirá com o filtro exclusivo da Alice já aplicado em tempo real</div>
+            <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--marsala);margin-bottom:8px;font-weight:700;">Filtro exclusivo da Alice</div>
+            <div style="font-size:.84rem;color:var(--azul-dk);font-weight:600;line-height:1.7;max-width:280px;">Tire sua foto com o filtro temático aplicado em tempo real e envie direto para a galeria da festa!</div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:8px;width:100%;margin-top:4px;">
-            <button onclick="abrirCamera()" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--marsala-dk),var(--marsala));color:white;font-family:'Quicksand',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(122,37,53,.3);display:flex;align-items:center;justify-content:center;gap:8px;">
-              📷 Abrir câmera com filtro
-            </button>
-            <div style="font-size:.72rem;color:var(--azul-dk);opacity:.6;font-weight:600;">O navegador pedirá permissão para acessar sua câmera</div>
+          <!-- Preview do filtro miniatura -->
+          <div style="display:flex;gap:12px;align-items:center;padding:10px 16px;background:rgba(146,168,209,.08);border:1px solid var(--azul-cl);border-radius:12px;width:100%;">
+            <div style="font-size:1.4rem;">⭐</div>
+            <div style="text-align:left;">
+              <div style="font-size:.72rem;font-family:'Cinzel',serif;color:var(--azul-dkk);letter-spacing:.1em;font-weight:600;">FILTRO ATIVO</div>
+              <div style="font-size:.8rem;color:var(--marsala);font-weight:700;">Alice 15 Anos · Estrelas</div>
+            </div>
           </div>
+          <!-- Botão -->
+          <button onclick="abrirCamera()" style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--marsala-dk),var(--marsala));color:white;font-family:'Quicksand',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(122,37,53,.32);display:flex;align-items:center;justify-content:center;gap:10px;letter-spacing:.02em;">
+            📷 Abrir câmera com filtro
+          </button>
+          <div style="font-size:.72rem;color:var(--azul-dk);opacity:.55;font-weight:600;">O navegador pedirá permissão para acessar sua câmera</div>
         </div>
 
         <!-- Câmera ao vivo — aparece após clicar -->
@@ -729,6 +752,8 @@
 
       </div><!-- /secao-upload -->
 
+      <!-- Nome + Enviar — só aparecem quando tem arquivo ou foto capturada -->
+      <div id="area-envio" style="display:none;flex-direction:column;gap:22px;">
       <!-- Nome -->
       <div class="campo">
         <label>Seu nome (opcional)</label>
@@ -751,6 +776,7 @@
       <button class="btn-enviar" id="btn-enviar" onclick="abrirModal()" disabled>
         📤 Enviar para a Alice
       </button>
+      </div><!-- /area-envio -->
     </div>
 
     <!-- Sucesso -->
@@ -821,10 +847,16 @@
     const num  = document.getElementById('num-sel');
     const txt  = document.getElementById('txt-sel');
 
-    if (!arquivos.length) { grid.style.display='none'; cont.style.display='none'; btn.disabled=true; return; }
+    const areaEnvio = document.getElementById('area-envio');
+    if (!arquivos.length) {
+      grid.style.display='none'; cont.style.display='none'; btn.disabled=true;
+      if(areaEnvio) areaEnvio.style.display='none';
+      return;
+    }
     grid.style.display = 'grid';
     cont.style.display = 'flex';
     btn.disabled = false;
+    if(areaEnvio) areaEnvio.style.display='flex';
     num.textContent = arquivos.length;
     txt.textContent = arquivos.length === 1 ? 'arquivo selecionado' : 'arquivos selecionados';
 
@@ -931,6 +963,8 @@
       });
       const video = document.getElementById('camera-video');
       video.srcObject = stream;
+      // Espelhar só câmera frontal
+      video.style.transform = facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
       document.getElementById('camera-ativa').style.display = 'block';
       document.getElementById('preview-captura').style.display = 'none';
       document.getElementById('camera-erro').style.display = 'none';
@@ -1101,6 +1135,8 @@
         adicionar([file]);
         mostrarSecao('upload');
         document.getElementById('btn-upload').click();
+        const ae = document.getElementById('area-envio');
+        if(ae) ae.style.display='flex';
       });
   }
 
